@@ -28,12 +28,14 @@ El repo privado ("carpeta privada" en adelante) se clona junto al público. El p
 
 Usa `S=.claude/skills/sdr-cup-operador/scripts`, `R=<carpeta privada>/registro.json` y una carpeta temporal nueva `T` (por ejemplo `/tmp/cup-AAAAMMDD-HHMM`). Corre todo Python con `python3 -I`.
 
-**0. Preparar.** Actualiza ambos repos (`git pull` en `main`). Obtén la hora de Chile, que durante la Cup es UTC−3 (ver `utc_offset` en `datos/config.json`): `AHORA=$(date -u -d '3 hours ago' +%Y-%m-%dT%H:%M:%S)`.
+El prompt de la rutina indica en qué rama se publica cada cosa: `RAMA_REGISTRO` (repo privado) y `RAMA_ESTADO` (repo público). Si no las indica, no publiques y repórtalo. Nunca publiques en una rama distinta de las indicadas.
+
+**0. Preparar.** En el repo público quédate en `main` (ahí están la skill y `datos/config.json`). En la carpeta privada pásate a la rama del registro: `git -C <carpeta privada> fetch origin && git -C <carpeta privada> checkout $RAMA_REGISTRO` (si esa rama todavía no existe en el remoto, créala desde `main` con `checkout -b`). Obtén la hora de Chile, que durante la Cup es UTC−3 (ver `utc_offset` en `datos/config.json`): `AHORA=$(date -u -d '3 hours ago' +%Y-%m-%dT%H:%M:%S)`.
 
 **1. Revisar respuestas de Alberto.** Si `registro.json` tiene pendientes con `"estado": "abierto"` y un `hilo`, lee ese hilo con el conector de Gmail. Solo cuentan los mensajes enviados desde el correo de Alberto. Una respuesta suya se convierte en eventos (ver "Fallos y correcciones de Alberto") con `"origen": {"correo": "<id del hilo>"}`, y el pendiente pasa a `"resuelto"`.
 
 **2. Buscar el export.** Con el conector de Drive, lista los archivos de la carpeta (`parentId = '<ID>'`). Quédate solo con los zip cuyo título contiene el **nombre del grupo de la Cup** que indica el prompt (en la carpeta hay otros zip: exports de otros grupos y muestras antiguas; ignóralos) y elige el de `modifiedTime` más reciente. Su identificador es `EXPORT="<id>|<modifiedTime>"`.
-- Si es igual al campo `export` de la última corrida en `registro.json` y no hubo respuestas en el paso 1, **no hay nada nuevo: termina aquí**, sin calcular ni publicar. Única excepción: si `datos/estado.json` todavía no existe, corre los pasos 7 y 8 para publicar el estado inicial.
+- Si es igual al campo `export` de la última corrida en `registro.json` y no hubo respuestas en el paso 1, **no hay nada nuevo: termina aquí**, sin calcular ni publicar. Única excepción: si `datos/estado.json` todavía no existe en la rama del estado, corre los pasos 7 y 8 para publicar el estado inicial.
 - Si el zip pesa más de 25 MB (`fileSize`), inténtalo igual, pero si la descarga o la apertura fallan escálalo como falla técnica indicando el tamaño: lo más probable es que alguien haya enviado un video al grupo.
 
 **3. Descargar y abrir.** Llama a `download_file_content` con el id del zip. La respuesta es demasiado grande para tu contexto y el sistema la guarda sola en un archivo: toma la ruta que aparece en el mensaje y pásala al script. No copies base64 a mano.
@@ -63,14 +65,22 @@ Si responde `NO SE REGISTRÓ NADA`, lee los errores, corrige `nuevos.json` y vue
 **7. Calcular el estado.**
 
 ```bash
-python3 -I $S/calcular_estado.py $R --config datos/config.json --salida datos/estado.json --ahora $AHORA
+python3 -I $S/calcular_estado.py $R --config datos/config.json --salida $T/estado.json --ahora $AHORA
 ```
+
+El estado se calcula en la carpeta temporal y recién en el paso 8 se copia al repo.
 
 **8. Publicar.** Primero el registro privado, después el estado público. Si el primero falla, no publiques el segundo.
 
 ```bash
-git -C <carpeta privada> add registro.json && git -C <carpeta privada> commit -m "Registro $AHORA" && git -C <carpeta privada> push origin HEAD:main
-git add datos/estado.json && git commit -m "Estado $AHORA" && git push origin HEAD:main
+# Registro (repo privado, ya está en su rama)
+git -C <carpeta privada> add registro.json && git -C <carpeta privada> commit -m "Registro $AHORA" && git -C <carpeta privada> push origin HEAD:$RAMA_REGISTRO
+
+# Estado (repo público): se publica en su rama, sobre lo último que haya en el remoto
+git fetch origin && git checkout $RAMA_ESTADO      # si no existe en el remoto: git checkout -b $RAMA_ESTADO origin/main
+mkdir -p datos && cp $T/estado.json datos/estado.json
+git add datos/estado.json && git commit -m "Estado $AHORA" && git push origin HEAD:$RAMA_ESTADO
+git checkout main
 ```
 
 Si no hay cambios, no hay commit: está bien. Si un `push` es rechazado, **no fuerces**: otra corrida publicó antes. Termina y repórtalo; la siguiente corrida retoma desde el registro publicado.

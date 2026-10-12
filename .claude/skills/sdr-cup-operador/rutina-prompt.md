@@ -15,6 +15,11 @@ Los valores entre `<<…>>` son **privados**: se completan solo en la rutina, nu
 
 Una corrida sin export nuevo termina rápido y no publica nada.
 
+Ramas de publicación: una rutina en la nube puede hacer push a ramas, pero el push directo a
+`main` lo bloquea la seguridad de la propia sesión. Por eso las ramas de destino son
+configuración del prompt (`RAMA_REGISTRO` y `RAMA_ESTADO`). La página debe leer `datos/estado.json`
+desde la rama que se elija como `RAMA_ESTADO`.
+
 ## Prompt
 
 ```
@@ -34,6 +39,10 @@ Datos privados de esta rutina (no los escribas en ningún archivo del repo públ
 - Export sin archivos para armar el mapa de apodos (solo si apodos.json aún no está
   confirmado): el zip cuyo título contiene <<nombre del otro grupo>>.
 
-Haz push directo a la rama main de ambos repositorios, como indica la skill. No crees ramas
-ni pull requests. Termina con el resumen de la corrida que pide la skill.
+Ramas de publicación (la skill no publica en ninguna otra):
+- RAMA_REGISTRO = <<rama del repo privado donde vive registro.json>>
+- RAMA_ESTADO = <<rama del repo público donde se publica datos/estado.json>>
+
+No abras pull requests ni crees otras ramas. Termina con el resumen de la corrida que pide
+la skill.
 ```
