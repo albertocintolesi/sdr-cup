@@ -16,9 +16,10 @@
 	'use strict';
 
 	// ---------- Configuración ----------
-	// Único lugar donde se define de dónde sale el estado. Puede ser una ruta
-	// del mismo sitio o una dirección completa (por ejemplo, la de una rama de datos).
-	const URL_ESTADO = 'datos/estado.json';
+	// Único lugar donde se define de dónde sale el estado. El Operador lo publica
+	// en la rama "estado" del repositorio; GitHub puede tardar unos 5 minutos en
+	// entregar la versión nueva. También sirve una ruta del mismo sitio.
+	const URL_ESTADO = 'https://raw.githubusercontent.com/albertocintolesi/sdr-cup/estado/datos/estado.json';
 	const CARPETA_EJEMPLOS = 'datos/ejemplos/';
 	const VERSION = 1;					// versión del contrato que entiende esta página
 	const CADA_MS = 5 * 60 * 1000;		// cada cuánto se vuelve a leer
