@@ -15,6 +15,12 @@
 	const lienzo = document.getElementById('copa');
 	const marco = document.getElementById('copa-marco');
 	if (!lienzo || !lienzo.getContext || !marco) return;
+
+	// Versión liviana (ver "Efectos bajos" en css/estilos.css): menos resolución y sin polvo de luz
+	if (new URLSearchParams(window.location.search).get('efectos') === 'bajos') {
+		document.documentElement.classList.add('efectos-bajos');
+	}
+	const efectosBajos = document.documentElement.classList.contains('efectos-bajos');
 	const principal = lienzo.getContext('2d');	// lo que se ve
 	const copa = document.createElement('canvas');	// la copa sola, fuera de pantalla
 	const ctx = copa.getContext('2d');
@@ -27,7 +33,8 @@
 	const DISTANCIA = 7;		// distancia de la cámara (perspectiva suave)
 	const PUNTOS_ANILLO = 96;	// puntos con que se traza cada franja del cuerpo
 	const PARADAS = 56;			// pasos del degradado de cada franja
-	const POLVO = 34;			// cantidad de motas de luz
+	const POLVO = efectosBajos ? 0 : 34;	// cantidad de motas de luz
+	const DENSIDAD_MAXIMA = efectosBajos ? 1.5 : 2;	// tope de píxeles reales por píxel de pantalla
 
 	// Inscripción. "y" es la línea base del texto y "alto" la altura de las
 	// mayúsculas, en las unidades del perfil (la copa mide 2,5 de alto).
@@ -513,7 +520,7 @@
 		if (!rect.width || !rect.height || !zona.width || !zona.height) return;
 		ancho = rect.width;
 		alto = rect.height;
-		dpr = Math.min(window.devicePixelRatio || 1, 2);
+		dpr = Math.min(window.devicePixelRatio || 1, DENSIDAD_MAXIMA);
 		[lienzo, copa].forEach(function (c) {
 			c.width = Math.round(ancho * dpr);
 			c.height = Math.round(alto * dpr);

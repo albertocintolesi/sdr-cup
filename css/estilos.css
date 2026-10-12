@@ -487,6 +487,37 @@ body {
 	}
 }
 
+/* ---------- Efectos bajos ----------
+   Versión liviana para celulares donde la página vaya lenta. Se activa de dos formas:
+   - para probar: agregando ?efectos=bajos a la dirección;
+   - para todos: poniendo class="efectos-bajos" en la etiqueta <html> de index.html.
+   Quita lo más pesado (desenfoques, mezclas y animaciones del fondo) sin cambiar el diseño. */
+.efectos-bajos .foco {
+	clip-path: none;
+	filter: none;
+	mix-blend-mode: normal;
+	animation: none;
+	background: conic-gradient(from 170deg at 50% 0%,
+		rgba(150, 195, 255, 0) 0deg,
+		rgba(150, 195, 255, .15) 10deg,
+		rgba(150, 195, 255, 0) 20deg,
+		rgba(150, 195, 255, 0) 360deg);
+}
+
+.efectos-bajos .rayos {
+	mix-blend-mode: normal;
+}
+
+.efectos-bajos .rayos-giro,
+.efectos-bajos .resplandor {
+	animation: none;
+}
+
+.efectos-bajos .num,
+.efectos-bajos .partio-titulo {
+	filter: none;
+}
+
 /* ---------- Movimiento reducido ---------- */
 @media (prefers-reduced-motion: reduce) {
 	.resplandor,
