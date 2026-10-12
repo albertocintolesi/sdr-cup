@@ -1,0 +1,369 @@
+/* ============================================================
+   SDR Cup · página provisional de cuenta regresiva
+   Tokens tomados de la guía de marca de Brolly (deck system).
+   ============================================================ */
+:root {
+	--indigo: #4B3FBF;
+	--azul: #2E7DD1;
+	--lila: #8B85F0;
+	--violeta: #5B21E8;
+	--tinta: #1B1B3A;
+	--tinta-suave: #4A4A72;
+	--tinta-tenue: #6C6C93;
+	--linea: rgba(27, 27, 58, .12);
+	--tarjeta: #FFFFFF;
+	--papel: #EAF1FB;
+
+	--f-titulo: 'Chillax', sans-serif;
+	--f-texto: 'General Sans', sans-serif;
+	--f-mono: 'JetBrains Mono', monospace;
+
+	--suave: cubic-bezier(.2, .8, .2, 1);
+	--borde-pagina: 16px;
+
+	color-scheme: light;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html,
+body {
+	height: 100%;
+}
+
+body {
+	background: var(--papel);
+	color: var(--tinta);
+	font-family: var(--f-texto);
+	overflow-x: hidden;
+	-webkit-font-smoothing: antialiased;
+	-webkit-text-size-adjust: 100%;
+}
+
+.solo-lectores {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+/* ---------- Atmósfera: retícula + halo ---------- */
+.fondo {
+	position: fixed;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.reticula {
+	position: absolute;
+	inset: 0;
+	background-image:
+		linear-gradient(rgba(27, 27, 58, .045) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(27, 27, 58, .045) 1px, transparent 1px);
+	background-size: 56px 56px;
+}
+
+.halo {
+	position: absolute;
+	right: -42vmin;
+	top: -34vmin;
+	width: 130vmin;
+	height: 130vmin;
+	border-radius: 50%;
+	background: radial-gradient(circle at 40% 40%, rgba(139, 133, 240, .42), rgba(46, 125, 209, .16) 45%, transparent 68%);
+	filter: blur(10px);
+	animation: deriva 20s ease-in-out infinite alternate;
+}
+
+@keyframes deriva {
+	to {
+		transform: translate(-6vmin, 4vmin) scale(1.05);
+	}
+}
+
+/* ---------- Estructura ---------- */
+.escena {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	min-height: 100dvh;
+	padding:
+		max(14px, env(safe-area-inset-top))
+		max(var(--borde-pagina), env(safe-area-inset-right))
+		max(18px, env(safe-area-inset-bottom))
+		max(var(--borde-pagina), env(safe-area-inset-left));
+}
+
+.cabecera {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+}
+
+.marca {
+	font-family: var(--f-titulo);
+	font-weight: 600;
+	font-size: 1.3rem;
+	letter-spacing: -.02em;
+}
+
+.etiqueta {
+	font-family: var(--f-mono);
+	font-weight: 500;
+	font-size: .7rem;
+	letter-spacing: .3em;
+	text-transform: uppercase;
+	color: var(--violeta);
+}
+
+/* ---------- Copa ---------- */
+.copa-marco {
+	position: relative;
+	flex: 1 1 auto;
+	min-height: 260px;
+	margin: 4px calc(var(--borde-pagina) * -1) 0;
+}
+
+#copa {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	cursor: grab;
+	touch-action: pan-y;
+	opacity: 0;
+	transform: translateY(18px) scale(.97);
+	transition: opacity 1s var(--suave), transform 1.2s var(--suave);
+}
+
+#copa.lista {
+	opacity: 1;
+	transform: none;
+}
+
+#copa.arrastrando {
+	cursor: grabbing;
+}
+
+/* ---------- Cuenta regresiva ---------- */
+.cuenta {
+	width: min(100%, 540px);
+	margin: 0 auto;
+	text-align: center;
+}
+
+.cuenta-titulo {
+	font-family: var(--f-mono);
+	font-weight: 500;
+	font-size: .72rem;
+	letter-spacing: .34em;
+	text-transform: uppercase;
+	color: var(--violeta);
+}
+
+.reloj {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	margin-top: 12px;
+	padding: 16px 4px 13px;
+	background: var(--tarjeta);
+	border-radius: 26px;
+	box-shadow: 0 18px 44px rgba(27, 27, 58, .08);
+}
+
+.unidad {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 7px;
+}
+
+.unidad + .unidad {
+	border-left: 1px solid var(--linea);
+}
+
+.num {
+	display: inline-flex;
+	font-family: var(--f-titulo);
+	font-weight: 600;
+	font-size: clamp(2.5rem, 12.5vw, 4.4rem);
+	line-height: 1;
+	letter-spacing: -.02em;
+	color: var(--indigo);
+}
+
+/* Cada dígito ocupa un ancho fijo para que el número no salte al cambiar.
+   El gradiente de marca se reparte entre los dos dígitos. */
+.digito {
+	display: inline-block;
+	width: .64em;
+	text-align: center;
+	background: linear-gradient(105deg, var(--indigo), var(--azul));
+	background-size: 200% 100%;
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+.digito:nth-child(2) {
+	background-position: 100% 0;
+}
+
+.rotulo {
+	font-family: var(--f-mono);
+	font-weight: 500;
+	font-size: .64rem;
+	letter-spacing: .24em;
+	text-transform: uppercase;
+	color: var(--tinta-tenue);
+}
+
+.cuenta-fecha {
+	margin-top: 14px;
+	font-weight: 500;
+	font-size: .98rem;
+	color: var(--tinta-suave);
+}
+
+.partio {
+	padding: 22px 16px 20px;
+	background: var(--tarjeta);
+	border-radius: 26px;
+	box-shadow: 0 18px 44px rgba(27, 27, 58, .08);
+}
+
+.partio-titulo {
+	font-family: var(--f-titulo);
+	font-weight: 600;
+	font-size: clamp(2rem, 9vw, 3.2rem);
+	line-height: 1.05;
+	letter-spacing: -.03em;
+}
+
+.partio-titulo em {
+	font-style: normal;
+	background: linear-gradient(105deg, var(--indigo), var(--azul));
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+.partio-texto {
+	margin-top: 8px;
+	font-size: 1.05rem;
+	color: var(--tinta-suave);
+}
+
+/* ---------- Entrada escalonada ---------- */
+.aparece {
+	opacity: 0;
+	transform: translateY(14px);
+	animation: aparecer .7s var(--suave) forwards;
+	animation-delay: calc(var(--i) * 120ms + 150ms);
+}
+
+@keyframes aparecer {
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+/* ---------- Pantallas más grandes ---------- */
+@media (min-width: 768px) {
+	:root {
+		--borde-pagina: 40px;
+	}
+
+	.reticula {
+		background-size: 96px 96px;
+	}
+
+	.escena {
+		padding-top: 28px;
+		padding-bottom: 34px;
+	}
+
+	.marca {
+		font-size: 1.6rem;
+	}
+
+	.etiqueta {
+		font-size: .8rem;
+	}
+
+	.cuenta-titulo {
+		font-size: .82rem;
+	}
+
+	.rotulo {
+		font-size: .74rem;
+	}
+
+	.cuenta-fecha {
+		font-size: 1.1rem;
+	}
+}
+
+/* Pantalla apaisada (escritorio o celular acostado):
+   la copa usa todo el alto a la izquierda y la cuenta va a la derecha */
+@media (min-aspect-ratio: 5/4) {
+	.escena {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: auto 1fr;
+		column-gap: 24px;
+		height: 100vh;
+		height: 100dvh;
+	}
+
+	.cabecera {
+		grid-column: 1 / -1;
+	}
+
+	.copa-marco {
+		min-height: 200px;
+		margin: 0;
+	}
+
+	.cuenta {
+		align-self: center;
+		margin: 0;
+		text-align: left;
+	}
+
+	.cuenta-titulo,
+	.cuenta-fecha {
+		padding-left: 6px;
+	}
+
+	.num {
+		font-size: clamp(2rem, 5.6vw, 4.4rem);
+	}
+}
+
+/* ---------- Movimiento reducido ---------- */
+@media (prefers-reduced-motion: reduce) {
+	.halo {
+		animation: none;
+	}
+
+	.aparece {
+		opacity: 1;
+		transform: none;
+		animation: none;
+	}
+
+	#copa {
+		transform: none;
+		transition: opacity .2s linear;
+	}
+}
