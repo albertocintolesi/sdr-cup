@@ -16,9 +16,11 @@ Los valores entre `<<…>>` son **privados**: se completan solo en la rutina, nu
 Una corrida sin export nuevo termina rápido y no publica nada.
 
 Ramas de publicación: una rutina en la nube puede hacer push a ramas, pero el push directo a
-`main` lo bloquea la seguridad de la propia sesión. Por eso las ramas de destino son
-configuración del prompt (`RAMA_REGISTRO` y `RAMA_ESTADO`). La página debe leer `datos/estado.json`
-desde la rama que se elija como `RAMA_ESTADO`.
+`main` lo bloquea la seguridad de la propia sesión, y así debe quedar. Por eso los datos viven
+en ramas dedicadas: `registro` en el repo privado y `estado` en el público. `main` es solo
+para código. La página lee el estado desde
+`https://raw.githubusercontent.com/<usuario>/<repo público>/estado/datos/estado.json`
+(GitHub lo sirve con hasta 5 minutos de caché).
 
 ## Prompt
 
@@ -39,9 +41,9 @@ Datos privados de esta rutina (no los escribas en ningún archivo del repo públ
 - Export sin archivos para armar el mapa de apodos (solo si apodos.json aún no está
   confirmado): el zip cuyo título contiene <<nombre del otro grupo>>.
 
-Ramas de publicación (la skill no publica en ninguna otra):
-- RAMA_REGISTRO = <<rama del repo privado donde vive registro.json>>
-- RAMA_ESTADO = <<rama del repo público donde se publica datos/estado.json>>
+Ramas de publicación (la skill no publica en ninguna otra, y nunca en main):
+- RAMA_REGISTRO = registro   (repo privado)
+- RAMA_ESTADO = estado       (repo público)
 
 No abras pull requests ni crees otras ramas. Termina con el resumen de la corrida que pide
 la skill.

@@ -342,6 +342,12 @@ def registrar(registro, config, nuevos, mensajes, ahora=None, export=None):
 			errores.append(f"alias '{apodo}': el SDR '{sdr}' no está en config.json")
 		trabajo["alias"][apodo] = sdr
 
+	# El cierre definitivo solo lo da Alberto por correo o instrucción directa, nunca el chat.
+	if nuevos.get("cierre"):
+		origen_cierre = nuevos["cierre"].get("origen") or {}
+		if not (origen_cierre.get("correo") or origen_cierre.get("instruccion")):
+			errores.append("cierre: solo vale con origen 'correo' o 'instruccion' de Alberto; un mensaje del grupo no cierra la Cup")
+
 	# 2. Desafíos anunciados (misiones y Flash).
 	conocidos = {d["id"] for d in trabajo["desafios"]}
 	desafios_nuevos = []
