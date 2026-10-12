@@ -1,0 +1,378 @@
+"""Agrega al registro los eventos que el Operador interpretó en esta corrida.
+
+Uso:
+	python3 registrar.py REGISTRO.json --config CONFIG.json --nuevos NUEVOS.json --mensajes MENSAJES.json
+		--ahora 2026-10-13T14:05:00 --export "ID_DRIVE|FECHA_MODIFICACION"
+
+- REGISTRO.json  registro persistente y privado (se crea si no existe).
+- CONFIG.json    datos fijos de la Cup: fechas, squads e integrantes.
+- NUEVOS.json    lo que el Operador dedujo de los mensajes nuevos (formato en SKILL.md).
+- MENSAJES.json  salida de leer_chat.py; todos sus mensajes quedan marcados como vistos.
+
+Lo que este script garantiza:
+- Los eventos solo se agregan. Nunca se edita ni se borra uno existente.
+- Un mismo hecho no entra dos veces (mismo tipo, origen, SDR o squad y referencia).
+- Los puntos de cada evento se fijan aquí, según las bases, y no cambian después.
+- Los combos diarios se deducen solos, y se revierten solos con un evento compensatorio.
+- Si algo no valida, no se escribe nada y se listan todos los errores.
+"""
+
+import argparse
+import json
+import re
+import sys
+import unicodedata
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+from reglas import (  # noqa: E402
+	LEGENDARIOS, PUNTOS_AGENDADA, PUNTOS_COMBO, PUNTOS_REALIZADA, REGISTRO_VACIO, TIPOS_OPERADOR,
+	guardar_json, leer_json, leer_registro, puntos_netos, situacion, squad_de_cada_sdr,
+)
+
+FORMATO_FECHA = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$")
+SOBRAN_EN_EMPRESA = ("brolly", "sa", "spa", "ltda", "s", "a")
+
+
+def normalizar(empresa):
+	"""'Brolly & Andina Frutos S.A.' y 'andina frutos' deben reconocerse como la misma empresa."""
+	texto = unicodedata.normalize("NFKD", empresa or "").encode("ascii", "ignore").decode().lower()
+	texto = re.sub(r"[^a-z0-9 ]", " ", texto)
+	return " ".join(palabra for palabra in texto.split() if palabra not in SOBRAN_EN_EMPRESA)
+
+
+def clave(evento):
+	"""Identifica un hecho para no registrarlo dos veces."""
+	origen = evento.get("origen") or {}
+	return (
+		evento.get("tipo"),
+		origen.get("mensaje") or origen.get("correo"),
+		evento.get("sdr") or evento.get("squad"),
+		evento.get("ref"),
+		evento.get("desafio") or evento.get("legendario"),
+		evento.get("puntos") if evento.get("tipo") == "ajuste" else None,
+	)
+
+
+def agregar(registro, evento):
+	"""Agrega el evento al final con el siguiente id correlativo."""
+	evento = {"id": f"ev-{len(registro['eventos']) + 1:04d}", **evento}
+	registro["eventos"].append(evento)
+	return evento
+
+
+def validar(evento, registro, config, squads):
+	"""Completa squad y SDR del evento. Devuelve (problemas, descarte).
+
+	`problemas` son errores que el Operador debe corregir. `descarte` es el motivo cuando el
+	evento está bien escrito pero las bases dicen que no suma (p. ej. un Flash ya ganado):
+	en ese caso no se registra y el resto del lote sigue.
+	"""
+	problemas = []
+	descarte = None
+	tipo = evento["tipo"]
+	eventos = registro["eventos"]
+	por_id = {e["id"]: e for e in eventos}
+	anulados, pendientes = situacion(eventos)
+	inicio, cierre = config["cup"]["inicio"], config["cup"]["cierre"]
+
+	origen = evento.get("origen") or {}
+	if not (origen.get("mensaje") or origen.get("correo")):
+		problemas.append("falta el origen (mensaje del chat o correo)")
+	if not FORMATO_FECHA.match(evento.get("fecha_hora") or ""):
+		return problemas + ["fecha_hora debe tener el formato 2026-10-13T10:34:00 (hora de Chile)"], None
+
+	# Una "realizada", una anulación o una confirmación heredan squad y SDR del evento al que apuntan.
+	if tipo in ("reunion_realizada", "anulacion", "confirmacion"):
+		referido = por_id.get(evento.get("ref"))
+		if not referido:
+			return problemas + [f"ref '{evento.get('ref')}' no existe en el registro"], None
+		evento["sdr"] = referido.get("sdr")
+		evento["squad"] = referido.get("squad")
+		if referido["id"] in anulados:
+			problemas.append(f"{referido['id']} ya está anulado")
+		if tipo == "reunion_realizada":
+			if referido["tipo"] != "reunion_agendada":
+				problemas.append("ref debe apuntar a una reunion_agendada")
+			ya = [e for e in eventos if e["tipo"] == "reunion_realizada" and e.get("ref") == referido["id"] and e["id"] not in anulados]
+			if ya:
+				descarte = f"la reunión {referido['id']} ya estaba marcada como realizada ({ya[0]['id']})"
+		if tipo == "anulacion" and not evento.get("motivo"):
+			problemas.append("una anulación necesita motivo")
+		if tipo == "confirmacion" and referido["id"] not in pendientes:
+			problemas.append(f"{referido['id']} no está en revisión: no hay nada que confirmar")
+
+	sdr = evento.get("sdr")
+	if sdr:
+		if sdr not in squads:
+			return problemas + [f"el SDR '{sdr}' no está en config.json"], None
+		if evento.get("squad") not in (None, squads[sdr]):
+			problemas.append(f"el SDR '{sdr}' no pertenece a '{evento['squad']}'")
+		evento["squad"] = squads[sdr]
+	elif evento.get("squad") not in set(squads.values()):
+		problemas.append("falta un squad válido")
+
+	# Ventana de la Cup: lo anterior al inicio no existe; lo posterior al cierre solo entra en revisión.
+	if tipo in ("reunion_agendada", "reunion_realizada", "mision", "flash"):
+		if evento["fecha_hora"] < inicio:
+			problemas.append("es anterior al inicio de la Cup: no se registra")
+		elif evento["fecha_hora"] > cierre and not evento.get("en_revision"):
+			problemas.append("es posterior al cierre de la Cup: solo puede entrar con en_revision")
+
+	if tipo == "reunion_agendada":
+		if not sdr:
+			problemas.append("una reunión agendada necesita SDR")
+		if not evento.get("empresa") and not evento.get("en_revision"):
+			problemas.append("falta la empresa (o marca en_revision)")
+		repetida = next((
+			e for e in eventos
+			if e["tipo"] == "reunion_agendada" and e["id"] not in anulados
+			and normalizar(e.get("empresa")) and normalizar(e.get("empresa")) == normalizar(evento.get("empresa"))
+		), None)
+		if repetida and not evento.get("en_revision"):
+			problemas.append(
+				f"la empresa ya está registrada en {repetida['id']}: un reagendamiento no se registra; "
+				"si la subió otro SDR, márcala en_revision y escala"
+			)
+
+	if tipo in ("mision", "flash"):
+		desafio = next((d for d in registro["desafios"] if d["id"] == evento.get("desafio")), None)
+		if not desafio:
+			problemas.append(f"el desafío '{evento.get('desafio')}' no está registrado")
+		elif desafio["tipo"] != tipo:
+			problemas.append(f"'{desafio['id']}' es de tipo {desafio['tipo']}, no {tipo}")
+		elif tipo == "flash" and not evento.get("en_revision"):
+			if not (desafio.get("desde") and desafio.get("hasta")):
+				problemas.append(f"el Flash '{desafio['id']}' no tiene ventana (desde/hasta)")
+			elif not desafio["desde"] <= evento["fecha_hora"] <= desafio["hasta"]:
+				descarte = "está fuera de la ventana del Flash: no suma el Flash (la reunión sí)"
+			ganado = [
+				e for e in eventos
+				if e["tipo"] == "flash" and e.get("desafio") == desafio["id"]
+				and e["id"] not in anulados and e["id"] not in pendientes
+			]
+			if ganado:
+				descarte = f"el Flash ya lo ganó {ganado[0]['squad']} ({ganado[0]['id']}): el segundo no suma"
+
+	if tipo == "legendario" and evento.get("legendario") not in LEGENDARIOS:
+		problemas.append(f"'legendario' debe ser uno de {list(LEGENDARIOS)}")
+	if tipo in ("mision", "flash", "legendario", "ajuste"):
+		if not isinstance(evento.get("puntos"), int) or isinstance(evento.get("puntos"), bool):
+			problemas.append("'puntos' debe ser un número entero")
+	if tipo == "ajuste" and not evento.get("motivo"):
+		problemas.append("un ajuste necesita motivo")
+	return problemas, descarte
+
+
+def fijar_puntos(evento, registro):
+	"""Deja en el evento los puntos que aporta. Lo que entra en revisión aporta 0 por ahora."""
+	tipo = evento["tipo"]
+	eventos = registro["eventos"]
+	anulados, pendientes = situacion(eventos)
+	por_id = {e["id"]: e for e in eventos}
+	if tipo == "anulacion":
+		referido = por_id[evento["ref"]]
+		evento["puntos"] = 0 if referido["id"] in pendientes else -puntos_netos(referido, eventos, anulados)
+		return
+	if tipo == "confirmacion":
+		evento["puntos"] = por_id[evento["ref"]].get("puntos_en_revision", 0)
+		return
+	valor = {"reunion_agendada": PUNTOS_AGENDADA, "reunion_realizada": PUNTOS_REALIZADA}.get(tipo, evento.get("puntos"))
+	if evento.get("en_revision"):
+		evento["puntos"], evento["puntos_en_revision"] = 0, valor
+	else:
+		evento["puntos"] = valor
+
+
+def anular_dependientes(registro, anulacion):
+	"""Si se anula una reunión, también caen su 'realizada' y los desafíos que se apoyaban en ella."""
+	anulados, pendientes = situacion(registro["eventos"])
+	for evento in list(registro["eventos"]):
+		depende = evento.get("ref") == anulacion["ref"] and evento["tipo"] in ("reunion_realizada", "mision", "flash")
+		if depende and evento["id"] not in anulados:
+			agregar(registro, {
+				"tipo": "anulacion",
+				"fecha_hora": anulacion["fecha_hora"],
+				"ref": evento["id"],
+				"sdr": evento.get("sdr"),
+				"squad": evento.get("squad"),
+				"puntos": 0 if evento["id"] in pendientes else -puntos_netos(evento, registro["eventos"], anulados),
+				"motivo": "Se anuló la reunión de la que dependía",
+				"origen": anulacion.get("origen"),
+				"auto": True,
+			})
+
+
+def ajustar_combos(registro, disparador):
+	"""Otorga o revierte el combo diario según las reuniones válidas de cada squad y día.
+
+	Combo: 2 o más integrantes del squad con al menos una reunión agendada válida el mismo día
+	(día del mensaje con la captura). Se otorga una vez por día. Si una corrección deja a un
+	solo integrante con reunión válida, se revierte con una anulación automática.
+	"""
+	eventos = registro["eventos"]
+	anulados, pendientes = situacion(eventos)
+	agendaron = {}
+	for evento in eventos:
+		if evento["tipo"] == "reunion_agendada" and evento["id"] not in anulados and evento["id"] not in pendientes:
+			agendaron.setdefault((evento["fecha_hora"][:10], evento["squad"]), set()).add(evento["sdr"])
+	combos = {(e["dia"], e["squad"]): e for e in eventos if e["tipo"] == "combo_diario" and e["id"] not in anulados}
+
+	for (dia, squad), quienes in sorted(agendaron.items()):
+		if len(quienes) >= 2 and (dia, squad) not in combos:
+			agregar(registro, {
+				"tipo": "combo_diario",
+				"fecha_hora": disparador["fecha_hora"],
+				"dia": dia,
+				"squad": squad,
+				"sdr": None,
+				"puntos": PUNTOS_COMBO,
+				"origen": disparador.get("origen"),
+				"auto": True,
+			})
+	for (dia, squad), combo in sorted(combos.items()):
+		if len(agendaron.get((dia, squad), ())) < 2:
+			agregar(registro, {
+				"tipo": "anulacion",
+				"fecha_hora": disparador["fecha_hora"],
+				"ref": combo["id"],
+				"sdr": None,
+				"squad": squad,
+				"puntos": -combo["puntos"],
+				"motivo": "Quedó un solo integrante con reunión válida ese día",
+				"origen": disparador.get("origen"),
+				"auto": True,
+			})
+
+
+def registrar(registro, config, nuevos, mensajes, ahora=None, export=None):
+	"""Devuelve (errores, resumen). Si no hay errores, `registro` queda actualizado."""
+	errores = []
+	squads = squad_de_cada_sdr(config)
+	# Se trabaja sobre una copia: si algo falla, el registro original queda intacto.
+	trabajo = json.loads(json.dumps({**REGISTRO_VACIO, **registro}))
+	antes = len(trabajo["eventos"])
+
+	# 1. Apodos nuevos (privados: solo viven en el registro).
+	for apodo, sdr in (nuevos.get("alias") or {}).items():
+		if sdr is not None and sdr not in squads:
+			errores.append(f"alias '{apodo}': el SDR '{sdr}' no está en config.json")
+		trabajo["alias"][apodo] = sdr
+
+	# 2. Desafíos anunciados (misiones y Flash).
+	conocidos = {d["id"] for d in trabajo["desafios"]}
+	desafios_nuevos = []
+	for desafio in nuevos.get("desafios") or []:
+		completo = desafio.get("id") and desafio.get("nombre") and desafio.get("fecha") and (desafio.get("origen") or {}).get("mensaje")
+		if desafio.get("tipo") not in ("mision", "flash"):
+			errores.append(f"desafío '{desafio.get('id')}': tipo debe ser mision o flash")
+		elif not completo:
+			errores.append(f"desafío '{desafio.get('id')}': faltan id, nombre, fecha u origen")
+		elif desafio["id"] not in conocidos:
+			conocidos.add(desafio["id"])
+			desafios_nuevos.append(desafio["id"])
+			trabajo["desafios"].append(desafio)
+
+	# 3. Eventos, en orden cronológico. Uno nuevo puede referirse a otro del mismo lote
+	#    con "tmp": "etiqueta" en el primero y "ref": "tmp:etiqueta" en el segundo.
+	claves = {clave(e): e["id"] for e in trabajo["eventos"]}
+	temporales = {}
+	repetidos = 0
+	descartados = []
+	lote = [dict(e) for e in nuevos.get("eventos") or []]
+	for posicion, evento in enumerate(lote, start=1):
+		evento["_donde"] = f"evento {posicion} ({evento.get('tipo')})"
+	for evento in sorted(lote, key=lambda e: str(e.get("fecha_hora"))):
+		donde = evento.pop("_donde")
+		etiqueta = evento.pop("tmp", None)
+		if evento.get("tipo") not in TIPOS_OPERADOR:
+			errores.append(f"{donde}: tipo desconocido")
+			continue
+		ref = evento.get("ref")
+		if isinstance(ref, str) and ref.startswith("tmp:"):
+			if ref[4:] not in temporales:
+				errores.append(f"{donde}: la etiqueta '{ref}' no existe o su evento fue rechazado")
+				continue
+			evento["ref"] = temporales[ref[4:]]
+		problemas, descarte = validar(evento, trabajo, config, squads)
+		if clave(evento) in claves:
+			# Ya estaba registrado en una corrida anterior: no es un error, solo se ignora.
+			repetidos += 1
+			if etiqueta:
+				temporales[etiqueta] = claves[clave(evento)]
+			continue
+		if problemas:
+			errores.extend(f"{donde}: {problema}" for problema in problemas)
+			continue
+		if descarte:
+			descartados.append(f"{donde}: {descarte}")
+			continue
+		fijar_puntos(evento, trabajo)
+		evento = agregar(trabajo, evento)
+		claves[clave(evento)] = evento["id"]
+		if etiqueta:
+			temporales[etiqueta] = evento["id"]
+		if evento["tipo"] == "anulacion":
+			anular_dependientes(trabajo, evento)
+		ajustar_combos(trabajo, evento)
+
+	if errores:
+		return errores, None
+
+	# 4. Pendientes, cierre, mensajes vistos e historial de corridas.
+	for pendiente in nuevos.get("pendientes") or []:
+		existente = next((p for p in trabajo["pendientes"] if p["id"] == pendiente["id"]), None)
+		if existente:
+			existente.update(pendiente)
+		else:
+			trabajo["pendientes"].append(pendiente)
+	if nuevos.get("cierre"):
+		# Cierre de la Cup: solo cuando Alberto confirma el resultado final.
+		trabajo["cierre"] = nuevos["cierre"]
+	vistos = set(trabajo["mensajes_vistos"])
+	ids_nuevos = [m["id"] for m in mensajes if m["id"] not in vistos]
+	trabajo["mensajes_vistos"].extend(ids_nuevos)
+	agregados = trabajo["eventos"][antes:]
+	resumen = {
+		"fecha_hora": ahora,
+		"export": export,
+		"mensajes_nuevos": len(ids_nuevos),
+		"eventos_nuevos": [e["id"] for e in agregados],
+		"eventos_automaticos": [e["id"] for e in agregados if e.get("auto")],
+		"eventos_repetidos": repetidos,
+		"eventos_descartados": descartados,
+		"desafios_nuevos": desafios_nuevos,
+	}
+	trabajo["corridas"].append(resumen)
+	registro.clear()
+	registro.update(trabajo)
+	return [], resumen
+
+
+def main():
+	parser = argparse.ArgumentParser(description="Agrega eventos nuevos al registro de la Cup.")
+	parser.add_argument("registro")
+	parser.add_argument("--config", required=True)
+	parser.add_argument("--nuevos", required=True)
+	parser.add_argument("--mensajes", required=True)
+	parser.add_argument("--ahora", help="Fecha y hora de Chile de la corrida, ISO")
+	parser.add_argument("--export", help="Identificador del export procesado: id de Drive + fecha de modificación")
+	args = parser.parse_args()
+
+	registro = leer_registro(args.registro)
+	errores, resumen = registrar(
+		registro, leer_json(args.config), leer_json(args.nuevos), leer_json(args.mensajes)["mensajes"],
+		args.ahora, args.export,
+	)
+	sys.stdout.reconfigure(encoding="utf-8")
+	if errores:
+		print("NO SE REGISTRÓ NADA. Corrige NUEVOS.json y vuelve a correr:")
+		for error in errores:
+			print(" -", error)
+		sys.exit(1)
+	guardar_json(args.registro, registro)
+	print(json.dumps(resumen, ensure_ascii=False, indent="\t"))
+
+
+if __name__ == "__main__":
+	main()
