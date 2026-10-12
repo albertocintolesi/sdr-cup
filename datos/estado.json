@@ -12,20 +12,72 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-13T22:10:00-03:00",
-	"chat_hasta": "2026-10-13T22:00:00-03:00",
-	"lider": "squad-2",
-	"diferencia": 2,
+	"actualizado": "2026-10-14T11:10:00-03:00",
+	"chat_hasta": "2026-10-14T11:00:00-03:00",
+	"lider": "squad-1",
+	"diferencia": 1,
 	"squads": [
+		{
+			"id": "squad-1",
+			"nombre": "Squad 1",
+			"posicion": 1,
+			"puntos": 11,
+			"puntos_en_revision": 0,
+			"desglose": {
+				"agendadas": 5,
+				"realizadas": 1,
+				"combos": 2,
+				"misiones": 3,
+				"flash": 0,
+				"legendarios": 0,
+				"ajustes": 0
+			},
+			"reuniones_agendadas": 5,
+			"reuniones_realizadas": 1,
+			"integrantes": [
+				{
+					"id": "matias-palma",
+					"nombre": "Matías Palma",
+					"puntos": 3,
+					"reuniones_agendadas": 2,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": "2026-10-13T12:00:00-03:00"
+				},
+				{
+					"id": "benjamin-allel",
+					"nombre": "Benjamín Allel",
+					"puntos": 3,
+					"reuniones_agendadas": 1,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": "2026-10-14T10:00:00-03:00"
+				},
+				{
+					"id": "matias-hernandez",
+					"nombre": "Matías Hernández",
+					"puntos": 2,
+					"reuniones_agendadas": 1,
+					"reuniones_realizadas": 1,
+					"ultima_actividad": "2026-10-14T10:30:00-03:00"
+				},
+				{
+					"id": "matias-rauque",
+					"nombre": "Matías Rauque",
+					"puntos": 1,
+					"reuniones_agendadas": 1,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": "2026-10-13T16:35:00-03:00"
+				}
+			]
+		},
 		{
 			"id": "squad-2",
 			"nombre": "Squad 2",
-			"posicion": 1,
-			"puntos": 9,
-			"puntos_en_revision": 0,
+			"posicion": 2,
+			"puntos": 10,
+			"puntos_en_revision": 1,
 			"desglose": {
 				"agendadas": 3,
-				"realizadas": 0,
+				"realizadas": 1,
 				"combos": 2,
 				"misiones": 1,
 				"flash": 3,
@@ -33,7 +85,7 @@
 				"ajustes": 0
 			},
 			"reuniones_agendadas": 3,
-			"reuniones_realizadas": 0,
+			"reuniones_realizadas": 1,
 			"integrantes": [
 				{
 					"id": "alberto-m",
@@ -46,10 +98,10 @@
 				{
 					"id": "isidora-b",
 					"nombre": "Isidora B.",
-					"puntos": 2,
+					"puntos": 3,
 					"reuniones_agendadas": 1,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": "2026-10-13T10:40:00-03:00"
+					"reuniones_realizadas": 1,
+					"ultima_actividad": "2026-10-14T09:35:00-03:00"
 				},
 				{
 					"id": "alberto-cintolesi",
@@ -62,58 +114,6 @@
 				{
 					"id": "pedro-pablo-m",
 					"nombre": "Pedro Pablo M.",
-					"puntos": 0,
-					"reuniones_agendadas": 0,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": null
-				}
-			]
-		},
-		{
-			"id": "squad-1",
-			"nombre": "Squad 1",
-			"posicion": 2,
-			"puntos": 7,
-			"puntos_en_revision": 0,
-			"desglose": {
-				"agendadas": 4,
-				"realizadas": 0,
-				"combos": 2,
-				"misiones": 1,
-				"flash": 0,
-				"legendarios": 0,
-				"ajustes": 0
-			},
-			"reuniones_agendadas": 4,
-			"reuniones_realizadas": 0,
-			"integrantes": [
-				{
-					"id": "matias-palma",
-					"nombre": "Matías Palma",
-					"puntos": 3,
-					"reuniones_agendadas": 2,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": "2026-10-13T12:00:00-03:00"
-				},
-				{
-					"id": "matias-hernandez",
-					"nombre": "Matías Hernández",
-					"puntos": 1,
-					"reuniones_agendadas": 1,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": "2026-10-13T11:15:00-03:00"
-				},
-				{
-					"id": "matias-rauque",
-					"nombre": "Matías Rauque",
-					"puntos": 1,
-					"reuniones_agendadas": 1,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": "2026-10-13T16:35:00-03:00"
-				},
-				{
-					"id": "benjamin-allel",
-					"nombre": "Benjamín Allel",
 					"puntos": 0,
 					"reuniones_agendadas": 0,
 					"reuniones_realizadas": 0,
@@ -140,9 +140,18 @@
 		},
 		{
 			"fecha": "2026-10-14",
-			"puntos": null,
-			"acumulado": null,
-			"combo": null
+			"puntos": {
+				"squad-1": 4,
+				"squad-2": 1
+			},
+			"acumulado": {
+				"squad-1": 11,
+				"squad-2": 10
+			},
+			"combo": {
+				"squad-1": false,
+				"squad-2": false
+			}
 		},
 		{
 			"fecha": "2026-10-15",
@@ -167,7 +176,7 @@
 			"puntos_texto": "+1 adicional por la primera reunión del día",
 			"desde": "2026-10-13T09:00:00-03:00",
 			"hasta": "2026-10-13T23:59:59-03:00",
-			"vigente": true,
+			"vigente": false,
 			"ganador": null
 		},
 		{
@@ -181,6 +190,18 @@
 			"hasta": "2026-10-13T17:00:00-03:00",
 			"vigente": false,
 			"ganador": "squad-2"
+		},
+		{
+			"id": "mision-2026-10-14",
+			"tipo": "mision",
+			"fecha": "2026-10-14",
+			"nombre": "Peso pesado",
+			"descripcion": "Cada reunión agendada hoy con una empresa de más de 1.000 colaboradores suma 2 puntos adicionales. Hay que avisar con el detalle de la empresa.",
+			"puntos_texto": "+2 adicionales por reunión con empresa de +1.000 colaboradores",
+			"desde": "2026-10-14T08:30:00-03:00",
+			"hasta": "2026-10-14T23:59:59-03:00",
+			"vigente": true,
+			"ganador": null
 		}
 	],
 	"legendarios": [
@@ -200,6 +221,106 @@
 		}
 	],
 	"eventos": [
+		{
+			"id": "ev-0017",
+			"tipo": "reunion_agendada",
+			"fecha_hora": "2026-10-14T11:00:00-03:00",
+			"squad": "squad-2",
+			"sdr": "pedro-pablo-m",
+			"puntos": 0,
+			"puntos_en_revision": 1,
+			"titulo": "Pedro Pablo M. informó una reunión",
+			"detalle": null,
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": true,
+			"origen": {
+				"mensaje": "20261014T110000-0",
+				"hora": "11:00",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0016",
+			"tipo": "reunion_realizada",
+			"fecha_hora": "2026-10-14T10:30:00-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-hernandez",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Se realizó una reunión de Matías Hernández",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0005",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261014T103000-0",
+				"hora": "10:30",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0015",
+			"tipo": "mision",
+			"fecha_hora": "2026-10-14T10:00:00-03:00",
+			"squad": "squad-1",
+			"sdr": "benjamin-allel",
+			"puntos": 2,
+			"puntos_en_revision": 0,
+			"titulo": "Benjamín Allel cumplió la misión: Peso pesado",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0014",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261014T100000-0",
+				"hora": "10:00",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0014",
+			"tipo": "reunion_agendada",
+			"fecha_hora": "2026-10-14T10:00:00-03:00",
+			"squad": "squad-1",
+			"sdr": "benjamin-allel",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Benjamín Allel agendó una reunión",
+			"detalle": null,
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261014T100000-0",
+				"hora": "10:00",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0013",
+			"tipo": "reunion_realizada",
+			"fecha_hora": "2026-10-14T09:35:00-03:00",
+			"squad": "squad-2",
+			"sdr": "isidora-b",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Se realizó una reunión de Isidora B.",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0003",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261014T093500-0",
+				"hora": "09:35",
+				"fuente": "chat"
+			}
+		},
 		{
 			"id": "ev-0012",
 			"tipo": "reunion_agendada",
