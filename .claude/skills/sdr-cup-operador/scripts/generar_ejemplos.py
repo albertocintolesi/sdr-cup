@@ -43,7 +43,7 @@ LOTE_DIA_1_Y_2 = {
 			"id": "mision-2026-10-13", "tipo": "mision", "fecha": "2026-10-13", "nombre": "Primer saque",
 			"descripcion": "La primera reunión que agende cada integrante hoy suma un punto adicional.",
 			"puntos_texto": "+1 extra por la primera reunión del día",
-			"desde": "2026-10-13T09:00:00", "hasta": "2026-10-13T23:59:59", "origen": origen("2026-10-13T09:00:00"),
+			"desde": "2026-10-13T10:00:00", "hasta": "2026-10-13T23:59:59", "origen": origen("2026-10-13T10:00:00"),
 		},
 		{
 			"id": "flash-2026-10-13-1", "tipo": "flash", "fecha": "2026-10-13", "nombre": "Sprint de las 15:00",

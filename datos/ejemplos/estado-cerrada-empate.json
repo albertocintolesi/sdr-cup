@@ -3,7 +3,7 @@
 	"cup": {
 		"numero": 3,
 		"nombre": "SDR Cup #3",
-		"inicio": "2026-10-13T09:00:00-03:00",
+		"inicio": "2026-10-13T10:00:00-03:00",
 		"cierre": "2026-10-16T17:00:00-03:00",
 		"minimo_para_ganar": 20,
 		"premio": null,
@@ -192,7 +192,7 @@
 			"nombre": "Primer saque",
 			"descripcion": "La primera reunión que agende cada integrante hoy suma un punto adicional.",
 			"puntos_texto": "+1 extra por la primera reunión del día",
-			"desde": "2026-10-13T09:00:00-03:00",
+			"desde": "2026-10-13T10:00:00-03:00",
 			"hasta": "2026-10-13T23:59:59-03:00",
 			"vigente": false,
 			"ganador": null

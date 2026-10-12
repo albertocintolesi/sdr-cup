@@ -90,8 +90,8 @@ Todas las claves son opcionales. Las horas son de Chile, sin offset.
 			"nombre": "Primer saque",
 			"descripcion": "La primera reunión que agende cada integrante hoy suma un punto adicional.",
 			"puntos_texto": "+1 por la primera reunión del día",
-			"desde": "2026-10-13T09:00:00", "hasta": "2026-10-13T23:59:59",
-			"origen": { "mensaje": "20261013T090000-0" }
+			"desde": "2026-10-13T10:00:00", "hasta": "2026-10-13T23:59:59",
+			"origen": { "mensaje": "20261013T100000-0" }
 		}
 	],
 	"eventos": [
