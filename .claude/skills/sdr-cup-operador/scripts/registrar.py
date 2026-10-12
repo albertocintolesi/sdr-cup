@@ -26,17 +26,13 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from reglas import (  # noqa: E402
 	LEGENDARIOS, PUNTOS_AGENDADA, PUNTOS_COMBO, PUNTOS_REALIZADA, REGISTRO_VACIO, TIPOS_OPERADOR,
-	empresa_mencionada, guardar_json, leer_json, leer_registro, puntos_netos, sin_tildes, situacion,
+	empresa_mencionada, guardar_json, leer_json, leer_registro, normalizar, puntos_netos, situacion,
 	squad_de_cada_sdr,
 )
 
 FORMATO_FECHA = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$")
-SOBRAN_EN_EMPRESA = ("brolly", "sa", "spa", "ltda", "s", "a")
-
-
-def normalizar(empresa):
-	"""'Brolly & Empresa Uno S.A.' y 'empresa uno' deben reconocerse como la misma empresa."""
-	return " ".join(palabra for palabra in sin_tildes(empresa).split() if palabra not in SOBRAN_EN_EMPRESA)
+# Tope de cordura para puntos escritos a mano (misiones, Flash y ajustes).
+MAXIMO_PUNTOS = 20
 
 
 def clave(evento):
@@ -97,8 +93,24 @@ def validar(evento, registro, config, squads):
 				descarte = f"la reunión {referido['id']} ya estaba marcada como realizada ({ya[0]['id']})"
 		if tipo == "anulacion" and not evento.get("motivo"):
 			problemas.append("una anulación necesita motivo")
+		if tipo == "anulacion" and referido["tipo"] in ("anulacion", "confirmacion"):
+			problemas.append("no se anula una anulación ni una confirmación: usa un ajuste con los puntos que correspondan")
 		if tipo == "confirmacion" and referido["id"] not in pendientes:
 			problemas.append(f"{referido['id']} no está en revisión: no hay nada que confirmar")
+
+	# Una misión o un Flash pueden apoyarse en una reunión: si la citan, tiene que existir.
+	if tipo in ("mision", "flash") and evento.get("ref") is not None:
+		reunion = por_id.get(evento["ref"])
+		if not reunion or reunion["tipo"] != "reunion_agendada":
+			return problemas + [f"ref '{evento['ref']}' debe apuntar a una reunion_agendada del registro"], None
+		if reunion["id"] in anulados:
+			problemas.append(f"la reunión {reunion['id']} está anulada")
+
+	# Lo que depende de un evento en revisión espera igual que él (no suma hasta que se confirme).
+	depende = tipo in ("reunion_realizada", "mision", "flash") and evento.get("ref") in pendientes
+	if depende and not evento.get("en_revision"):
+		evento["en_revision"] = True
+		evento["espera_a"] = evento["ref"]
 
 	sdr = evento.get("sdr")
 	if sdr:
@@ -155,8 +167,15 @@ def validar(evento, registro, config, squads):
 	if tipo == "legendario" and evento.get("legendario") not in LEGENDARIOS:
 		problemas.append(f"'legendario' debe ser uno de {list(LEGENDARIOS)}")
 	if tipo in ("mision", "flash", "legendario", "ajuste"):
-		if not isinstance(evento.get("puntos"), int) or isinstance(evento.get("puntos"), bool):
+		puntos = evento.get("puntos")
+		if not isinstance(puntos, int) or isinstance(puntos, bool):
 			problemas.append("'puntos' debe ser un número entero")
+		elif tipo == "legendario" and evento.get("legendario") in LEGENDARIOS and puntos != LEGENDARIOS[evento["legendario"]]["puntos"]:
+			problemas.append(f"ese legendario vale {LEGENDARIOS[evento['legendario']]['puntos']} puntos")
+		elif tipo != "legendario" and abs(puntos) > MAXIMO_PUNTOS:
+			problemas.append(f"{puntos} puntos supera el tope de {MAXIMO_PUNTOS}: revisa el número")
+		elif tipo in ("mision", "flash") and puntos < 0:
+			problemas.append("una misión o un Flash no restan puntos")
 	if tipo == "ajuste" and not evento.get("motivo"):
 		problemas.append("un ajuste necesita motivo")
 	return problemas, descarte
@@ -199,6 +218,34 @@ def anular_dependientes(registro, anulacion):
 				"origen": anulacion.get("origen"),
 				"auto": True,
 			})
+
+
+def confirmar_dependientes(registro, confirmacion):
+	"""Al confirmar un evento, también se confirma lo que quedó esperando solo por él."""
+	eventos = registro["eventos"]
+	anulados, pendientes = situacion(eventos)
+	for evento in list(eventos):
+		if evento.get("espera_a") != confirmacion["ref"] or evento["id"] not in pendientes:
+			continue
+		if evento["tipo"] == "flash":
+			# Si mientras tanto otro squad ganó el Flash, este no se confirma solo.
+			ganado = any(
+				e["tipo"] == "flash" and e.get("desafio") == evento.get("desafio")
+				and e["id"] not in anulados and e["id"] not in pendientes
+				for e in eventos
+			)
+			if ganado:
+				continue
+		agregar(registro, {
+			"tipo": "confirmacion",
+			"fecha_hora": confirmacion["fecha_hora"],
+			"ref": evento["id"],
+			"sdr": evento.get("sdr"),
+			"squad": evento.get("squad"),
+			"puntos": evento.get("puntos_en_revision", 0),
+			"origen": confirmacion.get("origen"),
+			"auto": True,
+		})
 
 
 def ajustar_combos(registro, disparador):
@@ -327,6 +374,8 @@ def registrar(registro, config, nuevos, mensajes, ahora=None, export=None):
 			temporales[etiqueta] = evento["id"]
 		if evento["tipo"] == "anulacion":
 			anular_dependientes(trabajo, evento)
+		if evento["tipo"] == "confirmacion":
+			confirmar_dependientes(trabajo, evento)
 		ajustar_combos(trabajo, evento)
 
 	if errores:

@@ -43,18 +43,26 @@ def texto_publico(texto, empresas, donde=""):
 
 
 def titulo_de(evento, raiz, nombres_sdr, nombres_squad, desafios, empresa):
-	"""Título listo para mostrar. No usa notas internas ni citas del chat."""
+	"""Título listo para mostrar. No usa notas internas ni citas del chat.
+
+	Lo que se registró en revisión lleva un título que no da el hecho por cierto.
+	"""
 	tipo = evento["tipo"]
+	en_duda = bool(evento.get("en_revision"))
 	quien = nombres_sdr.get(evento.get("sdr")) or nombres_squad.get(evento.get("squad"), "")
+	nombre = desafios.get(evento.get("desafio"), {}).get("nombre", "")
 	if tipo == "reunion_agendada":
-		return f"{quien} agendó una reunión" + (f" con {empresa}" if empresa else "")
+		hecho = "informó una reunión" if en_duda else "agendó una reunión"
+		return f"{quien} {hecho}" + (f" con {empresa}" if empresa else "")
 	if tipo == "reunion_realizada":
-		return f"Se realizó una reunión de {quien}"
+		return f"Se informó como realizada una reunión de {quien}" if en_duda else f"Se realizó una reunión de {quien}"
 	if tipo == "combo_diario":
 		return f"Combo diario de {quien}"
-	if tipo in ("mision", "flash"):
-		nombre = desafios.get(evento.get("desafio"), {}).get("nombre", "")
-		hecho = "cumplió la misión" if tipo == "mision" else "ganó el Flash Challenge"
+	if tipo == "mision":
+		hecho = "podría sumar la misión" if en_duda else "cumplió la misión"
+		return f"{quien} {hecho}" + (f": {nombre}" if nombre else "")
+	if tipo == "flash":
+		hecho = "reclamó el Flash Challenge" if en_duda else "ganó el Flash Challenge"
 		return f"{quien} {hecho}" + (f": {nombre}" if nombre else "")
 	if tipo == "legendario":
 		return f"{quien} logró el legendario {LEGENDARIOS[evento['legendario']]['nombre']}"
@@ -219,7 +227,8 @@ def calcular_estado(registro, config, ahora):
 			e for e in eventos
 			if e["tipo"] == "flash" and e.get("desafio") == d["id"] and e["id"] not in anulados and e["id"] not in pendientes
 		), None)
-		vigente = bool(d.get("desde") and d.get("hasta") and d["desde"] <= ahora <= d["hasta"])
+		# Un desafío deja de estar vigente cuando vence su ventana o cuando cierra la Cup.
+		vigente = bool(d.get("desde") and d.get("hasta") and d["desde"] <= ahora <= min(d["hasta"], cup["cierre"]))
 		lista_desafios.append({
 			"id": d["id"],
 			"tipo": d["tipo"],

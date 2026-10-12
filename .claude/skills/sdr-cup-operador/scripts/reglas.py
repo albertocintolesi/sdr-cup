@@ -117,15 +117,39 @@ def sin_tildes(texto):
 	return " ".join(re.sub(r"[^a-z0-9 ]", " ", texto).split())
 
 
+# Palabras que sobran al comparar nombres de empresas ("Brolly & Empresa Uno S.A." = "empresa uno").
+SOBRAN_EN_EMPRESA = ("brolly", "sa", "spa", "ltda", "limitada", "s", "a", "y", "de", "del", "la", "el", "los", "las")
+# Palabras tan comunes que por sí solas no identifican a una empresa.
+GENERICAS = (
+	"empresa", "empresas", "grupo", "compania", "sociedad", "servicios", "comercial", "industrial",
+	"industrias", "inversiones", "distribuidora", "constructora", "inmobiliaria", "transportes",
+	"chile", "nacional", "internacional", "global", "asociados", "hermanos", "holding", "banco",
+	"clinica", "hospital", "colegio", "universidad", "municipalidad",
+)
+
+
+def normalizar(empresa):
+	"""Nombre de empresa reducido a sus palabras propias, para comparar escrituras distintas."""
+	return " ".join(palabra for palabra in sin_tildes(empresa).split() if palabra not in SOBRAN_EN_EMPRESA)
+
+
 def empresa_mencionada(texto, empresas):
 	"""Devuelve la primera empresa del registro que aparece dentro de un texto, o None.
 
 	Sirve para que ningún texto público (detalle de un ajuste, descripción de un desafío)
-	publique por accidente el nombre de un prospecto.
+	publique por accidente el nombre de un prospecto. Es deliberadamente estricto: basta
+	el nombre completo o una sola palabra distintiva del nombre (4 letras o más y que no sea
+	genérica), sin importar mayúsculas, tildes, espacios ni sufijos como "S.A.".
 	"""
-	limpio = f" {sin_tildes(texto)} "
+	palabras_texto = set(sin_tildes(texto).split())
+	limpio = f" {normalizar(texto)} "
 	for empresa in empresas:
-		nombre = sin_tildes(empresa)
+		nombre = normalizar(empresa)
+		if not nombre:
+			continue
 		if len(nombre) >= 3 and f" {nombre} " in limpio:
+			return empresa
+		distintivas = [p for p in nombre.split() if len(p) >= 4 and p not in GENERICAS]
+		if any(palabra in palabras_texto for palabra in distintivas):
 			return empresa
 	return None

@@ -12,6 +12,7 @@ CARPETA_DESTINO debe ser nueva o estar vacía: lo que viene del chat es contenid
 """
 
 import base64
+import binascii
 import json
 import sys
 import zipfile
@@ -58,9 +59,12 @@ def main():
 	carpeta.mkdir(parents=True, exist_ok=True)
 
 	destino_zip = carpeta.parent / (carpeta.name + ".zip")
-	obtener_zip(origen, destino_zip)
-	with zipfile.ZipFile(destino_zip) as archivo:
-		archivo.extractall(carpeta)
+	try:
+		obtener_zip(origen, destino_zip)
+		with zipfile.ZipFile(destino_zip) as archivo:
+			archivo.extractall(carpeta)
+	except (zipfile.BadZipFile, binascii.Error, json.JSONDecodeError, UnicodeDecodeError) as error:
+		sys.exit(f"No se pudo abrir el export: el archivo descargado está incompleto o dañado ({type(error).__name__}).")
 
 	archivos = [a for a in carpeta.rglob("*") if a.is_file()]
 	chat = next((a for a in archivos if a.name == "_chat.txt"), None)
