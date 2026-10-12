@@ -227,9 +227,10 @@ def calcular_estado(registro, config, ahora):
 			e for e in eventos
 			if e["tipo"] == "flash" and e.get("desafio") == d["id"] and e["id"] not in anulados and e["id"] not in pendientes
 		), None)
-		# La vigencia de todo desafío se corta en el cierre de la Cup.
+		# La ventana de todo desafío se recorta al tramo entre el inicio y el cierre de la Cup.
+		desde = max(d["desde"], cup["inicio"]) if d.get("desde") else None
 		hasta = min(d["hasta"], cup["cierre"]) if d.get("hasta") else None
-		vigente = bool(d.get("desde") and hasta and d["desde"] <= ahora <= hasta)
+		vigente = bool(desde and hasta and desde <= ahora <= hasta)
 		lista_desafios.append({
 			"id": d["id"],
 			"tipo": d["tipo"],
@@ -237,7 +238,7 @@ def calcular_estado(registro, config, ahora):
 			"nombre": texto_publico(d["nombre"], empresas, d["id"]) or "Desafío",
 			"descripcion": texto_publico(d.get("descripcion"), empresas, d["id"]),
 			"puntos_texto": d.get("puntos_texto"),
-			"desde": con_offset(d.get("desde"), offset),
+			"desde": con_offset(desde, offset),
 			"hasta": con_offset(hasta, offset),
 			"vigente": vigente and not ganado,
 			"ganador": ganado["squad"] if ganado else None,
