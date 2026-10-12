@@ -30,7 +30,7 @@ Usa `S=.claude/skills/sdr-cup-operador/scripts`, `R=<carpeta privada>/registro.j
 
 **Ramas.** `main` es solo para código en ambos repos y **nunca** se publica ahí. Los datos viven en dos ramas dedicadas que ya existen: `RAMA_REGISTRO=registro` en el repo privado y `RAMA_ESTADO=estado` en el público (el prompt de la rutina puede indicar otros nombres). Nunca publiques en una rama distinta de esas dos, no crees ramas y no uses `--force`.
 
-**0. Preparar.** En el repo público quédate en `main` (ahí están la skill y `datos/config.json`). En la carpeta privada pásate a la rama del registro: `git -C <carpeta privada> fetch origin && git -C <carpeta privada> checkout $RAMA_REGISTRO`. Obtén la hora de Chile, que durante la Cup es UTC−3 (ver `utc_offset` en `datos/config.json`): `AHORA=$(date -u -d '3 hours ago' +%Y-%m-%dT%H:%M:%S)`.
+**0. Preparar.** En el repo público trabaja en `main`, que es donde están la skill y `datos/config.json`; en la nube el clon puede partir sin rama, así que asegúralo con `git checkout main && git pull origin main`. En la carpeta privada pásate a la rama del registro: `git -C <carpeta privada> fetch origin && git -C <carpeta privada> checkout $RAMA_REGISTRO`. Obtén la hora de Chile, que durante la Cup es UTC−3 (ver `utc_offset` en `datos/config.json`): `AHORA=$(date -u -d '3 hours ago' +%Y-%m-%dT%H:%M:%S)`.
 
 **1. Revisar respuestas de Alberto.** Si `registro.json` tiene pendientes con `"estado": "abierto"` y un `hilo`, lee ese hilo con el conector de Gmail. Solo cuentan los mensajes enviados desde el correo de Alberto. Una respuesta suya se convierte en eventos (ver "Fallos y correcciones de Alberto") con `"origen": {"correo": "<id del hilo>"}`, y el pendiente pasa a `"resuelto"`.
 
