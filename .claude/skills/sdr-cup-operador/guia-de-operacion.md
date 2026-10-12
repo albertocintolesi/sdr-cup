@@ -55,6 +55,14 @@ El viernes a las 17:00 el marcador deja de sumar solo. Lo que llegue después qu
 2. Responde ese correo con: qué casos suman, qué squad logra cada legendario (+5.000 colaboradores y seniority ≥ 1,5, 10 puntos cada uno) y la frase **"el resultado es definitivo"**.
 3. Recién ahí la página muestra al ganador. Antes dice "resultado en revisión", aunque hayas publicado puntajes finales en el grupo.
 
+## Datos de la rutina
+
+- **Nombre:** SDR Cup #3 · Operador. Se ve y se edita en https://claude.ai/code/routines/trig_01GsAJj1qLi1Cquy91ZLh49v (con tu cuenta de Claude).
+- **Horario:** minuto 7 de cada hora, de 10:07 a 19:07, del martes 13 al viernes 16 de octubre, hora de Chile. Primera corrida: martes 13 a las 10:07.
+- **Accesos:** Google Drive (leer los exports) y Gmail (escribirte y leer tu respuesta). Ningún otro conector.
+- **Dónde escribe:** solo en la rama `estado` del repo de la página y en la rama `registro` del repo privado. Nunca en `main`.
+- **Para pausarla:** en esa misma página, el interruptor de encendido. Para borrarla al terminar la Cup: menú → Delete.
+
 ## Si algo falla
 
 - **El marcador no se mueve:** revisa que el export esté en Data SDRC y que el nombre del grupo calce. Luego Run now.
