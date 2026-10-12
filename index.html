@@ -6,85 +6,91 @@
 	<title>SDR Cup New Generation</title>
 	<meta name="description" content="Cuenta regresiva para la SDR Cup New Generation de Brolly.">
 	<meta name="robots" content="noindex">
-	<meta name="theme-color" content="#020710">
+	<meta name="theme-color" content="#070620">
 	<meta property="og:title" content="SDR Cup New Generation">
 	<meta property="og:description" content="Parte el martes 13 de octubre a las 10:00. Mira la cuenta regresiva.">
 	<meta property="og:type" content="website">
-	<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3CradialGradient id='g' cx='.35' cy='.3'%3E%3Cstop offset='0' stop-color='%238B85F0'/%3E%3Cstop offset='1' stop-color='%234B3FBF'/%3E%3C/radialGradient%3E%3Ccircle cx='16' cy='16' r='14' fill='url(%23g)'/%3E%3C/svg%3E">
+	<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23070620'/%3E%3Crect x='7' y='5' width='18' height='22' rx='5' fill='none' stroke='%238B85F0' stroke-width='2'/%3E%3Crect x='12' y='11' width='8' height='10' rx='2.5' fill='none' stroke='%23F4F3FF' stroke-width='2'/%3E%3C/svg%3E">
 
-	<!-- Tipografías de la guía de marca de Brolly.
-	     Cada familia de Fontshare va en su propio enlace: pedidas juntas, la segunda no llega. -->
-	<link rel="preconnect" href="https://api.fontshare.com">
-	<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://api.fontshare.com/v2/css?f[]=chillax@500,600&display=swap" rel="stylesheet">
-	<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Unbounded:wght@300;800&display=swap" rel="stylesheet">
 
 	<link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
-	<!-- Escenario: retícula, focos, resplandor, rayos y piso. Todo es CSS. -->
-	<div class="fondo" aria-hidden="true">
-		<div class="reticula"></div>
-		<div class="suelo"></div>
-		<div class="foco foco-izq"></div>
-		<div class="foco foco-der"></div>
-		<div class="resplandor"></div>
-		<div class="rayos"><div class="rayos-giro"></div></div>
-	</div>
-
 	<main class="escena">
-		<!-- La copa se dibuja en js/copa.js. El lienzo cubre toda la escena. -->
-		<canvas id="copa" aria-hidden="true"></canvas>
-
 		<header class="cabecera aparece" style="--i:0">
-			<span class="marca">Brolly</span>
-			<span class="etiqueta">SDR Cup #3</span>
+			<span>Brolly</span>
+			<span class="tenue">SDR Cup #3</span>
 		</header>
 
-		<!-- Espacio reservado para la copa -->
-		<div class="copa-marco" id="copa-marco"></div>
+		<!-- Centro: el túnel de marcos y, encima, la cuenta regresiva -->
+		<section class="centro" aria-label="Cuenta regresiva">
+			<div class="tunel" aria-hidden="true">
+				<span class="rayo" style="--giro:0deg"></span>
+				<span class="rayo" style="--giro:90deg"></span>
+				<span class="rayo rayo-diagonal" style="--lado:1"></span>
+				<span class="rayo rayo-diagonal" style="--lado:-1"></span>
+				<span class="marco" style="--n:0; --tinta:var(--lila)"></span>
+				<span class="marco" style="--n:1; --tinta:var(--azul)"></span>
+				<span class="marco" style="--n:2; --tinta:var(--texto)"></span>
+				<span class="marco" style="--n:3; --tinta:var(--lila)"></span>
+				<span class="marco" style="--n:4; --tinta:var(--azul)"></span>
+				<span class="marco" style="--n:5; --tinta:var(--lila-claro)"></span>
+				<span class="marco" style="--n:6; --tinta:var(--azul)"></span>
+				<span class="velo"></span>
+			</div>
 
-		<section class="cuenta" aria-label="Cuenta regresiva">
-			<h1 class="titulo aparece" style="--i:1"><span class="solo-lectores">SDR Cup </span>New Generation</h1>
-
-			<div id="cuenta-activa">
-				<div class="reloj aparece" style="--i:2" role="timer" aria-live="off">
-					<div class="unidad">
-						<span class="num" data-unidad="dias">--</span>
-						<span class="rotulo">días</span>
-					</div>
-					<div class="unidad">
-						<span class="num" data-unidad="horas">--</span>
-						<span class="rotulo">horas</span>
-					</div>
-					<div class="unidad">
-						<span class="num" data-unidad="minutos">--</span>
-						<span class="rotulo">min</span>
-					</div>
-					<div class="unidad">
-						<span class="num" data-unidad="segundos">--</span>
-						<span class="rotulo">seg</span>
-					</div>
-				</div>
-
-				<!-- La fecha de inicio se cambia solo aquí: el script lee el atributo datetime -->
-				<p class="cuenta-fecha aparece" style="--i:3">
-					Parte el <time id="inicio" datetime="2026-10-13T10:00:00-03:00">martes 13 de octubre a las 10:00</time>
-				</p>
+			<div class="cuenta aparece" id="cuenta-activa" style="--i:1">
+				<p class="rotulo" id="prefijo">T −</p>
+				<p class="reloj" role="timer" aria-live="off"><span data-unidad="horas">--</span>:<span data-unidad="minutos">--</span>:<span data-unidad="segundos">--</span></p>
+				<p class="rotulo">para el inicio</p>
 			</div>
 
 			<!-- Se muestra cuando la cuenta llega a cero -->
-			<div class="partio" id="cuenta-terminada" hidden>
-				<p class="partio-titulo">La Cup ya <em>partió</em></p>
-				<p class="partio-texto">A agendar reuniones.</p>
+			<div class="cuenta" id="cuenta-terminada" hidden>
+				<p class="rotulo">La Cup</p>
+				<p class="partio">Ya partió</p>
+				<p class="rotulo">a agendar</p>
+			</div>
+		</section>
+
+		<section class="pie">
+			<div class="titulo aparece" style="--i:2">
+				<h1>SDR Cup</h1>
+				<p class="edicion">New Generation</p>
+			</div>
+
+			<div class="datos aparece" style="--i:3">
+				<!-- Barra que se llena durante las últimas 24 horas. Las marcas las crea el script. -->
+				<div class="avance" id="avance">
+					<div class="avance-cabeza">
+						<span>Últimas 24 horas</span>
+						<span id="porcentaje"></span>
+					</div>
+					<div class="marcas" id="marcas" aria-hidden="true"></div>
+				</div>
+
+				<!-- La fecha de inicio se cambia solo aquí: el script lee el atributo datetime -->
+				<dl class="ficha">
+					<div>
+						<dt>Inicio</dt>
+						<dd><time id="inicio" datetime="2026-10-13T10:00:00-03:00">Mar 13 oct · 10:00</time></dd>
+					</div>
+					<div>
+						<dt>Cierre</dt>
+						<dd><time datetime="2026-10-16T17:00:00-03:00">Vie 16 oct · 17:00</time></dd>
+					</div>
+					<div>
+						<dt>Formato</dt>
+						<dd>Squad 1 vs Squad 2</dd>
+					</div>
+				</dl>
 			</div>
 		</section>
 	</main>
 
 	<script src="js/cuenta-regresiva.js" defer></script>
-	<script src="js/copa.js" defer></script>
 </body>
 </html>

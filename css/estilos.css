@@ -1,31 +1,22 @@
 /* ============================================================
-   SDR Cup · página provisional de cuenta regresiva
-   Escenario nocturno: la copa iluminada desde atrás, con rayos,
-   focos y piso espejado. Colores y tipografías de Brolly.
+   SDR Cup · página de cuenta regresiva ("Portal")
+   Un túnel de marcos que avanzan hacia quien mira, con la cuenta
+   en el centro. Todo es HTML y CSS: sin imágenes ni lienzos.
    ============================================================ */
 :root {
-	--indigo: #4B3FBF;
-	--azul: #2E7DD1;
+	--fondo: #070620;
+	--texto: #F4F3FF;
 	--lila: #8B85F0;
-	--celeste: #8CC6FF;
-	--noche: #020710;
-	--marino: #000527;
-	--texto: #F3F6FF;
-	--texto-suave: rgba(222, 230, 255, .78);
-	--texto-tenue: rgba(196, 210, 255, .62);
+	--lila-claro: #B9B4FF;
+	--azul: #4C8DFF;
+	--linea: rgba(255, 255, 255, .16);
 
-	--f-titulo: 'Chillax', sans-serif;
-	--f-texto: 'General Sans', sans-serif;
-	--f-mono: 'JetBrains Mono', monospace;
+	--f-titulo: 'Unbounded', 'Arial Black', sans-serif;
+	--f-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
 	--suave: cubic-bezier(.2, .8, .2, 1);
-	--borde-pagina: 16px;
-
-	/* Posición de la copa en pantalla. Las actualiza js/copa.js. */
-	--copa-x: 50vw;
-	--copa-y: 34vh;
-	--copa-u: 170px;
-	--suelo-y: 66vh;
+	--borde-pagina: 24px;
+	--vuelta: 8s;	/* lo que tarda un marco en cruzar el túnel */
 
 	color-scheme: dark;
 }
@@ -36,182 +27,23 @@
 	box-sizing: border-box;
 }
 
+/* Lo que el script oculta queda oculto aunque tenga otro display */
+[hidden] {
+	display: none !important;
+}
+
 html,
 body {
 	height: 100%;
 }
 
 body {
-	background: var(--noche);
+	background: var(--fondo);
 	color: var(--texto);
-	font-family: var(--f-texto);
+	font-family: var(--f-mono);
 	overflow-x: hidden;
 	-webkit-font-smoothing: antialiased;
 	-webkit-text-size-adjust: 100%;
-}
-
-.solo-lectores {
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	overflow: hidden;
-	clip-path: inset(50%);
-	white-space: nowrap;
-}
-
-/* ---------- Escenario ---------- */
-.fondo {
-	position: fixed;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	overflow: hidden;
-	pointer-events: none;
-	background: linear-gradient(180deg, var(--marino) 0%, #020819 46%, var(--noche) 100%);
-}
-
-/* Viñeta: oscurece las esquinas para cerrar la escena */
-.fondo::after {
-	content: '';
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	background: radial-gradient(ellipse 85% 75% at 50% 42%, transparent 45%, rgba(0, 1, 10, .72) 100%);
-}
-
-.reticula {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	background-image:
-		linear-gradient(rgba(140, 165, 255, .05) 1px, transparent 1px),
-		linear-gradient(90deg, rgba(140, 165, 255, .05) 1px, transparent 1px);
-	background-size: 56px 56px;
-}
-
-/* Resplandor detrás de la copa */
-.resplandor {
-	position: absolute;
-	left: var(--copa-x);
-	top: var(--copa-y);
-	width: calc(var(--copa-u) * 4.6);
-	height: calc(var(--copa-u) * 4.6);
-	translate: -50% -50%;
-	border-radius: 50%;
-	background: radial-gradient(circle,
-		rgba(96, 170, 255, .62) 0%,
-		rgba(64, 110, 240, .40) 22%,
-		rgba(75, 63, 191, .22) 44%,
-		rgba(46, 60, 180, 0) 70%);
-	animation: latir 5.5s ease-in-out infinite alternate;
-}
-
-@keyframes latir {
-	from {
-		opacity: .78;
-		scale: .96;
-	}
-
-	to {
-		opacity: 1;
-		scale: 1.06;
-	}
-}
-
-/* Rayos que giran lentamente detrás de la copa */
-.rayos {
-	position: absolute;
-	left: var(--copa-x);
-	top: var(--copa-y);
-	width: calc(var(--copa-u) * 6.4);
-	height: calc(var(--copa-u) * 6.4);
-	translate: -50% -50%;
-	mix-blend-mode: screen;
-	-webkit-mask-image: radial-gradient(circle, transparent 9%, #000 20%, transparent 62%);
-	mask-image: radial-gradient(circle, transparent 9%, #000 20%, transparent 62%);
-}
-
-.rayos-giro {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	border-radius: 50%;
-	background:
-		repeating-conic-gradient(from 0deg,
-			rgba(130, 185, 255, 0) 0deg,
-			rgba(130, 185, 255, .20) 3deg,
-			rgba(130, 185, 255, 0) 8deg,
-			rgba(130, 185, 255, 0) 24deg),
-		repeating-conic-gradient(from 11deg,
-			rgba(150, 140, 255, 0) 0deg,
-			rgba(150, 140, 255, .14) 5deg,
-			rgba(150, 140, 255, 0) 13deg,
-			rgba(150, 140, 255, 0) 40deg);
-	animation: girar 140s linear infinite;
-}
-
-@keyframes girar {
-	to {
-		rotate: 360deg;
-	}
-}
-
-/* Focos que bajan desde las esquinas hacia la copa */
-.foco {
-	position: absolute;
-	top: -12vh;
-	width: calc(var(--copa-u) * 1.9);
-	height: 125vh;
-	translate: -50% 0;
-	transform-origin: 50% 0;
-	background: linear-gradient(180deg, rgba(150, 195, 255, .30), rgba(120, 150, 255, .09) 52%, rgba(120, 150, 255, 0) 80%);
-	clip-path: polygon(44% 0, 56% 0, 100% 100%, 0 100%);
-	filter: blur(16px);
-	mix-blend-mode: screen;
-}
-
-.foco-izq {
-	left: 4%;
-	rotate: -24deg;
-	animation: mecer-izq 9s ease-in-out infinite alternate;
-}
-
-.foco-der {
-	left: 96%;
-	rotate: 24deg;
-	animation: mecer-der 11s ease-in-out infinite alternate;
-}
-
-@keyframes mecer-izq {
-	to {
-		rotate: -18deg;
-	}
-}
-
-@keyframes mecer-der {
-	to {
-		rotate: 19deg;
-	}
-}
-
-/* Piso: una línea de horizonte y un brillo que se pierde hacia abajo */
-.suelo {
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: var(--suelo-y);
-	bottom: 0;
-	border-top: 1px solid rgba(140, 190, 255, .34);
-	background: linear-gradient(180deg, rgba(64, 116, 235, .26), rgba(24, 36, 110, .10) 34%, rgba(2, 7, 16, 0) 78%);
-	-webkit-mask-image: linear-gradient(90deg, transparent, #000 26%, #000 74%, transparent);
-	mask-image: linear-gradient(90deg, transparent, #000 26%, #000 74%, transparent);
 }
 
 /* ---------- Estructura ---------- */
@@ -221,16 +53,16 @@ body {
 	flex-direction: column;
 	min-height: 100vh;
 	min-height: 100dvh;
-	overflow: hidden;	/* la animación de entrada no debe provocar scroll */
+	overflow: hidden;
 	padding:
-		max(14px, env(safe-area-inset-top))
+		max(22px, env(safe-area-inset-top))
 		max(var(--borde-pagina), env(safe-area-inset-right))
-		max(18px, env(safe-area-inset-bottom))
+		max(26px, env(safe-area-inset-bottom))
 		max(var(--borde-pagina), env(safe-area-inset-left));
 }
 
 .cabecera,
-.cuenta {
+.pie {
 	position: relative;
 	z-index: 1;
 }
@@ -239,301 +71,345 @@ body {
 	display: flex;
 	align-items: baseline;
 	justify-content: space-between;
-}
-
-.marca {
-	font-family: var(--f-titulo);
-	font-weight: 600;
-	font-size: 1.3rem;
-	letter-spacing: -.02em;
-}
-
-.etiqueta {
-	font-family: var(--f-mono);
-	font-weight: 500;
 	font-size: .7rem;
-	letter-spacing: .3em;
+	font-weight: 500;
+	letter-spacing: .24em;
 	text-transform: uppercase;
-	color: var(--celeste);
 }
 
-/* ---------- Copa ----------
-   El lienzo cubre toda la escena para poder dibujar el reflejo y el polvo de luz.
-   .copa-marco es solo el espacio que se le reserva a la copa. */
-#copa {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	cursor: grab;
-	touch-action: pan-y;
-	opacity: 0;
-	transform: translateY(22px) scale(.96);
-	transition: opacity 1.4s var(--suave), transform 1.6s var(--suave);
+.tenue {
+	color: var(--lila-claro);
 }
 
-#copa.lista {
-	opacity: 1;
-	transform: none;
-}
-
-#copa.arrastrando {
-	cursor: grabbing;
-}
-
-.copa-marco {
+/* ---------- Centro: túnel y cuenta ---------- */
+.centro {
+	position: relative;
 	flex: 1 1 auto;
-	min-height: 240px;
-	pointer-events: none;
+	min-height: 300px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
-/* ---------- Título y cuenta regresiva ---------- */
+/* El túnel nace en el centro de esta sección y se sale de ella hacia toda la pantalla */
+.tunel {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 0;
+	height: 0;
+}
+
+/* Líneas de fuga */
+.rayo {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 300vmax;
+	height: 1px;
+	background: rgba(139, 133, 240, .26);
+	transform: translate(-50%, -50%) rotate(var(--giro));
+}
+
+.rayo-diagonal {
+	--giro: calc(var(--lado) * 58deg);
+}
+
+/* Cada marco tiene la proporción de la pantalla y crece desde el centro hasta salirse */
+.marco {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 26vw;
+	height: 26vh;
+	height: 26dvh;
+	border: 1.5px solid var(--tinta);
+	border-radius: 16%/12%;
+	transform: translate(-50%, -50%) scale(.08);
+	opacity: 0;
+	animation: avanzar var(--vuelta) linear infinite;
+	animation-delay: calc(var(--vuelta) / -7 * var(--n));
+	will-change: transform, opacity;
+}
+
+@keyframes avanzar {
+	0% {
+		transform: translate(-50%, -50%) scale(.08);
+		opacity: 0;
+	}
+
+	12% {
+		opacity: .95;
+	}
+
+	78% {
+		opacity: .5;
+	}
+
+	100% {
+		transform: translate(-50%, -50%) scale(4.4);
+		opacity: 0;
+	}
+}
+
+/* Velo oscuro detrás de la cuenta, para que se lea sobre las líneas */
+.velo {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: min(96vw, 620px);
+	height: clamp(180px, 30vh, 280px);
+	border-radius: 50%;
+	background: radial-gradient(closest-side, rgba(7, 6, 32, .96), rgba(7, 6, 32, .7) 55%, rgba(7, 6, 32, 0));
+	transform: translate(-50%, -50%);
+}
+
 .cuenta {
-	width: min(100%, 540px);
-	margin: 0 auto;
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
 	text-align: center;
+}
+
+.rotulo {
+	font-size: .78rem;
+	font-weight: 500;
+	letter-spacing: .3em;
+	text-indent: .3em;	/* compensa el espacio que deja la última letra */
+	text-transform: uppercase;
+	color: var(--lila-claro);
+}
+
+.reloj {
+	font-weight: 700;
+	font-size: clamp(2.6rem, 15.5vw, 6.5rem);
+	line-height: 1;
+	font-variant-numeric: tabular-nums;
+	color: #FFFFFF;
+	text-shadow: 0 0 26px rgba(130, 140, 255, .75);
+}
+
+.partio {
+	font-family: var(--f-titulo);
+	font-weight: 800;
+	font-size: clamp(2rem, 10.5vw, 4.6rem);
+	line-height: 1;
+	text-transform: uppercase;
+	text-shadow: 0 0 26px rgba(130, 140, 255, .6);
+}
+
+/* ---------- Pie: título, avance y ficha ---------- */
+.pie {
+	display: flex;
+	flex-direction: column;
+	gap: 26px;
+}
+
+/* Degradado que apaga el túnel bajo el texto del pie */
+.pie::before {
+	content: '';
+	position: absolute;
+	z-index: -1;
+	left: -50vw;
+	right: -50vw;
+	top: -70px;
+	bottom: -60px;
+	background: linear-gradient(180deg, rgba(7, 6, 32, 0), rgba(7, 6, 32, .82) 90px);
 	pointer-events: none;
 }
 
 .titulo {
-	font-family: var(--f-titulo);
-	font-weight: 500;
-	font-size: clamp(.92rem, 4.5vw, 1.5rem);
-	line-height: 1.1;
-	letter-spacing: .44em;
-	text-indent: .44em;	/* compensa el espacio que deja la última letra */
-	text-transform: uppercase;
-	white-space: nowrap;
-	text-shadow: 0 0 22px rgba(110, 175, 255, .85), 0 0 3px rgba(255, 255, 255, .5);
-}
-
-.reloj,
-.partio {
-	margin-top: 14px;
-	/* Panel translúcido sin desenfoque de fondo: desenfocar un lienzo que cambia
-	   en cada cuadro es lo más pesado para un celular modesto */
-	background: linear-gradient(180deg, rgba(52, 72, 160, .50), rgba(10, 18, 62, .66));
-	border: 1px solid rgba(170, 205, 255, .26);
-	border-radius: 26px;
-	box-shadow:
-		inset 0 1px 0 rgba(255, 255, 255, .20),
-		0 22px 54px rgba(0, 3, 30, .62),
-		0 0 46px rgba(70, 130, 255, .20);
-}
-
-.reloj {
-	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	padding: 16px 4px 13px;
-}
-
-.unidad {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	gap: 7px;
+	gap: 8px;
 }
 
-.unidad + .unidad {
-	border-left: 1px solid rgba(170, 205, 255, .18);
-}
-
-.num {
-	display: inline-flex;
+h1 {
 	font-family: var(--f-titulo);
-	font-weight: 600;
-	font-size: clamp(2.5rem, 12.5vw, 4.4rem);
-	line-height: 1;
+	font-weight: 800;
+	font-size: clamp(2.5rem, 14.4vw, 5.4rem);
+	line-height: .95;
 	letter-spacing: -.02em;
-	color: var(--texto);
-	filter: drop-shadow(0 0 16px rgba(90, 160, 255, .55));
-}
-
-/* Cada dígito ocupa un ancho fijo para que el número no salte al cambiar */
-.digito {
-	display: inline-block;
-	width: .64em;
-	text-align: center;
-	background: linear-gradient(180deg, #FFFFFF 22%, #9CC6FF 96%);
-	-webkit-background-clip: text;
-	background-clip: text;
-	color: transparent;
-}
-
-.rotulo {
-	font-family: var(--f-mono);
-	font-weight: 500;
-	font-size: .64rem;
-	letter-spacing: .24em;
 	text-transform: uppercase;
-	color: var(--texto-tenue);
 }
 
-.cuenta-fecha {
-	margin-top: 14px;
-	font-weight: 500;
-	font-size: .98rem;
-	color: var(--texto-suave);
-}
-
-.partio {
-	padding: 22px 16px 20px;
-}
-
-.partio-titulo {
+.edicion {
 	font-family: var(--f-titulo);
-	font-weight: 600;
-	font-size: clamp(2rem, 9vw, 3.2rem);
-	line-height: 1.05;
-	letter-spacing: -.03em;
-	filter: drop-shadow(0 0 18px rgba(90, 160, 255, .5));
+	font-weight: 300;
+	font-size: clamp(.95rem, 4.8vw, 1.7rem);
+	line-height: 1;
+	letter-spacing: .14em;
+	text-transform: uppercase;
+	color: var(--lila-claro);
 }
 
-.partio-titulo em {
-	font-style: normal;
-	background: linear-gradient(105deg, #B9B4FF, var(--celeste));
-	-webkit-background-clip: text;
-	background-clip: text;
-	color: transparent;
+.datos {
+	display: flex;
+	flex-direction: column;
+	gap: 22px;
 }
 
-.partio-texto {
-	margin-top: 8px;
-	font-size: 1.05rem;
-	color: var(--texto-suave);
+.avance {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.avance-cabeza {
+	display: flex;
+	justify-content: space-between;
+	font-size: .66rem;
+	font-weight: 500;
+	letter-spacing: .22em;
+	text-transform: uppercase;
+	color: var(--lila-claro);
+}
+
+.marcas {
+	display: flex;
+	gap: 4px;
+}
+
+.marca {
+	flex: 1;
+	height: 14px;
+	border-radius: 2px;
+	background: var(--linea);
+	transition: background .6s var(--suave);
+}
+
+.marca.llena {
+	background: var(--lila-claro);
+}
+
+.ficha {
+	display: flex;
+	flex-direction: column;
+	font-size: .76rem;
+	font-weight: 500;
+	letter-spacing: .12em;
+	text-transform: uppercase;
+}
+
+.ficha > div {
+	display: flex;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 10px 0;
+	border-top: 1px solid var(--linea);
+}
+
+.ficha > div:last-child {
+	padding-bottom: 0;
+}
+
+.ficha dt {
+	color: var(--lila-claro);
+}
+
+.ficha dd {
+	text-align: right;
 }
 
 /* ---------- Entrada escalonada ---------- */
 .aparece {
 	opacity: 0;
-	transform: translateY(14px);
-	animation: aparecer .8s var(--suave) forwards;
-	animation-delay: calc(var(--i) * 140ms + 350ms);
+	animation: aparecer .9s var(--suave) forwards;
+	animation-delay: calc(var(--i) * 140ms + 200ms);
 }
 
 @keyframes aparecer {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+
 	to {
 		opacity: 1;
 		transform: none;
 	}
 }
 
-/* ---------- Pantallas más grandes ---------- */
-@media (min-width: 768px) {
+/* ---------- Pantalla apaisada (escritorio o celular acostado) ----------
+   El túnel ocupa toda la pantalla; el título va abajo a la izquierda
+   y los datos abajo a la derecha. */
+@media (min-aspect-ratio: 5/4) {
 	:root {
 		--borde-pagina: 40px;
 	}
 
-	.reticula {
-		background-size: 96px 96px;
-	}
-
 	.escena {
-		padding-top: 28px;
-		padding-bottom: 34px;
-	}
-
-	.marca {
-		font-size: 1.6rem;
-	}
-
-	.etiqueta {
-		font-size: .8rem;
-	}
-
-	.rotulo {
-		font-size: .74rem;
-	}
-
-	.cuenta-fecha {
-		font-size: 1.1rem;
-	}
-}
-
-/* Pantalla apaisada (escritorio o celular acostado):
-   la copa usa todo el alto a la izquierda y la cuenta va a la derecha */
-@media (min-aspect-ratio: 5/4) {
-	.escena {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		grid-template-rows: auto 1fr;
-		column-gap: 24px;
 		height: 100vh;
 		height: 100dvh;
+		padding-top: max(28px, env(safe-area-inset-top));
+		padding-bottom: max(32px, env(safe-area-inset-bottom));
 	}
 
-	.cabecera {
-		grid-column: 1 / -1;
+	.centro {
+		min-height: 150px;
 	}
 
-	.copa-marco {
-		min-height: 200px;
+	.rayo-diagonal {
+		--giro: calc(var(--lado) * 30deg);
 	}
 
-	.cuenta {
-		align-self: center;
-		margin: 0;
+	.reloj {
+		font-size: clamp(2.6rem, 9vw, 7.5rem);
 	}
 
-	.titulo {
-		font-size: clamp(.9rem, 1.9vw, 1.5rem);
+	.partio {
+		font-size: clamp(2rem, 6vw, 5rem);
 	}
 
-	.num {
-		font-size: clamp(2rem, 5.6vw, 4.4rem);
+	.pie {
+		flex-direction: row;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 40px;
+	}
+
+	h1 {
+		font-size: clamp(2.2rem, 6.2vw, 5.6rem);
+	}
+
+	.edicion {
+		font-size: clamp(.8rem, 2vw, 1.7rem);
+	}
+
+	.datos {
+		width: min(42%, 420px);
+		gap: 16px;
 	}
 }
 
-/* ---------- Efectos bajos ----------
-   Versión liviana para celulares donde la página vaya lenta. Se activa de dos formas:
-   - para probar: agregando ?efectos=bajos a la dirección;
-   - para todos: poniendo class="efectos-bajos" en la etiqueta <html> de index.html.
-   Quita lo más pesado (desenfoques, mezclas y animaciones del fondo) sin cambiar el diseño. */
-.efectos-bajos .foco {
-	clip-path: none;
-	filter: none;
-	mix-blend-mode: normal;
-	animation: none;
-	background: conic-gradient(from 170deg at 50% 0%,
-		rgba(150, 195, 255, 0) 0deg,
-		rgba(150, 195, 255, .15) 10deg,
-		rgba(150, 195, 255, 0) 20deg,
-		rgba(150, 195, 255, 0) 360deg);
+/* Celular acostado: poco alto, se aprieta lo de abajo */
+@media (min-aspect-ratio: 5/4) and (max-height: 480px) {
+	.avance {
+		display: none;
+	}
+
+	.ficha > div {
+		padding: 6px 0;
+	}
 }
 
-.efectos-bajos .rayos {
-	mix-blend-mode: normal;
-}
-
-.efectos-bajos .rayos-giro,
-.efectos-bajos .resplandor {
-	animation: none;
-}
-
-.efectos-bajos .num,
-.efectos-bajos .partio-titulo {
-	filter: none;
-}
-
-/* ---------- Movimiento reducido ---------- */
+/* ---------- Movimiento reducido: el túnel queda quieto, en profundidad ---------- */
 @media (prefers-reduced-motion: reduce) {
-	.resplandor,
-	.rayos-giro,
-	.foco {
+	.marco {
 		animation: none;
+		opacity: calc(.9 - var(--n) * .1);
+		transform: translate(-50%, -50%) scale(calc(.35 + var(--n) * .58));
 	}
 
 	.aparece {
 		opacity: 1;
-		transform: none;
 		animation: none;
 	}
 
-	#copa {
-		transform: none;
-		transition: opacity .2s linear;
+	.marca {
+		transition: none;
 	}
 }
