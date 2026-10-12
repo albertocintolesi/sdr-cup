@@ -43,7 +43,7 @@ Escríbelo en el grupo, claro y con el nombre o la empresa. Se aplica con el sig
 - "Le resto 1 punto al Squad 1 por…" o "Le sumo 2 al Squad 2 por…" → ajuste con ese número exacto.
 - "Sí cuenta la de [empresa]." → se confirma algo que estaba en revisión.
 
-También puedes hacerlo sin pasar por el grupo: en **Run now** hay un cuadro de texto; lo que escribas ahí llega al Operador como instrucción tuya ("Suma 1 punto al Squad 2 por la reunión de Isidora del martes").
+También puedes hacerlo sin pasar por el grupo: en **Run now** hay un cuadro de texto; lo que escribas ahí llega al Operador como instrucción tuya. Escríbela una sola vez: si la repites en otra corrida, se podría aplicar dos veces ("Suma 1 punto al Squad 2 por la reunión de Isidora del martes").
 
 Tus resúmenes de puntaje en el grupo no cambian el marcador. Si tu cuenta no coincide con la página, el Operador te escribe para aclararlo. Nada se borra: toda corrección queda como un movimiento nuevo y visible.
 
@@ -52,7 +52,7 @@ Tus resúmenes de puntaje en el grupo no cambian el marcador. Si tu cuenta no co
 El viernes a las 17:00 el marcador deja de sumar solo. Lo que llegue después queda en revisión.
 
 1. Tras el cierre recibirás un correo **[SDR Cup #3] Cierre: resultado por confirmar** con el marcador, lo que quedó en revisión y las misiones que alguien cumplió sin declararlas.
-2. Responde ese correo con: qué casos suman, qué squad logra cada legendario (+5.000 colaboradores y seniority ≥ 1,5, 10 puntos cada uno) y la frase **"el resultado es definitivo"**.
+2. Responde ese correo con: qué casos suman, qué squad logra cada legendario (+5.000 colaboradores y seniority ≥ 1,5, 10 puntos cada uno) y la frase **"el resultado es definitivo"**. Después toca **Run now**: la rutina deja de correr sola el viernes a las 19:07.
 3. Recién ahí la página muestra al ganador. Antes dice "resultado en revisión", aunque hayas publicado puntajes finales en el grupo.
 
 ## Datos de la rutina
