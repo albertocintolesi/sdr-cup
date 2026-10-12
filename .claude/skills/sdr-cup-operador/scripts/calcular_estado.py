@@ -163,7 +163,7 @@ def calcular_estado(registro, config, ahora):
 			"origen": {
 				"mensaje": origen.get("mensaje"),
 				"hora": evento["fecha_hora"][11:16],
-				"fuente": "correo" if origen.get("correo") else "chat",
+				"fuente": "correo" if origen.get("correo") else "instruccion" if origen.get("instruccion") else "chat",
 			},
 		})
 	feed.reverse()

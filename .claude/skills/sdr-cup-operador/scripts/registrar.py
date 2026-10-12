@@ -40,7 +40,7 @@ def clave(evento):
 	origen = evento.get("origen") or {}
 	return (
 		evento.get("tipo"),
-		origen.get("mensaje") or origen.get("correo"),
+		origen.get("mensaje") or origen.get("correo") or origen.get("instruccion"),
 		evento.get("sdr") or evento.get("squad"),
 		evento.get("ref"),
 		evento.get("desafio") or evento.get("legendario"),
@@ -73,8 +73,8 @@ def validar(evento, registro, config, squads):
 	inicio, cierre = config["cup"]["inicio"], config["cup"]["cierre"]
 
 	origen = evento.get("origen") or {}
-	if not (origen.get("mensaje") or origen.get("correo")):
-		problemas.append("falta el origen (mensaje del chat o correo)")
+	if not (origen.get("mensaje") or origen.get("correo") or origen.get("instruccion")):
+		problemas.append("falta el origen (mensaje del chat, correo o instrucción directa de Alberto)")
 	if not FORMATO_FECHA.match(evento.get("fecha_hora") or ""):
 		return problemas + ["fecha_hora debe tener el formato 2026-10-13T10:34:00 (hora de Chile)"], None
 
