@@ -22,7 +22,7 @@ Eres el Operador. En cada corrida tomas el export más reciente del chat, proces
 
 El repo privado ("carpeta privada" en adelante) se clona junto al público. El prompt de la rutina te entrega los datos privados: ID de la carpeta de Drive, nombre del grupo de WhatsApp de la Cup, ruta de la carpeta privada y correo de Alberto. **Nunca** los escribas en este repo.
 
-**Regla de privacidad (el repo es público).** A este repo solo llega `datos/estado.json`, generado por el script. Jamás subas el zip, `_chat.txt`, capturas, `registro.json`, apodos, correos ni citas textuales del chat. Los mensajes de commit son genéricos (`Estado 2026-10-13 14:05`). En los campos `detalle_publico`, y en el `nombre` y `descripcion` de los desafíos, no pongas nombres de empresas, de leads ni de invitados.
+**Regla de privacidad (el repo es público).** A este repo solo llega `datos/estado.json`, generado por el script. Jamás subas el zip, `_chat.txt`, capturas, `registro.json`, apodos, correos ni citas textuales del chat. Los mensajes de commit son genéricos (`Estado 2026-10-13 14:05`). **Prohibido escribir nombres de empresas, de leads o de invitados en cualquier texto público**: `detalle_publico` de un evento y `nombre`, `descripcion` y `puntos_texto` de un desafío. La empresa va solo en el campo `empresa` de la reunión, que es privado. `registrar.py` rechaza el lote si encuentra una empresa del registro en un texto público (aunque venga sin tildes, en mayúsculas, con "S.A." o solo una palabra distintiva del nombre): reescribe el texto en genérico ("El lead no calificaba", "Empresa bajo el mínimo de colaboradores").
 
 ## Paso a paso de una corrida
 
@@ -45,10 +45,10 @@ python3 -I $S/abrir_export.py "<ruta del archivo guardado>" $T/export
 **4. Leer solo lo nuevo.**
 
 ```bash
-python3 -I $S/leer_chat.py $T/export --vistos $R --contexto 30 --salida $T/mensajes.json
+python3 -I $S/leer_chat.py $T/export --vistos $R --apodos <carpeta privada>/apodos.json --contexto 30 --salida $T/mensajes.json
 ```
 
-`mensajes` trae los mensajes aún no procesados. `contexto` trae los 30 anteriores, solo para entender la conversación: no generan eventos. Si `nuevos` es 0 (export nuevo pero sin mensajes nuevos), escribe `{}` en `$T/nuevos.json` y sigue igual con los pasos 6 a 8: así queda anotado el export y no se vuelve a descargar. Si `adjuntos_faltantes` no está vacío, no inventes el contenido de esas fotos: déjalas como pendiente.
+`mensajes` trae los mensajes aún no procesados, cada uno con `sdr` (id del SDR según el mapa de apodos; `null` si esa persona no juega) y `autor_conocido`. `autores_desconocidos` lista los apodos que no están en el mapa: no detienen la corrida (ver "Quién es cada autor") y se informan en el resumen final. `contexto` trae los 30 anteriores, solo para entender la conversación: no generan eventos. Si `nuevos` es 0 (export nuevo pero sin mensajes nuevos), escribe `{}` en `$T/nuevos.json` y sigue igual con los pasos 6 a 8: así queda anotado el export y no se vuelve a descargar. Si `adjuntos_faltantes` no está vacío, no inventes el contenido de esas fotos: déjalas como pendiente.
 
 **5. Interpretar.** Lee `mensajes.json` completo y abre con Read cada foto (`.jpg`, `.png`) adjunta a un mensaje nuevo. Ignora stickers y mensajes con `"sistema": true`. Lee también de `registro.json` los `eventos`, `desafios`, `pendientes` y `alias` para tener el contexto de lo ya registrado. Aplica las reglas de la sección siguiente y escribe `$T/nuevos.json`.
 
@@ -114,6 +114,9 @@ Todas las claves son opcionales. Las horas son de Chile, sin offset.
 	],
 	"pendientes": [
 		{ "id": "p-001", "estado": "abierto", "tipo": "menor", "mensaje": "20261014T130000-0", "asunto": "Captura recortada: no se ve la fecha de la reunión", "hilo": null }
+	],
+	"observaciones": [
+		{ "mensaje": "20261013T111500-0", "sdr": "matias-hernandez", "nota": "Cumple la misión del día pero no la declaró" }
 	]
 }
 ```
@@ -123,6 +126,10 @@ Todas las claves son opcionales. Las horas son de Chile, sin offset.
 - `"tmp": "a"` etiqueta un evento del lote para que otro lo cite con `"ref": "tmp:a"`. Para citar uno ya registrado usa su id (`ev-0003`).
 - No pongas `puntos` en reuniones, anulaciones ni confirmaciones: los fija el script.
 - `"en_revision": true` en cualquier evento significa **no suma por ahora**. Suma cuando registres una `confirmacion` que lo cite, o se descarta con una `anulacion`.
+- Lo que cita con `ref` a un evento en revisión (su misión, su Flash, su "realizada") queda en revisión solo y se resuelve solo junto con él: regístralo normal, sin marcarlo.
+- `pendientes` y `observaciones` son privados y nunca se publican. Un pendiente es algo por resolver (`"tipo": "menor"` o `"escalar"`); una observación es un apunte para el cierre con Alberto que no requiere acción.
+- Dos ajustes distintos de un mismo mensaje se registran como dos eventos `ajuste`, aunque tengan los mismos puntos.
+- Una `anulacion` o una `confirmacion` no se pueden anular. Si Alberto se retracta, registra un `ajuste` con los puntos que devuelven el marcador a donde él dijo.
 - `motivo` y `nota` son internos. Lo único que se publica es `detalle_publico`.
 - No registres combos: los deduce y los revierte el script.
 
@@ -130,16 +137,18 @@ Todas las claves son opcionales. Las horas son de Chile, sin offset.
 
 **Quién juega.** Solo los integrantes de `config.json`. Alberto Cintolesi es a la vez jugador del Squad 2 y juez. Los demás (jefaturas, founders) no suman, pero sus anuncios de misión valen.
 
-**Quién es cada autor.** El chat muestra apodos (el nombre de contacto en el teléfono de Alberto). Resuélvelos así, en orden: (1) `apodos.json` del repo privado, que es el mapa confirmado por Alberto; (2) `alias` de `registro.json`, con lo aprendido en corridas anteriores; (3) el **organizador** que aparece en la captura de calendar, que viene con nombre real. Cada apodo nuevo que resuelvas va en `"alias"` de `nuevos.json`. Si no logras identificar al SDR, no registres el evento: déjalo como pendiente `"tipo": "escalar"`.
+**Quién es cada autor.** El chat muestra apodos (el nombre de contacto en el teléfono de Alberto). Resuélvelos así, en orden: (1) `apodos.json` del repo privado, que es el mapa confirmado por Alberto; (2) `alias` de `registro.json`, con lo aprendido en corridas anteriores; (3) el **organizador** que aparece en la captura de calendar, que viene con nombre real. `leer_chat.py` ya aplica (1) y (2) y deja el resultado en el campo `sdr` de cada mensaje, comparando sin mayúsculas, tildes, emojis ni espacios de más. Para un autor desconocido usa (3): si el organizador de la captura es un jugador, atribúyele la reunión y agrega el apodo en `"alias"` de `nuevos.json`. Si no logras identificar al SDR, no registres el evento: déjalo como pendiente `"tipo": "escalar"` y nombra el apodo nuevo en el resumen de la corrida para que se agregue al mapa. Un autor desconocido nunca hace fallar la corrida.
 
 **Reunión agendada (+1).** Un mensaje con una foto que es una invitación de calendar (título tipo `Brolly & Empresa`, fecha y hora, organizador, invitados) → `reunion_agendada`. Detalles:
 - El punto es del **organizador** de la captura si es un jugador; si no se lee, del autor del mensaje.
 - No toda foto es una invitación: carteles de misión, gráficos de puntaje, memes y planillas no generan eventos.
 - La reunión puede ser para una fecha fuera de la semana de la Cup: igual suma el punto por agendar.
 - Captura recortada o poco legible, pero claramente una invitación: se registra normal (suma) y además dejas un pendiente `"tipo": "menor"`. No inventes los datos que no se ven: van en `null`.
-- **Empresa ya registrada.** Si la subió el mismo SDR (reagendamiento), no se registra nada. Si la subió otro SDR, se registra con `"en_revision": true` y un pendiente `"tipo": "escalar"`.
+- **Empresa ya registrada.** Si la subió el mismo SDR (reagendamiento), no se registra nada. Si la subió otro SDR, se registra con `"en_revision": true` y un pendiente `"tipo": "escalar"`. Si en los mismos mensajes nuevos Alberto ya falló el caso, registra igual la reunión en revisión y a continuación su `anulacion` o `confirmacion`, con el pendiente ya `"resuelto"` y sin enviar correo: así queda la traza.
+- En `empresa` guarda solo el nombre de la empresa, sin el "Brolly &" del título.
 - Si el propio chat dice que llegó por mailing, no se registra.
-- Mensaje anterior al inicio de la Cup o posterior al cierre (viernes 17:00:00; las 17:00:00 exactas sí cuentan): se registra con `"en_revision": true`, sin escalar. No suma; se ve con Alberto en el conteo final. El script rechaza un evento fuera de la ventana que no venga marcado así.
+- Mensaje anterior al inicio de la Cup (`cup.inicio` en `datos/config.json`): no cuenta y no se registra. Si lo incluyes, el script lo descarta y explica el motivo, sin afectar al resto del lote.
+- Mensaje posterior al cierre (viernes 17:00:00; las 17:00:00 exactas sí cuentan): se registra con `"en_revision": true`, sin escalar. No suma; se ve con Alberto en el conteo final.
 - La regla de los 30 minutos y los filtros de calidad (colaboradores, seniority) no se verifican: toda reunión con captura se considera calificada salvo que el chat diga lo contrario.
 
 **Reunión realizada (+1 adicional).** Solo si alguien avisa en el chat que la reunión se hizo (el propio SDR o un compañero). Identifica a cuál `reunion_agendada` se refiere por empresa, SDR y fecha, y cítala en `ref`. Si no puedes saber cuál es, pendiente `"tipo": "menor"` y ningún evento. Un "no show" no suma ni resta. Aviso posterior al cierre: `"en_revision": true`.
@@ -147,10 +156,12 @@ Todas las claves son opcionales. Las horas son de Chile, sin offset.
 **Misiones.** El anuncio (de Alberto o de otra jefatura) crea un desafío `mision-<fecha>`, vigente desde el anuncio hasta las 23:59:59 de ese día salvo que diga otra cosa. Si un día no hay anuncio, no hay misión.
 - Suma **solo si el SDR la declara**, con cualquier redacción ("misión completada", "mision cumplida ✅", "cumplí la misión de hoy…"), en el mismo mensaje de la captura o en uno aparte. Evento `mision` con `ref` a la reunión.
 - `puntos` es lo **adicional** al +1 de la reunión. Si el anuncio dice "+2 adicionales", son 2. Si dice "vale 3 puntos" o "vale doble", resta el punto base (2 y 1).
-- Captura que claramente cumple la misión pero no la declara: evento `mision` con `"en_revision": true`, sin escalar.
+- **Misión no declarada: no genera ningún evento.** La captura suma solo la reunión. Si en el propio chat se ve que cumple la misión (por ejemplo, "la primera reunión del día"), anótalo en `"observaciones"` para el cierre con Alberto. Si la condición no se puede ver en el chat ni en la captura (tamaño de la empresa, cargo del lead), no anotes nada.
+- Captura posterior al cierre: solo la reunión en revisión, sin misión.
 - Respeta las condiciones del anuncio (por ejemplo, "una vez por persona": la segunda del mismo SDR no genera evento).
 
-**Flash Challenge.** El anuncio crea un desafío `flash-<fecha>-<n>` con su ventana en `desde` y `hasta` (obligatorias). Lo gana el **primer squad** que lo cumple dentro de la ventana, según la hora del mensaje. Registra el evento `flash` de quien lo reclame; el script descarta solo al segundo y a los que llegan fuera de la ventana. La reunión de esos casos sí se registra como `reunion_agendada`.
+**Flash Challenge.** El anuncio crea un desafío `flash-<fecha>-<n>` con su ventana en `desde` y `hasta` (obligatorias). Lo gana el **primer squad** que lo cumple dentro de la ventana, según la hora del mensaje. Registra el evento `flash` de **cada** squad que lo reclame, con `ref` a su reunión; el script descarta solo al segundo y a los que llegan fuera de la ventana. La reunión de esos casos sí se registra como `reunion_agendada`.
+- Si el primero en cumplir lo hizo con una reunión que está en revisión, **nadie gana todavía**: su Flash queda en revisión y el del squad siguiente también, esperando ese caso. Deja un pendiente `"tipo": "escalar"` (o usa el de la reunión, si ya existe) y pregúntale a Alberto. Cuando la reunión se confirma o se anula, el script resuelve la cadena solo.
 
 **Fallos y correcciones de Alberto.** Valen sus mensajes en el grupo, sus respuestas por correo a un escalamiento y sus instrucciones directas. Nunca se modifica un evento: se agrega otro.
 - "Esa no suma / no califica / el lead es junior" sobre una reunión, sin decir un número → `anulacion` con `ref` a la reunión (sus eventos dependientes y el combo se ajustan solos).
@@ -170,6 +181,7 @@ Escala **solo** lo que genera muchas dudas o es realmente inconsistente y no se 
 
 Se escala:
 - Una empresa ya contada que sube otro SDR.
+- Un Flash cuyo primer reclamo depende de una reunión en revisión.
 - Una disputa entre squads sin fallo de Alberto en el chat.
 - No poder identificar al SDR de una captura.
 - Un resumen de puntajes de Alberto que no coincide con el marcador.

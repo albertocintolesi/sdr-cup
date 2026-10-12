@@ -47,6 +47,7 @@ REGISTRO_VACIO = {
 	"desafios": [],
 	"eventos": [],
 	"pendientes": [],
+	"observaciones": [],
 	"corridas": [],
 	"cierre": None,
 }

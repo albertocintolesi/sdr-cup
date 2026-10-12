@@ -1,7 +1,7 @@
 """Lee el `_chat.txt` de un export de WhatsApp (iPhone, es-CL) y lo deja como lista de mensajes.
 
 Uso:
-	python3 leer_chat.py CARPETA_EXPORT [--vistos REGISTRO.json] [--contexto 30] [--salida MENSAJES.json]
+	python3 leer_chat.py CARPETA_EXPORT [--vistos REGISTRO.json] [--apodos APODOS.json] [--contexto 30] [--salida MENSAJES.json]
 
 Cada mensaje queda así:
 	{
@@ -12,8 +12,12 @@ Cada mensaje queda así:
 		"texto": "texto sin caracteres invisibles",
 		"adjuntos": ["00000011-PHOTO-2026-10-13-10-05-00.jpg"],
 		"sistema": false,
-		"editado": false
+		"editado": false,
+		"sdr": "matias-palma"           # solo con --apodos: id del SDR, null si no juega
 	}
+
+Con --apodos cada mensaje trae además "autor_conocido" (false si el apodo no está en el mapa)
+y el resultado lista los "autores_desconocidos".
 
 El id no depende del apodo ni del texto, así que se puede publicar sin exponer nada privado
 y es estable entre exports (cada export trae el historial completo).
@@ -24,6 +28,9 @@ import json
 import re
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+from reglas import sin_tildes  # noqa: E402
 
 # Caracteres invisibles que WhatsApp mete en cabeceras, autores, menciones y adjuntos
 # (marcas de dirección de texto y BOM). Se escriben por código para que se vean en el editor.
@@ -115,6 +122,23 @@ def leer_chat(ruta_chat):
 	return mensajes
 
 
+def resolver_autores(mensajes, apodos):
+	"""Agrega a cada mensaje el SDR de su autor según el mapa de apodos.
+
+	La comparación ignora mayúsculas, tildes, emojis, signos y espacios de más, porque el
+	nombre de contacto puede venir con un espacio final o un emoji.
+	"""
+	mapa = {sin_tildes(apodo): sdr for apodo, sdr in apodos.items()}
+	desconocidos = []
+	for mensaje in mensajes:
+		autor = sin_tildes(mensaje["autor"])
+		mensaje["autor_conocido"] = autor in mapa
+		mensaje["sdr"] = mapa.get(autor)
+		if autor not in mapa and not mensaje["sistema"] and mensaje["autor"] not in desconocidos:
+			desconocidos.append(mensaje["autor"])
+	return desconocidos
+
+
 def filtrar_nuevos(mensajes, vistos=(), desde=None):
 	"""Deja solo los mensajes que no están en `vistos` y, si se pide, posteriores a `desde`."""
 	vistos = set(vistos)
@@ -128,6 +152,7 @@ def main():
 	parser = argparse.ArgumentParser(description="Lee el _chat.txt de un export de WhatsApp.")
 	parser.add_argument("carpeta", help="Carpeta donde se descomprimió el export")
 	parser.add_argument("--vistos", help="Registro JSON con la clave `mensajes_vistos`")
+	parser.add_argument("--apodos", help="apodos.json del repo privado, para resolver quién es cada autor")
 	parser.add_argument("--desde", help="Solo mensajes con id mayor a este")
 	parser.add_argument("--contexto", type=int, default=0, help="Cuántos mensajes ya vistos incluir antes del primero nuevo")
 	parser.add_argument("--salida", help="Archivo donde guardar el JSON (por defecto, pantalla)")
@@ -140,10 +165,16 @@ def main():
 	mensajes = leer_chat(chat)
 	if not mensajes and chat.stat().st_size > 0:
 		sys.exit(f"{chat} tiene contenido pero ningún mensaje calza con el formato esperado. Revisa el formato del export.")
-	vistos = []
+	vistos, apodos = [], {}
 	if args.vistos and Path(args.vistos).exists():
-		vistos = json.loads(Path(args.vistos).read_text(encoding="utf-8")).get("mensajes_vistos", [])
+		registro = json.loads(Path(args.vistos).read_text(encoding="utf-8"))
+		vistos = registro.get("mensajes_vistos", [])
+		apodos.update(registro.get("alias") or {})
+	if args.apodos and Path(args.apodos).exists():
+		# El mapa confirmado por Alberto manda sobre lo aprendido en corridas anteriores.
+		apodos.update(json.loads(Path(args.apodos).read_text(encoding="utf-8")).get("apodos") or {})
 	nuevos = filtrar_nuevos(mensajes, vistos, args.desde)
+	desconocidos = resolver_autores(nuevos, apodos) if args.apodos else []
 
 	# Avisa si el chat menciona un adjunto que no vino en el zip.
 	faltantes = [a for m in nuevos for a in m["adjuntos"] if not (chat.parent / a).exists()]
@@ -159,6 +190,7 @@ def main():
 		"total_en_export": len(mensajes),
 		"nuevos": len(nuevos),
 		"adjuntos_faltantes": faltantes,
+		"autores_desconocidos": desconocidos,
 		"contexto": contexto,
 		"mensajes": nuevos,
 	}

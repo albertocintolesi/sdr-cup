@@ -45,6 +45,7 @@ def clave(evento):
 		evento.get("ref"),
 		evento.get("desafio") or evento.get("legendario"),
 		evento.get("puntos") if evento.get("tipo") == "ajuste" else None,
+		evento.get("n"),
 	)
 
 
@@ -64,6 +65,7 @@ def validar(evento, registro, config, squads):
 	"""
 	problemas = []
 	descarte = None
+	marcado_por_operador = bool(evento.get("en_revision"))
 	tipo = evento["tipo"]
 	eventos = registro["eventos"]
 	por_id = {e["id"]: e for e in eventos}
@@ -122,11 +124,12 @@ def validar(evento, registro, config, squads):
 	elif evento.get("squad") not in set(squads.values()):
 		problemas.append("falta un squad válido")
 
-	# Ventana de la Cup: lo anterior al inicio o posterior al cierre solo entra en revisión (no suma).
-	if tipo in ("reunion_agendada", "reunion_realizada", "mision", "flash") and not evento.get("en_revision"):
+	# Ventana de la Cup: lo anterior al inicio no cuenta y no se registra; lo posterior al
+	# cierre solo entra en revisión, para el conteo final con Alberto.
+	if tipo in ("reunion_agendada", "reunion_realizada", "mision", "flash"):
 		if evento["fecha_hora"] < inicio:
-			problemas.append("es anterior al inicio de la Cup: solo puede entrar con en_revision")
-		elif evento["fecha_hora"] > cierre:
+			descarte = f"es anterior al inicio de la Cup ({inicio.replace('T', ' ')}): no cuenta y no se registra"
+		elif evento["fecha_hora"] > cierre and not evento.get("en_revision"):
 			problemas.append("es posterior al cierre de la Cup: solo puede entrar con en_revision")
 
 	if tipo == "reunion_agendada":
@@ -151,18 +154,20 @@ def validar(evento, registro, config, squads):
 			problemas.append(f"el desafío '{evento.get('desafio')}' no está registrado")
 		elif desafio["tipo"] != tipo:
 			problemas.append(f"'{desafio['id']}' es de tipo {desafio['tipo']}, no {tipo}")
-		elif tipo == "flash" and not evento.get("en_revision"):
+		elif tipo == "flash" and not marcado_por_operador:
+			del_desafio = [e for e in eventos if e["tipo"] == "flash" and e.get("desafio") == desafio["id"] and e["id"] not in anulados]
+			ganado = [e for e in del_desafio if e["id"] not in pendientes]
 			if not (desafio.get("desde") and desafio.get("hasta")):
 				problemas.append(f"el Flash '{desafio['id']}' no tiene ventana (desde/hasta)")
 			elif not desafio["desde"] <= evento["fecha_hora"] <= desafio["hasta"]:
 				descarte = "está fuera de la ventana del Flash: no suma el Flash (la reunión sí)"
-			ganado = [
-				e for e in eventos
-				if e["tipo"] == "flash" and e.get("desafio") == desafio["id"]
-				and e["id"] not in anulados and e["id"] not in pendientes
-			]
-			if ganado:
+			elif ganado:
 				descarte = f"el Flash ya lo ganó {ganado[0]['squad']} ({ganado[0]['id']}): el segundo no suma"
+			elif del_desafio and not evento.get("en_revision"):
+				# Alguien lo reclamó antes con un caso que sigue en revisión: nadie gana todavía.
+				evento["en_revision"] = True
+				evento["espera_flash"] = True
+				evento["nota"] = f"Depende de un caso anterior en revisión ({del_desafio[0]['id']})"
 
 	if tipo == "legendario" and evento.get("legendario") not in LEGENDARIOS:
 		problemas.append(f"'legendario' debe ser uno de {list(LEGENDARIOS)}")
@@ -244,6 +249,39 @@ def confirmar_dependientes(registro, confirmacion):
 			"squad": evento.get("squad"),
 			"puntos": evento.get("puntos_en_revision", 0),
 			"origen": confirmacion.get("origen"),
+			"auto": True,
+		})
+
+
+def resolver_flash(registro, disparador):
+	"""Decide los Flash que quedaron esperando por un reclamo anterior en revisión.
+
+	Si el reclamo anterior se confirma, el que esperaba se anula (el Flash ya tiene ganador).
+	Si el anterior se cae, el que esperaba pasa a ganar.
+	"""
+	eventos = registro["eventos"]
+	for espera in [e for e in eventos if e.get("espera_flash")]:
+		anulados, pendientes = situacion(eventos)
+		if espera["id"] not in pendientes:
+			continue
+		otros = [
+			e for e in eventos
+			if e["tipo"] == "flash" and e.get("desafio") == espera.get("desafio")
+			and e["id"] != espera["id"] and e["id"] not in anulados
+		]
+		hay_ganador = any(e["id"] not in pendientes for e in otros)
+		hay_anterior = any(e["id"] in pendientes and eventos.index(e) < eventos.index(espera) for e in otros)
+		if not hay_ganador and hay_anterior:
+			continue
+		agregar(registro, {
+			"tipo": "anulacion" if hay_ganador else "confirmacion",
+			"fecha_hora": disparador["fecha_hora"],
+			"ref": espera["id"],
+			"sdr": espera.get("sdr"),
+			"squad": espera.get("squad"),
+			"puntos": 0 if hay_ganador else espera.get("puntos_en_revision", 0),
+			"motivo": "El Flash lo ganó otro squad" if hay_ganador else "Se cayó el reclamo anterior del Flash",
+			"origen": disparador.get("origen"),
 			"auto": True,
 		})
 
@@ -339,6 +377,8 @@ def registrar(registro, config, nuevos, mensajes, ahora=None, export=None):
 	temporales = {}
 	repetidos = 0
 	descartados = []
+	etiquetas_descartadas = set()
+	ajustes_del_lote = {}
 	lote = [dict(e) for e in nuevos.get("eventos") or []]
 	for posicion, evento in enumerate(lote, start=1):
 		evento["_donde"] = f"evento {posicion} ({evento.get('tipo')})"
@@ -350,11 +390,20 @@ def registrar(registro, config, nuevos, mensajes, ahora=None, export=None):
 			continue
 		ref = evento.get("ref")
 		if isinstance(ref, str) and ref.startswith("tmp:"):
+			if ref[4:] in etiquetas_descartadas:
+				descartados.append(f"{donde}: depende de un evento descartado")
+				continue
 			if ref[4:] not in temporales:
 				errores.append(f"{donde}: la etiqueta '{ref}' no existe o su evento fue rechazado")
 				continue
 			evento["ref"] = temporales[ref[4:]]
 		problemas, descarte = validar(evento, trabajo, config, squads)
+		if evento["tipo"] == "ajuste":
+			# Dos ajustes iguales nacidos del mismo mensaje son dos hechos: se numeran.
+			base = clave(evento)
+			ajustes_del_lote[base] = ajustes_del_lote.get(base, 0) + 1
+			if ajustes_del_lote[base] > 1:
+				evento["n"] = ajustes_del_lote[base]
 		if clave(evento) in claves:
 			# Ya estaba registrado en una corrida anterior: no es un error, solo se ignora.
 			repetidos += 1
@@ -366,6 +415,8 @@ def registrar(registro, config, nuevos, mensajes, ahora=None, export=None):
 			continue
 		if descarte:
 			descartados.append(f"{donde}: {descarte}")
+			if etiqueta:
+				etiquetas_descartadas.add(etiqueta)
 			continue
 		fijar_puntos(evento, trabajo)
 		evento = agregar(trabajo, evento)
@@ -376,6 +427,7 @@ def registrar(registro, config, nuevos, mensajes, ahora=None, export=None):
 			anular_dependientes(trabajo, evento)
 		if evento["tipo"] == "confirmacion":
 			confirmar_dependientes(trabajo, evento)
+		resolver_flash(trabajo, evento)
 		ajustar_combos(trabajo, evento)
 
 	if errores:
@@ -388,6 +440,11 @@ def registrar(registro, config, nuevos, mensajes, ahora=None, export=None):
 			existente.update(pendiente)
 		else:
 			trabajo["pendientes"].append(pendiente)
+	# Observaciones privadas para el cierre con Alberto (p. ej. una misión que nadie declaró).
+	ya_anotadas = {(o.get("mensaje"), o.get("nota")) for o in trabajo["observaciones"]}
+	for observacion in nuevos.get("observaciones") or []:
+		if (observacion.get("mensaje"), observacion.get("nota")) not in ya_anotadas:
+			trabajo["observaciones"].append(observacion)
 	if nuevos.get("cierre"):
 		# Cierre de la Cup: solo cuando Alberto confirma el resultado final.
 		trabajo["cierre"] = nuevos["cierre"]
