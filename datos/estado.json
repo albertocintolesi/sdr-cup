@@ -8,100 +8,56 @@
 		"minimo_para_ganar": 20,
 		"premio": null,
 		"mensaje": null,
-		"fase": "por_iniciar",
+		"fase": "en_curso",
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-12T14:30:44-03:00",
-	"chat_hasta": null,
-	"lider": null,
-	"diferencia": 0,
+	"actualizado": "2026-10-13T22:10:00-03:00",
+	"chat_hasta": "2026-10-13T22:00:00-03:00",
+	"lider": "squad-2",
+	"diferencia": 2,
 	"squads": [
-		{
-			"id": "squad-1",
-			"nombre": "Squad 1",
-			"posicion": 1,
-			"puntos": 0,
-			"puntos_en_revision": 0,
-			"desglose": {
-				"agendadas": 0,
-				"realizadas": 0,
-				"combos": 0,
-				"misiones": 0,
-				"flash": 0,
-				"legendarios": 0,
-				"ajustes": 0
-			},
-			"reuniones_agendadas": 0,
-			"reuniones_realizadas": 0,
-			"integrantes": [
-				{
-					"id": "matias-palma",
-					"nombre": "Matías Palma",
-					"puntos": 0,
-					"reuniones_agendadas": 0,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": null
-				},
-				{
-					"id": "matias-hernandez",
-					"nombre": "Matías Hernández",
-					"puntos": 0,
-					"reuniones_agendadas": 0,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": null
-				},
-				{
-					"id": "matias-rauque",
-					"nombre": "Matías Rauque",
-					"puntos": 0,
-					"reuniones_agendadas": 0,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": null
-				},
-				{
-					"id": "benjamin-allel",
-					"nombre": "Benjamín Allel",
-					"puntos": 0,
-					"reuniones_agendadas": 0,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": null
-				}
-			]
-		},
 		{
 			"id": "squad-2",
 			"nombre": "Squad 2",
 			"posicion": 1,
-			"puntos": 0,
+			"puntos": 9,
 			"puntos_en_revision": 0,
 			"desglose": {
-				"agendadas": 0,
+				"agendadas": 3,
 				"realizadas": 0,
-				"combos": 0,
-				"misiones": 0,
-				"flash": 0,
+				"combos": 2,
+				"misiones": 1,
+				"flash": 3,
 				"legendarios": 0,
 				"ajustes": 0
 			},
-			"reuniones_agendadas": 0,
+			"reuniones_agendadas": 3,
 			"reuniones_realizadas": 0,
 			"integrantes": [
 				{
-					"id": "isidora-b",
-					"nombre": "Isidora B.",
-					"puntos": 0,
-					"reuniones_agendadas": 0,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": null
-				},
-				{
 					"id": "alberto-m",
 					"nombre": "Alberto M.",
-					"puntos": 0,
-					"reuniones_agendadas": 0,
+					"puntos": 4,
+					"reuniones_agendadas": 1,
 					"reuniones_realizadas": 0,
-					"ultima_actividad": null
+					"ultima_actividad": "2026-10-13T16:20:00-03:00"
+				},
+				{
+					"id": "isidora-b",
+					"nombre": "Isidora B.",
+					"puntos": 2,
+					"reuniones_agendadas": 1,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": "2026-10-13T10:40:00-03:00"
+				},
+				{
+					"id": "alberto-cintolesi",
+					"nombre": "Alberto Cintolesi",
+					"puntos": 1,
+					"reuniones_agendadas": 1,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": "2026-10-13T15:00:00-03:00"
 				},
 				{
 					"id": "pedro-pablo-m",
@@ -110,10 +66,54 @@
 					"reuniones_agendadas": 0,
 					"reuniones_realizadas": 0,
 					"ultima_actividad": null
+				}
+			]
+		},
+		{
+			"id": "squad-1",
+			"nombre": "Squad 1",
+			"posicion": 2,
+			"puntos": 7,
+			"puntos_en_revision": 0,
+			"desglose": {
+				"agendadas": 4,
+				"realizadas": 0,
+				"combos": 2,
+				"misiones": 1,
+				"flash": 0,
+				"legendarios": 0,
+				"ajustes": 0
+			},
+			"reuniones_agendadas": 4,
+			"reuniones_realizadas": 0,
+			"integrantes": [
+				{
+					"id": "matias-palma",
+					"nombre": "Matías Palma",
+					"puntos": 3,
+					"reuniones_agendadas": 2,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": "2026-10-13T12:00:00-03:00"
 				},
 				{
-					"id": "alberto-cintolesi",
-					"nombre": "Alberto Cintolesi",
+					"id": "matias-hernandez",
+					"nombre": "Matías Hernández",
+					"puntos": 1,
+					"reuniones_agendadas": 1,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": "2026-10-13T11:15:00-03:00"
+				},
+				{
+					"id": "matias-rauque",
+					"nombre": "Matías Rauque",
+					"puntos": 1,
+					"reuniones_agendadas": 1,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": "2026-10-13T16:35:00-03:00"
+				},
+				{
+					"id": "benjamin-allel",
+					"nombre": "Benjamín Allel",
 					"puntos": 0,
 					"reuniones_agendadas": 0,
 					"reuniones_realizadas": 0,
@@ -125,9 +125,18 @@
 	"dias": [
 		{
 			"fecha": "2026-10-13",
-			"puntos": null,
-			"acumulado": null,
-			"combo": null
+			"puntos": {
+				"squad-1": 7,
+				"squad-2": 9
+			},
+			"acumulado": {
+				"squad-1": 7,
+				"squad-2": 9
+			},
+			"combo": {
+				"squad-1": true,
+				"squad-2": true
+			}
 		},
 		{
 			"fecha": "2026-10-14",
@@ -148,7 +157,32 @@
 			"combo": null
 		}
 	],
-	"desafios": [],
+	"desafios": [
+		{
+			"id": "mision-2026-10-13",
+			"tipo": "mision",
+			"fecha": "2026-10-13",
+			"nombre": "Primer golpe",
+			"descripcion": "La primera reunión que agende cada integrante hoy suma un punto adicional. Vale una sola vez por persona y hay que avisar que se cumplió.",
+			"puntos_texto": "+1 adicional por la primera reunión del día",
+			"desde": "2026-10-13T09:00:00-03:00",
+			"hasta": "2026-10-13T23:59:59-03:00",
+			"vigente": true,
+			"ganador": null
+		},
+		{
+			"id": "flash-2026-10-13-1",
+			"tipo": "flash",
+			"fecha": "2026-10-13",
+			"nombre": "Doble o nada",
+			"descripcion": "El primer squad que agende una reunión entre las 16:00 y las 17:00 suma 3 puntos adicionales.",
+			"puntos_texto": "+3 para el primer squad",
+			"desde": "2026-10-13T16:00:00-03:00",
+			"hasta": "2026-10-13T17:00:00-03:00",
+			"vigente": false,
+			"ganador": "squad-2"
+		}
+	],
 	"legendarios": [
 		{
 			"id": "colaboradores",
@@ -165,5 +199,246 @@
 			"squad": null
 		}
 	],
-	"eventos": []
+	"eventos": [
+		{
+			"id": "ev-0012",
+			"tipo": "reunion_agendada",
+			"fecha_hora": "2026-10-13T16:35:00-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-rauque",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Matías Rauque agendó una reunión",
+			"detalle": null,
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261013T163500-0",
+				"hora": "16:35",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0011",
+			"tipo": "flash",
+			"fecha_hora": "2026-10-13T16:20:00-03:00",
+			"squad": "squad-2",
+			"sdr": "alberto-m",
+			"puntos": 3,
+			"puntos_en_revision": 0,
+			"titulo": "Alberto M. ganó el Flash Challenge: Doble o nada",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0010",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261013T162000-0",
+				"hora": "16:20",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0010",
+			"tipo": "reunion_agendada",
+			"fecha_hora": "2026-10-13T16:20:00-03:00",
+			"squad": "squad-2",
+			"sdr": "alberto-m",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Alberto M. agendó una reunión",
+			"detalle": null,
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261013T162000-0",
+				"hora": "16:20",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0009",
+			"tipo": "combo_diario",
+			"fecha_hora": "2026-10-13T15:00:00-03:00",
+			"squad": "squad-2",
+			"sdr": null,
+			"puntos": 2,
+			"puntos_en_revision": 0,
+			"titulo": "Combo diario de Squad 2",
+			"detalle": "Dos o más integrantes agendaron el mismo día",
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261013T150000-0",
+				"hora": "15:00",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0008",
+			"tipo": "reunion_agendada",
+			"fecha_hora": "2026-10-13T15:00:00-03:00",
+			"squad": "squad-2",
+			"sdr": "alberto-cintolesi",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Alberto Cintolesi agendó una reunión",
+			"detalle": null,
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261013T150000-0",
+				"hora": "15:00",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0007",
+			"tipo": "reunion_agendada",
+			"fecha_hora": "2026-10-13T12:00:00-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-palma",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Matías Palma agendó una reunión",
+			"detalle": null,
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261013T120000-0",
+				"hora": "12:00",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0006",
+			"tipo": "combo_diario",
+			"fecha_hora": "2026-10-13T11:15:00-03:00",
+			"squad": "squad-1",
+			"sdr": null,
+			"puntos": 2,
+			"puntos_en_revision": 0,
+			"titulo": "Combo diario de Squad 1",
+			"detalle": "Dos o más integrantes agendaron el mismo día",
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261013T111500-0",
+				"hora": "11:15",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0005",
+			"tipo": "reunion_agendada",
+			"fecha_hora": "2026-10-13T11:15:00-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-hernandez",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Matías Hernández agendó una reunión",
+			"detalle": null,
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261013T111500-0",
+				"hora": "11:15",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0004",
+			"tipo": "mision",
+			"fecha_hora": "2026-10-13T10:40:00-03:00",
+			"squad": "squad-2",
+			"sdr": "isidora-b",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Isidora B. cumplió la misión: Primer golpe",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0003",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261013T104000-0",
+				"hora": "10:40",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0003",
+			"tipo": "reunion_agendada",
+			"fecha_hora": "2026-10-13T10:40:00-03:00",
+			"squad": "squad-2",
+			"sdr": "isidora-b",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Isidora B. agendó una reunión",
+			"detalle": null,
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261013T104000-0",
+				"hora": "10:40",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0002",
+			"tipo": "mision",
+			"fecha_hora": "2026-10-13T10:06:00-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-palma",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Matías Palma cumplió la misión: Primer golpe",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0001",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261013T100600-0",
+				"hora": "10:06",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0001",
+			"tipo": "reunion_agendada",
+			"fecha_hora": "2026-10-13T10:05:00-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-palma",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Matías Palma agendó una reunión",
+			"detalle": null,
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261013T100500-0",
+				"hora": "10:05",
+				"fuente": "chat"
+			}
+		}
+	]
 }
