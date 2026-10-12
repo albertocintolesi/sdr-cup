@@ -1,18 +1,18 @@
 /* ============================================================
    SDR Cup · página provisional de cuenta regresiva
-   Tokens tomados de la guía de marca de Brolly (deck system).
+   Escenario nocturno: la copa iluminada desde atrás, con rayos,
+   focos y piso espejado. Colores y tipografías de Brolly.
    ============================================================ */
 :root {
 	--indigo: #4B3FBF;
 	--azul: #2E7DD1;
 	--lila: #8B85F0;
-	--violeta: #5B21E8;
-	--tinta: #1B1B3A;
-	--tinta-suave: #4A4A72;
-	--tinta-tenue: #6C6C93;
-	--linea: rgba(27, 27, 58, .12);
-	--tarjeta: #FFFFFF;
-	--papel: #EAF1FB;
+	--celeste: #8CC6FF;
+	--noche: #020710;
+	--marino: #000527;
+	--texto: #F3F6FF;
+	--texto-suave: rgba(222, 230, 255, .78);
+	--texto-tenue: rgba(196, 210, 255, .62);
 
 	--f-titulo: 'Chillax', sans-serif;
 	--f-texto: 'General Sans', sans-serif;
@@ -21,7 +21,13 @@
 	--suave: cubic-bezier(.2, .8, .2, 1);
 	--borde-pagina: 16px;
 
-	color-scheme: light;
+	/* Posición de la copa en pantalla. Las actualiza js/copa.js. */
+	--copa-x: 50vw;
+	--copa-y: 34vh;
+	--copa-u: 170px;
+	--suelo-y: 66vh;
+
+	color-scheme: dark;
 }
 
 * {
@@ -36,8 +42,8 @@ body {
 }
 
 body {
-	background: var(--papel);
-	color: var(--tinta);
+	background: var(--noche);
+	color: var(--texto);
 	font-family: var(--f-texto);
 	overflow-x: hidden;
 	-webkit-font-smoothing: antialiased;
@@ -53,39 +59,147 @@ body {
 	white-space: nowrap;
 }
 
-/* ---------- Atmósfera: retícula + halo ---------- */
+/* ---------- Escenario ---------- */
 .fondo {
 	position: fixed;
 	inset: 0;
 	overflow: hidden;
 	pointer-events: none;
+	background: linear-gradient(180deg, var(--marino) 0%, #020819 46%, var(--noche) 100%);
+}
+
+/* Viñeta: oscurece las esquinas para cerrar la escena */
+.fondo::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: radial-gradient(ellipse 85% 75% at 50% 42%, transparent 45%, rgba(0, 1, 10, .72) 100%);
 }
 
 .reticula {
 	position: absolute;
 	inset: 0;
 	background-image:
-		linear-gradient(rgba(27, 27, 58, .045) 1px, transparent 1px),
-		linear-gradient(90deg, rgba(27, 27, 58, .045) 1px, transparent 1px);
+		linear-gradient(rgba(140, 165, 255, .05) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(140, 165, 255, .05) 1px, transparent 1px);
 	background-size: 56px 56px;
 }
 
-.halo {
+/* Resplandor detrás de la copa */
+.resplandor {
 	position: absolute;
-	right: -42vmin;
-	top: -34vmin;
-	width: 130vmin;
-	height: 130vmin;
+	left: var(--copa-x);
+	top: var(--copa-y);
+	width: calc(var(--copa-u) * 4.6);
+	height: calc(var(--copa-u) * 4.6);
+	translate: -50% -50%;
 	border-radius: 50%;
-	background: radial-gradient(circle at 40% 40%, rgba(139, 133, 240, .42), rgba(46, 125, 209, .16) 45%, transparent 68%);
-	filter: blur(10px);
-	animation: deriva 20s ease-in-out infinite alternate;
+	background: radial-gradient(circle,
+		rgba(96, 170, 255, .62) 0%,
+		rgba(64, 110, 240, .40) 22%,
+		rgba(75, 63, 191, .22) 44%,
+		rgba(46, 60, 180, 0) 70%);
+	animation: latir 5.5s ease-in-out infinite alternate;
 }
 
-@keyframes deriva {
-	to {
-		transform: translate(-6vmin, 4vmin) scale(1.05);
+@keyframes latir {
+	from {
+		opacity: .78;
+		scale: .96;
 	}
+
+	to {
+		opacity: 1;
+		scale: 1.06;
+	}
+}
+
+/* Rayos que giran lentamente detrás de la copa */
+.rayos {
+	position: absolute;
+	left: var(--copa-x);
+	top: var(--copa-y);
+	width: calc(var(--copa-u) * 6.4);
+	height: calc(var(--copa-u) * 6.4);
+	translate: -50% -50%;
+	mix-blend-mode: screen;
+	-webkit-mask-image: radial-gradient(circle, transparent 9%, #000 20%, transparent 62%);
+	mask-image: radial-gradient(circle, transparent 9%, #000 20%, transparent 62%);
+}
+
+.rayos-giro {
+	position: absolute;
+	inset: 0;
+	border-radius: 50%;
+	background:
+		repeating-conic-gradient(from 0deg,
+			rgba(130, 185, 255, 0) 0deg,
+			rgba(130, 185, 255, .20) 3deg,
+			rgba(130, 185, 255, 0) 8deg,
+			rgba(130, 185, 255, 0) 24deg),
+		repeating-conic-gradient(from 11deg,
+			rgba(150, 140, 255, 0) 0deg,
+			rgba(150, 140, 255, .14) 5deg,
+			rgba(150, 140, 255, 0) 13deg,
+			rgba(150, 140, 255, 0) 40deg);
+	animation: girar 140s linear infinite;
+}
+
+@keyframes girar {
+	to {
+		rotate: 360deg;
+	}
+}
+
+/* Focos que bajan desde las esquinas hacia la copa */
+.foco {
+	position: absolute;
+	top: -12vh;
+	width: calc(var(--copa-u) * 1.9);
+	height: 125vh;
+	translate: -50% 0;
+	transform-origin: 50% 0;
+	background: linear-gradient(180deg, rgba(150, 195, 255, .30), rgba(120, 150, 255, .09) 52%, rgba(120, 150, 255, 0) 80%);
+	clip-path: polygon(44% 0, 56% 0, 100% 100%, 0 100%);
+	filter: blur(16px);
+	mix-blend-mode: screen;
+}
+
+.foco-izq {
+	left: 4%;
+	rotate: -24deg;
+	animation: mecer-izq 9s ease-in-out infinite alternate;
+}
+
+.foco-der {
+	left: 96%;
+	rotate: 24deg;
+	animation: mecer-der 11s ease-in-out infinite alternate;
+}
+
+@keyframes mecer-izq {
+	to {
+		rotate: -18deg;
+	}
+}
+
+@keyframes mecer-der {
+	to {
+		rotate: 19deg;
+	}
+}
+
+/* Piso: una línea de horizonte y un brillo que se pierde hacia abajo */
+.suelo {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: var(--suelo-y);
+	bottom: 0;
+	border-top: 1px solid rgba(140, 190, 255, .34);
+	background: linear-gradient(180deg, rgba(64, 116, 235, .26), rgba(24, 36, 110, .10) 34%, rgba(2, 7, 16, 0) 78%);
+	-webkit-mask-image: linear-gradient(90deg, transparent, #000 26%, #000 74%, transparent);
+	mask-image: linear-gradient(90deg, transparent, #000 26%, #000 74%, transparent);
 }
 
 /* ---------- Estructura ---------- */
@@ -95,11 +209,18 @@ body {
 	flex-direction: column;
 	min-height: 100vh;
 	min-height: 100dvh;
+	overflow: hidden;	/* la animación de entrada no debe provocar scroll */
 	padding:
 		max(14px, env(safe-area-inset-top))
 		max(var(--borde-pagina), env(safe-area-inset-right))
 		max(18px, env(safe-area-inset-bottom))
 		max(var(--borde-pagina), env(safe-area-inset-left));
+}
+
+.cabecera,
+.cuenta {
+	position: relative;
+	z-index: 1;
 }
 
 .cabecera {
@@ -121,17 +242,12 @@ body {
 	font-size: .7rem;
 	letter-spacing: .3em;
 	text-transform: uppercase;
-	color: var(--violeta);
+	color: var(--celeste);
 }
 
-/* ---------- Copa ---------- */
-.copa-marco {
-	position: relative;
-	flex: 1 1 auto;
-	min-height: 260px;
-	margin: 4px calc(var(--borde-pagina) * -1) 0;
-}
-
+/* ---------- Copa ----------
+   El lienzo cubre toda la escena para poder dibujar el reflejo y el polvo de luz.
+   .copa-marco es solo el espacio que se le reserva a la copa. */
 #copa {
 	position: absolute;
 	inset: 0;
@@ -140,8 +256,8 @@ body {
 	cursor: grab;
 	touch-action: pan-y;
 	opacity: 0;
-	transform: translateY(18px) scale(.97);
-	transition: opacity 1s var(--suave), transform 1.2s var(--suave);
+	transform: translateY(22px) scale(.96);
+	transition: opacity 1.4s var(--suave), transform 1.6s var(--suave);
 }
 
 #copa.lista {
@@ -153,30 +269,50 @@ body {
 	cursor: grabbing;
 }
 
-/* ---------- Cuenta regresiva ---------- */
+.copa-marco {
+	flex: 1 1 auto;
+	min-height: 240px;
+	pointer-events: none;
+}
+
+/* ---------- Título y cuenta regresiva ---------- */
 .cuenta {
 	width: min(100%, 540px);
 	margin: 0 auto;
 	text-align: center;
+	pointer-events: none;
 }
 
-.cuenta-titulo {
-	font-family: var(--f-mono);
+.titulo {
+	font-family: var(--f-titulo);
 	font-weight: 500;
-	font-size: .72rem;
-	letter-spacing: .34em;
+	font-size: clamp(.92rem, 4.5vw, 1.5rem);
+	line-height: 1.1;
+	letter-spacing: .44em;
+	text-indent: .44em;	/* compensa el espacio que deja la última letra */
 	text-transform: uppercase;
-	color: var(--violeta);
+	white-space: nowrap;
+	text-shadow: 0 0 22px rgba(110, 175, 255, .85), 0 0 3px rgba(255, 255, 255, .5);
+}
+
+.reloj,
+.partio {
+	margin-top: 14px;
+	background: linear-gradient(180deg, rgba(255, 255, 255, .13), rgba(255, 255, 255, .045));
+	border: 1px solid rgba(170, 205, 255, .24);
+	border-radius: 26px;
+	box-shadow:
+		inset 0 1px 0 rgba(255, 255, 255, .20),
+		0 22px 54px rgba(0, 3, 30, .62),
+		0 0 46px rgba(70, 130, 255, .20);
+	-webkit-backdrop-filter: blur(16px) saturate(150%);
+	backdrop-filter: blur(16px) saturate(150%);
 }
 
 .reloj {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
-	margin-top: 12px;
 	padding: 16px 4px 13px;
-	background: var(--tarjeta);
-	border-radius: 26px;
-	box-shadow: 0 18px 44px rgba(27, 27, 58, .08);
 }
 
 .unidad {
@@ -187,7 +323,7 @@ body {
 }
 
 .unidad + .unidad {
-	border-left: 1px solid var(--linea);
+	border-left: 1px solid rgba(170, 205, 255, .18);
 }
 
 .num {
@@ -197,24 +333,19 @@ body {
 	font-size: clamp(2.5rem, 12.5vw, 4.4rem);
 	line-height: 1;
 	letter-spacing: -.02em;
-	color: var(--indigo);
+	color: var(--texto);
+	filter: drop-shadow(0 0 16px rgba(90, 160, 255, .55));
 }
 
-/* Cada dígito ocupa un ancho fijo para que el número no salte al cambiar.
-   El gradiente de marca se reparte entre los dos dígitos. */
+/* Cada dígito ocupa un ancho fijo para que el número no salte al cambiar */
 .digito {
 	display: inline-block;
 	width: .64em;
 	text-align: center;
-	background: linear-gradient(105deg, var(--indigo), var(--azul));
-	background-size: 200% 100%;
+	background: linear-gradient(180deg, #FFFFFF 22%, #9CC6FF 96%);
 	-webkit-background-clip: text;
 	background-clip: text;
 	color: transparent;
-}
-
-.digito:nth-child(2) {
-	background-position: 100% 0;
 }
 
 .rotulo {
@@ -223,21 +354,18 @@ body {
 	font-size: .64rem;
 	letter-spacing: .24em;
 	text-transform: uppercase;
-	color: var(--tinta-tenue);
+	color: var(--texto-tenue);
 }
 
 .cuenta-fecha {
 	margin-top: 14px;
 	font-weight: 500;
 	font-size: .98rem;
-	color: var(--tinta-suave);
+	color: var(--texto-suave);
 }
 
 .partio {
 	padding: 22px 16px 20px;
-	background: var(--tarjeta);
-	border-radius: 26px;
-	box-shadow: 0 18px 44px rgba(27, 27, 58, .08);
 }
 
 .partio-titulo {
@@ -246,11 +374,12 @@ body {
 	font-size: clamp(2rem, 9vw, 3.2rem);
 	line-height: 1.05;
 	letter-spacing: -.03em;
+	filter: drop-shadow(0 0 18px rgba(90, 160, 255, .5));
 }
 
 .partio-titulo em {
 	font-style: normal;
-	background: linear-gradient(105deg, var(--indigo), var(--azul));
+	background: linear-gradient(105deg, #B9B4FF, var(--celeste));
 	-webkit-background-clip: text;
 	background-clip: text;
 	color: transparent;
@@ -259,15 +388,15 @@ body {
 .partio-texto {
 	margin-top: 8px;
 	font-size: 1.05rem;
-	color: var(--tinta-suave);
+	color: var(--texto-suave);
 }
 
 /* ---------- Entrada escalonada ---------- */
 .aparece {
 	opacity: 0;
 	transform: translateY(14px);
-	animation: aparecer .7s var(--suave) forwards;
-	animation-delay: calc(var(--i) * 120ms + 150ms);
+	animation: aparecer .8s var(--suave) forwards;
+	animation-delay: calc(var(--i) * 140ms + 350ms);
 }
 
 @keyframes aparecer {
@@ -300,10 +429,6 @@ body {
 		font-size: .8rem;
 	}
 
-	.cuenta-titulo {
-		font-size: .82rem;
-	}
-
 	.rotulo {
 		font-size: .74rem;
 	}
@@ -331,18 +456,15 @@ body {
 
 	.copa-marco {
 		min-height: 200px;
-		margin: 0;
 	}
 
 	.cuenta {
 		align-self: center;
 		margin: 0;
-		text-align: left;
 	}
 
-	.cuenta-titulo,
-	.cuenta-fecha {
-		padding-left: 6px;
+	.titulo {
+		font-size: clamp(.9rem, 1.9vw, 1.5rem);
 	}
 
 	.num {
@@ -350,9 +472,21 @@ body {
 	}
 }
 
+/* ---------- Sin transparencias: paneles sólidos ---------- */
+@media (prefers-reduced-transparency: reduce) {
+	.reloj,
+	.partio {
+		background: #0B1438;
+		-webkit-backdrop-filter: none;
+		backdrop-filter: none;
+	}
+}
+
 /* ---------- Movimiento reducido ---------- */
 @media (prefers-reduced-motion: reduce) {
-	.halo {
+	.resplandor,
+	.rayos-giro,
+	.foco {
 		animation: none;
 	}
 

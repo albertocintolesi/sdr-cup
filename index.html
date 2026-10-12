@@ -6,7 +6,7 @@
 	<title>SDR Cup New Generation</title>
 	<meta name="description" content="Cuenta regresiva para la SDR Cup New Generation de Brolly.">
 	<meta name="robots" content="noindex">
-	<meta name="theme-color" content="#EAF1FB">
+	<meta name="theme-color" content="#020710">
 	<meta property="og:title" content="SDR Cup New Generation">
 	<meta property="og:description" content="Parte el martes 13 de octubre a las 10:00. Mira la cuenta regresiva.">
 	<meta property="og:type" content="website">
@@ -25,28 +25,32 @@
 	<link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
-	<!-- Atmósfera de marca: retícula fina y un halo -->
+	<!-- Escenario: retícula, focos, resplandor, rayos y piso. Todo es CSS. -->
 	<div class="fondo" aria-hidden="true">
 		<div class="reticula"></div>
-		<div class="halo"></div>
+		<div class="suelo"></div>
+		<div class="foco foco-izq"></div>
+		<div class="foco foco-der"></div>
+		<div class="resplandor"></div>
+		<div class="rayos"><div class="rayos-giro"></div></div>
 	</div>
 
 	<main class="escena">
+		<!-- La copa se dibuja en js/copa.js. El lienzo cubre toda la escena. -->
+		<canvas id="copa" aria-hidden="true"></canvas>
+
 		<header class="cabecera aparece" style="--i:0">
 			<span class="marca">Brolly</span>
-			<span class="etiqueta">Cup #3</span>
+			<span class="etiqueta">SDR Cup #3</span>
 		</header>
 
-		<h1 class="solo-lectores">SDR Cup New Generation</h1>
-
-		<!-- La copa se dibuja en js/copa.js -->
-		<div class="copa-marco">
-			<canvas id="copa" aria-hidden="true"></canvas>
-		</div>
+		<!-- Espacio reservado para la copa -->
+		<div class="copa-marco" id="copa-marco"></div>
 
 		<section class="cuenta" aria-label="Cuenta regresiva">
+			<h1 class="titulo aparece" style="--i:1"><span class="solo-lectores">SDR Cup </span>New Generation</h1>
+
 			<div id="cuenta-activa">
-				<p class="cuenta-titulo aparece" style="--i:1">La Cup parte en</p>
 				<div class="reloj aparece" style="--i:2" role="timer" aria-live="off">
 					<div class="unidad">
 						<span class="num" data-unidad="dias">--</span>
@@ -65,6 +69,11 @@
 						<span class="rotulo">seg</span>
 					</div>
 				</div>
+
+				<!-- La fecha de inicio se cambia solo aquí: el script lee el atributo datetime -->
+				<p class="cuenta-fecha aparece" style="--i:3">
+					Parte el <time id="inicio" datetime="2026-10-13T10:00:00-03:00">martes 13 de octubre a las 10:00</time>
+				</p>
 			</div>
 
 			<!-- Se muestra cuando la cuenta llega a cero -->
@@ -72,11 +81,6 @@
 				<p class="partio-titulo">La Cup ya <em>partió</em></p>
 				<p class="partio-texto">A agendar reuniones.</p>
 			</div>
-
-			<!-- La fecha de inicio se cambia solo aquí: el script lee el atributo datetime -->
-			<p class="cuenta-fecha aparece" style="--i:3">
-				<time id="inicio" datetime="2026-10-13T10:00:00-03:00">Martes 13 de octubre, 10:00 hrs</time>
-			</p>
 		</section>
 	</main>
 

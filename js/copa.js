@@ -1,16 +1,23 @@
 /* Copa giratoria de la SDR Cup.
-   Se dibuja en un canvas 2D, sin librerías, a partir del perfil de la copa:
+   Se dibuja en canvas 2D, sin librerías, a partir del perfil de la copa:
 
-   - El cuerpo liso es igual desde cualquier ángulo, así que se arma una sola
-     vez como "anillos" con un degradado horizontal que imita el metal pulido.
+   - El cuerpo liso es igual desde cualquier ángulo, así que se pinta una sola
+     vez por tamaño de pantalla, en franjas con un degradado que imita el metal.
    - Los gallones de la parte baja, las asas y la inscripción sí cambian al
-     girar: se calculan en cada cuadro. */
+     girar: se calculan en cada cuadro.
+   - Encima se compone la escena: luz en el piso, reflejo, destellos y polvo
+     de luz. El resplandor y los rayos de fondo son CSS (ver css/estilos.css). */
 (function () {
 	'use strict';
 
 	const lienzo = document.getElementById('copa');
-	if (!lienzo || !lienzo.getContext) return;
-	const ctx = lienzo.getContext('2d');
+	const marco = document.getElementById('copa-marco');
+	if (!lienzo || !lienzo.getContext || !marco) return;
+	const principal = lienzo.getContext('2d');	// lo que se ve
+	const copa = document.createElement('canvas');	// la copa sola, fuera de pantalla
+	const ctx = copa.getContext('2d');
+	const reflejo = document.createElement('canvas');
+	const pincelReflejo = reflejo.getContext('2d');
 
 	// ---------- Parámetros que se pueden ajustar ----------
 	const SEGUNDOS_POR_VUELTA = 32;
@@ -52,14 +59,16 @@
 
 	// Rampa de color del metal, de la sombra al brillo (paleta de Brolly)
 	const RAMPA_PARADAS = [
-		[0.00, 19, 17, 62],
-		[0.20, 45, 37, 142],
-		[0.42, 75, 63, 191],
-		[0.60, 60, 94, 200],
-		[0.74, 46, 125, 209],
-		[0.87, 150, 160, 244],
+		[0.00, 4, 6, 26],
+		[0.16, 22, 20, 96],
+		[0.38, 67, 56, 180],
+		[0.56, 52, 100, 208],
+		[0.72, 70, 150, 235],
+		[0.86, 160, 200, 255],
 		[1.00, 255, 255, 255]
 	];
+
+	const POLVO = 34;	// cantidad de motas de luz
 
 	// ---------- Utilidades ----------
 	function escalon(a, b, x) {
@@ -116,13 +125,14 @@
 
 	// Tono del metal según hacia dónde mira la superficie (nx: derecha, ny: arriba)
 	function tono(nx, ny) {
-		let t = 0.33 + 0.27 * ny;
+		let t = 0.20 + 0.24 * ny;
 		t += 0.30 * Math.exp(-((nx + 0.40) * (nx + 0.40)) / 0.07);	// reflejo amplio
-		t += 0.42 * Math.exp(-((nx + 0.47) * (nx + 0.47)) / 0.006);	// brillo principal
-		t += 0.26 * Math.exp(-((nx - 0.63) * (nx - 0.63)) / 0.010);	// brillo secundario
-		t -= 0.10 * Math.exp(-((nx - 0.18) * (nx - 0.18)) / 0.04);	// centro más profundo
+		t += 0.46 * Math.exp(-((nx + 0.47) * (nx + 0.47)) / 0.006);	// brillo principal
+		t += 0.24 * Math.exp(-((nx - 0.63) * (nx - 0.63)) / 0.010);	// brillo secundario
+		t -= 0.08 * Math.exp(-((nx - 0.18) * (nx - 0.18)) / 0.04);	// centro más profundo
+		// Contraluz: los bordes de la silueta se encienden con la luz que viene de atrás
 		const borde = Math.abs(nx);
-		if (borde > 0.82) t -= (borde - 0.82) * 1.3;
+		if (borde > 0.7) t += (borde - 0.7) * (borde - 0.7) * 6;
 		return t;
 	}
 
@@ -156,7 +166,7 @@
 		franja.gallon = !!franja.tramo.gallon;
 		franja.brillo = franja.tramo.brillo || 0;
 		// El interior del cáliz se oscurece hacia el fondo
-		franja.luz = franja.tramo.interior ? 0.26 + 0.42 * escalon(-0.35, 1.25, (a.y + b.y) / 2) : 1;
+		franja.luz = franja.tramo.interior ? 0.18 + 0.42 * escalon(-0.35, 1.25, (a.y + b.y) / 2) : 1;
 	});
 	const primeraGallon = franjas.findIndex(function (f) { return f.gallon; });
 
@@ -366,23 +376,65 @@
 	let costo = 0;
 	let medioRitmo = false;
 	let alterna = false;
+	let tiempo = 0;			// segundos de animación acumulados
+	let pendiente = 0;		// tiempo sin dibujar, para el polvo
+	let ySuelo = 0;			// punto más bajo de la copa en pantalla
+	let yBase = 0;			// centro de la base en pantalla
+	let degradadoReflejo = null;
+	const motas = [];
+	for (let i = 0; i < POLVO; i++) {
+		motas.push({
+			x: (Math.random() * 2 - 1) * 1.55,
+			y: -1.3 + Math.random() * 3,
+			sube: 0.02 + Math.random() * 0.055,
+			radio: 0.006 + Math.random() * 0.011,
+			fase: Math.random() * 6.28,
+			ritmo: 0.6 + Math.random() * 1.4
+		});
+	}
 
 	function velocidadBase() {
 		// Negativa: la superficie avanza hacia la izquierda y el texto entra por su primera letra
 		return movimientoReducido.matches ? 0 : -(Math.PI * 2) / SEGUNDOS_POR_VUELTA;
 	}
 
+	// Proyecta a la pantalla un punto de la copa que está de frente (sin giro)
+	function enPantalla(x, y, z) {
+		const p = DISTANCIA / (DISTANCIA - (y * ST + z * CT));
+		return { x: cx + escala * x * p, y: cy - escala * (y * CT - z * ST) * p, p: p };
+	}
+
 	function encuadrar() {
 		const rect = lienzo.getBoundingClientRect();
-		if (!rect.width || !rect.height) return;
+		const zona = marco.getBoundingClientRect();	// espacio reservado para la copa
+		if (!rect.width || !rect.height || !zona.width || !zona.height) return;
 		ancho = rect.width;
 		alto = rect.height;
 		dpr = Math.min(window.devicePixelRatio || 1, 2);
-		lienzo.width = Math.round(ancho * dpr);
-		lienzo.height = Math.round(alto * dpr);
-		escala = Math.min((ancho * 0.95) / (2 * caja.maxX), (alto * 0.97) / (caja.maxY - caja.minY));
-		cx = ancho / 2;
-		cy = alto / 2 + escala * (caja.maxY + caja.minY) / 2;
+		[lienzo, copa].forEach(function (c) {
+			c.width = Math.round(ancho * dpr);
+			c.height = Math.round(alto * dpr);
+		});
+
+		// Si bajo la zona casi no queda pantalla, se guarda un poco para el reflejo
+		const debajo = rect.bottom - zona.bottom;
+		const reserva = Math.min(Math.max(zona.height * 0.14 - debajo, 0), zona.height * 0.14);
+		const altoUtil = zona.height - reserva;
+		escala = Math.min((zona.width * 0.95) / (2 * caja.maxX), (altoUtil * 0.97) / (caja.maxY - caja.minY));
+		cx = zona.left - rect.left + zona.width / 2;
+		cy = zona.top - rect.top + altoUtil / 2 + escala * (caja.maxY + caja.minY) / 2;
+
+		ySuelo = enPantalla(0, -1.25, 0.43).y;
+		yBase = enPantalla(0, -1.25, 0).y;
+		degradadoReflejo = null;
+
+		// El fondo (CSS) necesita saber dónde quedó la copa
+		const raiz = document.documentElement.style;
+		raiz.setProperty('--copa-x', (rect.left + cx).toFixed(1) + 'px');
+		raiz.setProperty('--copa-y', (rect.top + enPantalla(0, 0.6, 0).y).toFixed(1) + 'px');
+		raiz.setProperty('--copa-u', escala.toFixed(1) + 'px');
+		raiz.setProperty('--suelo-y', (rect.top + yBase - escala * 0.2).toFixed(1) + 'px');
+
 		pintarCuerpo();
 		sucio = true;
 	}
@@ -516,24 +568,6 @@
 			return { letras: letras, angulos: angulos, unidad: unidad, radio: radio, y: linea.y, fuente: linea.fuente };
 		});
 		sucio = true;
-	}
-
-	function dibujarSombra() {
-		const yBase = -1.25;
-		const p = DISTANCIA / (DISTANCIA - yBase * ST);
-		const radio = escala * 0.8 * p;
-		ctx.save();
-		ctx.translate(cx, cy - escala * yBase * CT * p + escala * 0.012);
-		ctx.scale(1, ST * 1.15);
-		const degradado = ctx.createRadialGradient(0, 0, radio * 0.3, 0, 0, radio);
-		degradado.addColorStop(0, 'rgba(43, 35, 130, .36)');
-		degradado.addColorStop(0.55, 'rgba(43, 35, 130, .12)');
-		degradado.addColorStop(1, 'rgba(43, 35, 130, 0)');
-		ctx.fillStyle = degradado;
-		ctx.beginPath();
-		ctx.arc(0, 0, radio, 0, Math.PI * 2);
-		ctx.fill();
-		ctx.restore();
 	}
 
 	function copiarCapa(capa) {
@@ -740,8 +774,7 @@
 		const orden = ORDEN.subarray(0, visibles);
 		orden.sort(function (p, q) { return PROF[p] - PROF[q]; });
 
-		// 3. De atrás hacia adelante: sombra, asa de atrás, interior y pie, gallones, cáliz, texto y asa de adelante
-		dibujarSombra();
+		// 3. De atrás hacia adelante: asa de atrás, interior y pie, gallones, cáliz, texto y asa de adelante
 		for (let i = 0; i < visibles; i++) {
 			if (PROF[orden[i]] < 0) dibujarCara(orden[i]);
 		}
@@ -757,6 +790,143 @@
 		sucio = false;
 	}
 
+	// Elipse de luz o sombra apoyada en el piso
+	function manchaEnPiso(radio, paradas) {
+		principal.save();
+		principal.translate(cx, yBase);
+		principal.scale(1, ST * 1.3);
+		const degradado = principal.createRadialGradient(0, 0, 0, 0, 0, radio);
+		paradas.forEach(function (parada) {
+			degradado.addColorStop(parada[0], parada[1]);
+		});
+		principal.fillStyle = degradado;
+		principal.beginPath();
+		principal.arc(0, 0, radio, 0, Math.PI * 2);
+		principal.fill();
+		principal.restore();
+	}
+
+	// Copia invertida de la parte baja de la copa, que se desvanece hacia abajo
+	function dibujarReflejo() {
+		const yPx = Math.round(ySuelo * dpr);
+		const altoPx = Math.min(Math.round(escala * 0.95 * dpr), yPx, lienzo.height - yPx);
+		if (altoPx < 8) return;
+		if (reflejo.width !== lienzo.width || reflejo.height !== altoPx) {
+			reflejo.width = lienzo.width;
+			reflejo.height = altoPx;
+			degradadoReflejo = null;
+		}
+		if (!degradadoReflejo) {
+			degradadoReflejo = pincelReflejo.createLinearGradient(0, 0, 0, altoPx);
+			degradadoReflejo.addColorStop(0, 'rgba(0, 0, 0, .46)');
+			degradadoReflejo.addColorStop(0.5, 'rgba(0, 0, 0, .14)');
+			degradadoReflejo.addColorStop(1, 'rgba(0, 0, 0, 0)');
+		}
+		pincelReflejo.globalCompositeOperation = 'source-over';
+		pincelReflejo.setTransform(1, 0, 0, 1, 0, 0);
+		pincelReflejo.clearRect(0, 0, reflejo.width, altoPx);
+		pincelReflejo.setTransform(1, 0, 0, -1, 0, altoPx);
+		pincelReflejo.drawImage(copa, 0, yPx - altoPx, copa.width, altoPx, 0, 0, copa.width, altoPx);
+		pincelReflejo.setTransform(1, 0, 0, 1, 0, 0);
+		pincelReflejo.globalCompositeOperation = 'destination-in';
+		pincelReflejo.fillStyle = degradadoReflejo;
+		pincelReflejo.fillRect(0, 0, reflejo.width, altoPx);
+		principal.setTransform(1, 0, 0, 1, 0, 0);
+		principal.drawImage(reflejo, 0, yPx);
+		principal.setTransform(dpr, 0, 0, dpr, 0, 0);
+	}
+
+	// Destello de cuatro puntas sobre un brillo del metal
+	function dibujarDestello(punto, medida, fase) {
+		const pulso = 0.72 + 0.28 * Math.sin(tiempo * 1.3 + fase);
+		const radio = escala * medida * pulso;
+		const halo = principal.createRadialGradient(punto.x, punto.y, 0, punto.x, punto.y, radio);
+		halo.addColorStop(0, 'rgba(255, 255, 255, ' + (0.85 * pulso).toFixed(3) + ')');
+		halo.addColorStop(0.25, 'rgba(170, 210, 255, ' + (0.35 * pulso).toFixed(3) + ')');
+		halo.addColorStop(1, 'rgba(120, 170, 255, 0)');
+		principal.fillStyle = halo;
+		principal.beginPath();
+		principal.arc(punto.x, punto.y, radio, 0, Math.PI * 2);
+		principal.fill();
+		// Las puntas: dos rombos muy finos
+		principal.fillStyle = 'rgba(235, 244, 255, ' + (0.8 * pulso).toFixed(3) + ')';
+		[[radio * 2.3, radio * 0.07], [radio * 0.07, radio * 1.5]].forEach(function (brazo) {
+			principal.beginPath();
+			principal.moveTo(punto.x - brazo[0], punto.y);
+			principal.lineTo(punto.x, punto.y - brazo[1]);
+			principal.lineTo(punto.x + brazo[0], punto.y);
+			principal.lineTo(punto.x, punto.y + brazo[1]);
+			principal.closePath();
+			principal.fill();
+		});
+	}
+
+	// Una mota es un punto de luz difuso; se dibuja una vez y después se copia
+	const MOTA = (function () {
+		const lado = 48;
+		const dibujo = document.createElement('canvas');
+		dibujo.width = lado;
+		dibujo.height = lado;
+		const pincel = dibujo.getContext('2d');
+		const luz = pincel.createRadialGradient(lado / 2, lado / 2, 0, lado / 2, lado / 2, lado / 2);
+		luz.addColorStop(0, 'rgba(240, 247, 255, 1)');
+		luz.addColorStop(0.16, 'rgba(205, 228, 255, .8)');
+		luz.addColorStop(0.42, 'rgba(130, 185, 255, .2)');
+		luz.addColorStop(1, 'rgba(130, 185, 255, 0)');
+		pincel.fillStyle = luz;
+		pincel.fillRect(0, 0, lado, lado);
+		return dibujo;
+	})();
+
+	// Motas de luz que suben lentamente alrededor de la copa
+	function dibujarPolvo(dt) {
+		for (let i = 0; i < motas.length; i++) {
+			const mota = motas[i];
+			mota.y += mota.sube * dt;
+			if (mota.y > 1.7) {
+				mota.y = -1.3;
+				mota.x = (Math.random() * 2 - 1) * 1.55;
+			}
+			const x = cx + escala * (mota.x + 0.05 * Math.sin(tiempo * 0.35 + mota.fase));
+			const y = cy - escala * mota.y;
+			const brillo = (0.3 + 0.7 * (0.5 + 0.5 * Math.sin(tiempo * mota.ritmo + mota.fase))) *
+				escalon(-1.3, -0.9, mota.y) * (1 - escalon(1.3, 1.7, mota.y));
+			const radio = escala * mota.radio * 4;
+			principal.globalAlpha = brillo;
+			principal.drawImage(MOTA, x - radio, y - radio, radio * 2, radio * 2);
+		}
+		principal.globalAlpha = 1;
+	}
+
+	// Arma lo que se ve: piso, reflejo, copa, destellos y polvo
+	function componer(dt) {
+		principal.setTransform(dpr, 0, 0, dpr, 0, 0);
+		principal.globalCompositeOperation = 'source-over';
+		principal.clearRect(0, 0, ancho, alto);
+
+		manchaEnPiso(escala * 1.45, [
+			[0, 'rgba(90, 160, 255, .50)'],
+			[0.45, 'rgba(70, 100, 235, .17)'],
+			[1, 'rgba(60, 80, 220, 0)']
+		]);
+		manchaEnPiso(escala * 0.56, [
+			[0, 'rgba(1, 3, 16, .78)'],
+			[0.7, 'rgba(1, 3, 16, .45)'],
+			[1, 'rgba(1, 3, 16, 0)']
+		]);
+		dibujarReflejo();
+
+		principal.setTransform(1, 0, 0, 1, 0, 0);
+		principal.drawImage(copa, 0, 0);
+		principal.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+		principal.globalCompositeOperation = 'lighter';
+		dibujarDestello(enPantalla(-0.47 * 0.592, 1.245, 0.883 * 0.592), 0.085, 0);
+		dibujarDestello(enPantalla(-0.47 * 0.37, -1.13, 0.883 * 0.37), 0.05, 2.4);
+		dibujarPolvo(dt);
+		principal.globalCompositeOperation = 'source-over';
+	}
+
 	let previo = 0;
 	function cuadro(ahora) {
 		requestAnimationFrame(cuadro);
@@ -764,19 +934,25 @@
 		previo = ahora;
 		if (!ancho) return;
 
+		const quieta = movimientoReducido.matches;
 		if (!arrastrando) {
 			// Tras soltarla, la copa vuelve de a poco a su giro lento
 			velocidad += (velocidadBase() - velocidad) * (1 - Math.exp(-dt / 1.3));
 			if (Math.abs(velocidad) < 0.0005) velocidad = 0;
 			fi += velocidad * dt;
 		}
-		if (!sucio && fi === fiDibujado) return;
+		// Con movimiento reducido solo se redibuja si algo cambió
+		if (quieta && !sucio && fi === fiDibujado) return;
 
+		pendiente += quieta ? 0 : dt;
 		alterna = !alterna;
 		if (medioRitmo && alterna && !sucio) return;
 
 		const t0 = performance.now();
+		tiempo += pendiente;
 		dibujar();
+		componer(pendiente);
+		pendiente = 0;
 		// Si el equipo es lento, se dibuja un cuadro por medio
 		costo = costo * 0.92 + (performance.now() - t0) * 0.08;
 		if (!medioRitmo && costo > 13) medioRitmo = true;
@@ -815,7 +991,9 @@
 	if (movimientoReducido.matches) fi = 0;	// quieta y con la inscripción al frente
 
 	if ('ResizeObserver' in window) {
-		new ResizeObserver(encuadrar).observe(lienzo);
+		const observador = new ResizeObserver(encuadrar);
+		observador.observe(lienzo);
+		observador.observe(marco);
 	} else {
 		window.addEventListener('resize', encuadrar);
 	}
