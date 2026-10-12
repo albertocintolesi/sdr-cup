@@ -21,13 +21,13 @@ import argparse
 import json
 import re
 import sys
-import unicodedata
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 from reglas import (  # noqa: E402
 	LEGENDARIOS, PUNTOS_AGENDADA, PUNTOS_COMBO, PUNTOS_REALIZADA, REGISTRO_VACIO, TIPOS_OPERADOR,
-	guardar_json, leer_json, leer_registro, puntos_netos, situacion, squad_de_cada_sdr,
+	empresa_mencionada, guardar_json, leer_json, leer_registro, puntos_netos, sin_tildes, situacion,
+	squad_de_cada_sdr,
 )
 
 FORMATO_FECHA = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$")
@@ -35,10 +35,8 @@ SOBRAN_EN_EMPRESA = ("brolly", "sa", "spa", "ltda", "s", "a")
 
 
 def normalizar(empresa):
-	"""'Brolly & Andina Frutos S.A.' y 'andina frutos' deben reconocerse como la misma empresa."""
-	texto = unicodedata.normalize("NFKD", empresa or "").encode("ascii", "ignore").decode().lower()
-	texto = re.sub(r"[^a-z0-9 ]", " ", texto)
-	return " ".join(palabra for palabra in texto.split() if palabra not in SOBRAN_EN_EMPRESA)
+	"""'Brolly & Empresa Uno S.A.' y 'empresa uno' deben reconocerse como la misma empresa."""
+	return " ".join(palabra for palabra in sin_tildes(empresa).split() if palabra not in SOBRAN_EN_EMPRESA)
 
 
 def clave(evento):
@@ -112,11 +110,11 @@ def validar(evento, registro, config, squads):
 	elif evento.get("squad") not in set(squads.values()):
 		problemas.append("falta un squad válido")
 
-	# Ventana de la Cup: lo anterior al inicio no existe; lo posterior al cierre solo entra en revisión.
-	if tipo in ("reunion_agendada", "reunion_realizada", "mision", "flash"):
+	# Ventana de la Cup: lo anterior al inicio o posterior al cierre solo entra en revisión (no suma).
+	if tipo in ("reunion_agendada", "reunion_realizada", "mision", "flash") and not evento.get("en_revision"):
 		if evento["fecha_hora"] < inicio:
-			problemas.append("es anterior al inicio de la Cup: no se registra")
-		elif evento["fecha_hora"] > cierre and not evento.get("en_revision"):
+			problemas.append("es anterior al inicio de la Cup: solo puede entrar con en_revision")
+		elif evento["fecha_hora"] > cierre:
 			problemas.append("es posterior al cierre de la Cup: solo puede entrar con en_revision")
 
 	if tipo == "reunion_agendada":
@@ -272,6 +270,21 @@ def registrar(registro, config, nuevos, mensajes, ahora=None, export=None):
 			conocidos.add(desafio["id"])
 			desafios_nuevos.append(desafio["id"])
 			trabajo["desafios"].append(desafio)
+
+	# Privacidad: ningún texto público puede nombrar a una empresa (salvo que config lo permita).
+	if not config.get("publicar_empresa"):
+		lote_crudo = nuevos.get("eventos") or []
+		empresas = [e.get("empresa") for e in trabajo["eventos"] + lote_crudo if e.get("empresa")]
+		publicos = [
+			(f"evento {i} ({e.get('tipo')}), detalle_publico", e.get("detalle_publico"))
+			for i, e in enumerate(lote_crudo, start=1)
+		]
+		for desafio in nuevos.get("desafios") or []:
+			for campo in ("nombre", "descripcion", "puntos_texto"):
+				publicos.append((f"desafío '{desafio.get('id')}', {campo}", desafio.get(campo)))
+		for donde, texto in publicos:
+			if empresa_mencionada(texto, empresas):
+				errores.append(f"{donde}: nombra a una empresa del registro; reescríbelo sin el nombre (ese texto es público)")
 
 	# 3. Eventos, en orden cronológico. Uno nuevo puede referirse a otro del mismo lote
 	#    con "tmp": "etiqueta" en el primero y "ref": "tmp:etiqueta" en el segundo.

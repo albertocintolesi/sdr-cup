@@ -16,10 +16,11 @@ Eres el Operador. En cada corrida tomas el export más reciente del chat, proces
 | Scripts | `.claude/skills/sdr-cup-operador/scripts/` (este repo) | Sí |
 | Datos fijos de la Cup (fechas, squads, integrantes) | `datos/config.json` (este repo) | Sí |
 | Estado que lee la landing | `datos/estado.json` (este repo) | Sí |
-| Registro persistente (eventos completos, mensajes vistos, apodos, pendientes) | `registro.json` en la carpeta privada que indica el prompt de la rutina | **No** |
-| Exports del chat y mapa de apodos | Carpeta de Drive que indica el prompt de la rutina | **No** |
+| Registro persistente (eventos completos con empresa, mensajes vistos, pendientes, historial de corridas) | `registro.json` en el repo privado | **No** |
+| Mapa de apodos confirmado por Alberto | `apodos.json` en el repo privado | **No** |
+| Exports del chat | Carpeta de Drive que indica el prompt de la rutina | **No** |
 
-El prompt de la rutina te entrega los datos privados: ID de la carpeta de Drive, ruta de la carpeta del registro y correo de Alberto. **Nunca** los escribas en este repo.
+El repo privado ("carpeta privada" en adelante) se clona junto al público. El prompt de la rutina te entrega los datos privados: ID de la carpeta de Drive, nombre del grupo de WhatsApp de la Cup, ruta de la carpeta privada y correo de Alberto. **Nunca** los escribas en este repo.
 
 **Regla de privacidad (el repo es público).** A este repo solo llega `datos/estado.json`, generado por el script. Jamás subas el zip, `_chat.txt`, capturas, `registro.json`, apodos, correos ni citas textuales del chat. Los mensajes de commit son genéricos (`Estado 2026-10-13 14:05`). En los campos `detalle_publico`, y en el `nombre` y `descripcion` de los desafíos, no pongas nombres de empresas, de leads ni de invitados.
 
@@ -27,11 +28,13 @@ El prompt de la rutina te entrega los datos privados: ID de la carpeta de Drive,
 
 Usa `S=.claude/skills/sdr-cup-operador/scripts`, `R=<carpeta privada>/registro.json` y una carpeta temporal nueva `T` (por ejemplo `/tmp/cup-AAAAMMDD-HHMM`). Corre todo Python con `python3 -I`.
 
-**0. Preparar.** Actualiza ambos repos (`git pull`). Obtén la hora de Chile: `AHORA=$(TZ=America/Santiago date +%Y-%m-%dT%H:%M:%S)`.
+**0. Preparar.** Actualiza ambos repos (`git pull` en `main`). Obtén la hora de Chile, que durante la Cup es UTC−3 (ver `utc_offset` en `datos/config.json`): `AHORA=$(date -u -d '3 hours ago' +%Y-%m-%dT%H:%M:%S)`.
 
 **1. Revisar respuestas de Alberto.** Si `registro.json` tiene pendientes con `"estado": "abierto"` y un `hilo`, lee ese hilo con el conector de Gmail. Solo cuentan los mensajes enviados desde el correo de Alberto. Una respuesta suya se convierte en eventos (ver "Fallos y correcciones de Alberto") con `"origen": {"correo": "<id del hilo>"}`, y el pendiente pasa a `"resuelto"`.
 
-**2. Buscar el export.** Con el conector de Drive, lista los zip de la carpeta (`parentId = '<ID>'`) y elige el de `modifiedTime` más reciente. Su identificador es `EXPORT="<id>|<modifiedTime>"`. Si es igual al campo `export` de la última corrida en `registro.json` y no hubo respuestas en el paso 1, **no hay nada nuevo**: salta al paso 7 (el estado igual se recalcula, porque la fase y los desafíos vigentes dependen de la hora).
+**2. Buscar el export.** Con el conector de Drive, lista los archivos de la carpeta (`parentId = '<ID>'`). Quédate solo con los zip cuyo título contiene el **nombre del grupo de la Cup** que indica el prompt (en la carpeta hay otros zip: exports de otros grupos y muestras antiguas; ignóralos) y elige el de `modifiedTime` más reciente. Su identificador es `EXPORT="<id>|<modifiedTime>"`.
+- Si es igual al campo `export` de la última corrida en `registro.json` y no hubo respuestas en el paso 1, **no hay nada nuevo: termina aquí**, sin calcular ni publicar. Única excepción: si `datos/estado.json` todavía no existe, corre los pasos 7 y 8 para publicar el estado inicial.
+- Si el zip pesa más de 25 MB (`fileSize`), inténtalo igual, pero si la descarga o la apertura fallan escálalo como falla técnica indicando el tamaño: lo más probable es que alguien haya enviado un video al grupo.
 
 **3. Descargar y abrir.** Llama a `download_file_content` con el id del zip. La respuesta es demasiado grande para tu contexto y el sistema la guarda sola en un archivo: toma la ruta que aparece en el mensaje y pásala al script. No copies base64 a mano.
 
@@ -127,7 +130,7 @@ Todas las claves son opcionales. Las horas son de Chile, sin offset.
 
 **Quién juega.** Solo los integrantes de `config.json`. Alberto Cintolesi es a la vez jugador del Squad 2 y juez. Los demás (jefaturas, founders) no suman, pero sus anuncios de misión valen.
 
-**Quién es cada autor.** El chat muestra apodos. Resuélvelos así, en orden: (1) `alias` de `registro.json`; (2) el mapa de apodos de la carpeta de Drive, si existe; (3) el **organizador** que aparece en la captura de calendar, que viene con nombre real. Cada apodo nuevo que resuelvas va en `"alias"`. Si no logras identificar al SDR, no registres el evento: déjalo como pendiente `"tipo": "escalar"`.
+**Quién es cada autor.** El chat muestra apodos (el nombre de contacto en el teléfono de Alberto). Resuélvelos así, en orden: (1) `apodos.json` del repo privado, que es el mapa confirmado por Alberto; (2) `alias` de `registro.json`, con lo aprendido en corridas anteriores; (3) el **organizador** que aparece en la captura de calendar, que viene con nombre real. Cada apodo nuevo que resuelvas va en `"alias"` de `nuevos.json`. Si no logras identificar al SDR, no registres el evento: déjalo como pendiente `"tipo": "escalar"`.
 
 **Reunión agendada (+1).** Un mensaje con una foto que es una invitación de calendar (título tipo `Brolly & Empresa`, fecha y hora, organizador, invitados) → `reunion_agendada`. Detalles:
 - El punto es del **organizador** de la captura si es un jugador; si no se lee, del autor del mensaje.
@@ -136,7 +139,7 @@ Todas las claves son opcionales. Las horas son de Chile, sin offset.
 - Captura recortada o poco legible, pero claramente una invitación: se registra normal (suma) y además dejas un pendiente `"tipo": "menor"`. No inventes los datos que no se ven: van en `null`.
 - **Empresa ya registrada.** Si la subió el mismo SDR (reagendamiento), no se registra nada. Si la subió otro SDR, se registra con `"en_revision": true` y un pendiente `"tipo": "escalar"`.
 - Si el propio chat dice que llegó por mailing, no se registra.
-- Mensaje anterior al inicio de la Cup: no se registra. Mensaje posterior al cierre (viernes 17:00:00; las 17:00:00 exactas sí cuentan): se registra con `"en_revision": true`, sin escalar.
+- Mensaje anterior al inicio de la Cup o posterior al cierre (viernes 17:00:00; las 17:00:00 exactas sí cuentan): se registra con `"en_revision": true`, sin escalar. No suma; se ve con Alberto en el conteo final. El script rechaza un evento fuera de la ventana que no venga marcado así.
 - La regla de los 30 minutos y los filtros de calidad (colaboradores, seniority) no se verifican: toda reunión con captura se considera calificada salvo que el chat diga lo contrario.
 
 **Reunión realizada (+1 adicional).** Solo si alguien avisa en el chat que la reunión se hizo (el propio SDR o un compañero). Identifica a cuál `reunion_agendada` se refiere por empresa, SDR y fecha, y cítala en `ref`. Si no puedes saber cuál es, pendiente `"tipo": "menor"` y ningún evento. Un "no show" no suma ni resta. Aviso posterior al cierre: `"en_revision": true`.
@@ -178,6 +181,18 @@ Cómo:
 3. Destinatario: el correo de Alberto que indica el prompt. Asunto: `[SDR Cup #3] Consulta del Operador · DD/MM HH:MM`.
 4. Cuerpo: dudas numeradas, cada una con día y hora del mensaje, qué viste, y una pregunta que se responda en una línea. Indica qué pasa si no responde ("mientras tanto queda en revisión y no suma").
 5. Guarda el id del hilo en el campo `hilo` de cada pendiente escalado y registra de nuevo (paso 6) para que quede persistido.
+
+## Mapa de apodos (una sola vez, antes de la Cup)
+
+Alberto sube a la carpeta de Drive un export **sin archivos** de otro grupo donde ya escriben los SDRs (el prompt indica su nombre). De ese export se usan solo los autores, nunca el contenido.
+
+1. Descárgalo y ábrelo igual que en el paso 3, en una carpeta temporal aparte.
+2. `python3 -I $S/proponer_apodos.py <carpeta> --config datos/config.json --salida <carpeta privada>/apodos.json`
+3. Revisa la propuesta con criterio: el script solo compara palabras y puede equivocarse (un "Pablo" no es necesariamente Pedro Pablo). Corrige `apodos.json` a mano: cada apodo apunta a un id de `datos/config.json`, o a `null` si esa persona no juega. Lo que no sepas déjalo en `sin_resolver`.
+4. Envía **un** correo a Alberto con la lista `apodo = nombre` y los que quedaron sin resolver, pidiéndole que responda "OK" o corrija líneas. Guarda el id del hilo en `apodos.json` (`"hilo"`).
+5. Cuando responda, aplica sus correcciones y deja `"confirmado": true`. Haz commit y push **solo en el repo privado**.
+
+Si la Cup parte sin mapa confirmado, usa el organizador de las capturas y lo que haya en `apodos.json`; no detengas la corrida por eso.
 
 ## Casos especiales
 

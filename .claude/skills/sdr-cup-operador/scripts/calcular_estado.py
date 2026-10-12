@@ -16,7 +16,12 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from reglas import CASILLA, LEGENDARIOS, evento_raiz, guardar_json, leer_json, leer_registro, situacion  # noqa: E402
+from reglas import (  # noqa: E402
+	CASILLA, LEGENDARIOS, empresa_mencionada, evento_raiz, guardar_json, leer_json, leer_registro, situacion,
+)
+
+# Textos que se dejaron fuera del estado por nombrar a una empresa (se informan al final).
+OMITIDOS = []
 
 
 def con_offset(fecha_hora, offset):
@@ -24,11 +29,15 @@ def con_offset(fecha_hora, offset):
 	return fecha_hora + offset if fecha_hora else None
 
 
-def texto_publico(texto, empresas):
-	"""Devuelve el texto solo si no menciona una empresa registrada (protege a los prospectos)."""
+def texto_publico(texto, empresas, donde=""):
+	"""Devuelve el texto solo si no nombra a una empresa del registro (protege a los prospectos).
+
+	registrar.py ya lo impide al entrar; esto es la última barrera antes de publicar.
+	"""
 	if not texto:
 		return None
-	if any(empresa in texto.lower() for empresa in empresas):
+	if empresa_mencionada(texto, empresas):
+		OMITIDOS.append(donde)
 		return None
 	return texto
 
@@ -69,7 +78,7 @@ def calcular_estado(registro, config, ahora):
 	por_id = {e["id"]: e for e in eventos}
 	anulados, pendientes = situacion(eventos)
 	# Nombres de empresas que no deben colarse en los textos públicos.
-	empresas = set() if publicar_empresa else {e["empresa"].lower() for e in eventos if len(e.get("empresa") or "") >= 4}
+	empresas = set() if publicar_empresa else {e["empresa"] for e in eventos if e.get("empresa")}
 
 	# Acumuladores por squad, por SDR y por día.
 	casillas = {casilla: 0 for casilla in dict.fromkeys(CASILLA.values())}
@@ -138,7 +147,7 @@ def calcular_estado(registro, config, ahora):
 			"puntos": puntos,
 			"puntos_en_revision": evento.get("puntos_en_revision", 0) if pendiente else 0,
 			"titulo": titulo_de(evento, raiz, nombres_sdr, nombres_squad, desafios, empresa),
-			"detalle": texto_publico(detalle, empresas),
+			"detalle": texto_publico(detalle, empresas, evento["id"]),
 			"empresa": empresa,
 			"ref": evento.get("ref"),
 			"anulado": anulado,
@@ -215,8 +224,8 @@ def calcular_estado(registro, config, ahora):
 			"id": d["id"],
 			"tipo": d["tipo"],
 			"fecha": d["fecha"],
-			"nombre": texto_publico(d["nombre"], empresas) or "Desafío",
-			"descripcion": texto_publico(d.get("descripcion"), empresas),
+			"nombre": texto_publico(d["nombre"], empresas, d["id"]) or "Desafío",
+			"descripcion": texto_publico(d.get("descripcion"), empresas, d["id"]),
 			"puntos_texto": d.get("puntos_texto"),
 			"desde": con_offset(d.get("desde"), offset),
 			"hasta": con_offset(d.get("hasta"), offset),
@@ -282,6 +291,8 @@ def main():
 	sys.stdout.reconfigure(encoding="utf-8")
 	marcador = ", ".join(f"{s['nombre']} {s['puntos']}" for s in estado["squads"])
 	print(f"Estado escrito en {args.salida}: {marcador} ({len(estado['eventos'])} eventos, fase {estado['cup']['fase']})")
+	if OMITIDOS:
+		print("AVISO DE PRIVACIDAD: se omitieron textos que nombraban a una empresa en:", ", ".join(sorted(set(OMITIDOS))))
 
 
 if __name__ == "__main__":

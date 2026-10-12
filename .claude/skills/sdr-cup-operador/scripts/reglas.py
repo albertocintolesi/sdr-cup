@@ -9,6 +9,8 @@ Idea central: el registro funciona como un libro contable.
 
 import json
 import os
+import re
+import unicodedata
 from pathlib import Path
 
 PUNTOS_AGENDADA = 1
@@ -107,3 +109,23 @@ def evento_raiz(evento, por_id):
 
 def squad_de_cada_sdr(config):
 	return {sdr["id"]: squad["id"] for squad in config["squads"] for sdr in squad["integrantes"]}
+
+
+def sin_tildes(texto):
+	"""Minúsculas, sin tildes ni signos: para comparar nombres escritos de formas distintas."""
+	texto = unicodedata.normalize("NFKD", texto or "").encode("ascii", "ignore").decode().lower()
+	return " ".join(re.sub(r"[^a-z0-9 ]", " ", texto).split())
+
+
+def empresa_mencionada(texto, empresas):
+	"""Devuelve la primera empresa del registro que aparece dentro de un texto, o None.
+
+	Sirve para que ningún texto público (detalle de un ajuste, descripción de un desafío)
+	publique por accidente el nombre de un prospecto.
+	"""
+	limpio = f" {sin_tildes(texto)} "
+	for empresa in empresas:
+		nombre = sin_tildes(empresa)
+		if len(nombre) >= 3 and f" {nombre} " in limpio:
+			return empresa
+	return None
