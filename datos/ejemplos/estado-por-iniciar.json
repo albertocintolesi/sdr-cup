@@ -1,0 +1,169 @@
+{
+	"version": 1,
+	"cup": {
+		"numero": 3,
+		"nombre": "SDR Cup #3",
+		"inicio": "2026-10-13T10:00:00-03:00",
+		"cierre": "2026-10-16T17:00:00-03:00",
+		"minimo_para_ganar": 20,
+		"premio": null,
+		"mensaje": null,
+		"fase": "por_iniciar",
+		"ganador": null,
+		"resultado_definitivo": false
+	},
+	"actualizado": "2026-10-12T18:00:00-03:00",
+	"chat_hasta": null,
+	"lider": null,
+	"diferencia": 0,
+	"squads": [
+		{
+			"id": "squad-1",
+			"nombre": "Squad 1",
+			"posicion": 1,
+			"puntos": 0,
+			"puntos_en_revision": 0,
+			"desglose": {
+				"agendadas": 0,
+				"realizadas": 0,
+				"combos": 0,
+				"misiones": 0,
+				"flash": 0,
+				"legendarios": 0,
+				"ajustes": 0
+			},
+			"reuniones_agendadas": 0,
+			"reuniones_realizadas": 0,
+			"integrantes": [
+				{
+					"id": "matias-palma",
+					"nombre": "Matías Palma",
+					"puntos": 0,
+					"reuniones_agendadas": 0,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": null
+				},
+				{
+					"id": "matias-hernandez",
+					"nombre": "Matías Hernández",
+					"puntos": 0,
+					"reuniones_agendadas": 0,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": null
+				},
+				{
+					"id": "matias-rauque",
+					"nombre": "Matías Rauque",
+					"puntos": 0,
+					"reuniones_agendadas": 0,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": null
+				},
+				{
+					"id": "benjamin-allel",
+					"nombre": "Benjamín Allel",
+					"puntos": 0,
+					"reuniones_agendadas": 0,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": null
+				}
+			]
+		},
+		{
+			"id": "squad-2",
+			"nombre": "Squad 2",
+			"posicion": 1,
+			"puntos": 0,
+			"puntos_en_revision": 0,
+			"desglose": {
+				"agendadas": 0,
+				"realizadas": 0,
+				"combos": 0,
+				"misiones": 0,
+				"flash": 0,
+				"legendarios": 0,
+				"ajustes": 0
+			},
+			"reuniones_agendadas": 0,
+			"reuniones_realizadas": 0,
+			"integrantes": [
+				{
+					"id": "isidora-b",
+					"nombre": "Isidora B.",
+					"puntos": 0,
+					"reuniones_agendadas": 0,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": null
+				},
+				{
+					"id": "alberto-m",
+					"nombre": "Alberto M.",
+					"puntos": 0,
+					"reuniones_agendadas": 0,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": null
+				},
+				{
+					"id": "pedro-pablo-m",
+					"nombre": "Pedro Pablo M.",
+					"puntos": 0,
+					"reuniones_agendadas": 0,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": null
+				},
+				{
+					"id": "alberto-cintolesi",
+					"nombre": "Alberto Cintolesi",
+					"puntos": 0,
+					"reuniones_agendadas": 0,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": null
+				}
+			]
+		}
+	],
+	"dias": [
+		{
+			"fecha": "2026-10-13",
+			"puntos": null,
+			"acumulado": null,
+			"combo": null
+		},
+		{
+			"fecha": "2026-10-14",
+			"puntos": null,
+			"acumulado": null,
+			"combo": null
+		},
+		{
+			"fecha": "2026-10-15",
+			"puntos": null,
+			"acumulado": null,
+			"combo": null
+		},
+		{
+			"fecha": "2026-10-16",
+			"puntos": null,
+			"acumulado": null,
+			"combo": null
+		}
+	],
+	"desafios": [],
+	"legendarios": [
+		{
+			"id": "colaboradores",
+			"nombre": "+5.000 colaboradores",
+			"puntos": 10,
+			"estado": "se_define_al_cierre",
+			"squad": null
+		},
+		{
+			"id": "seniority",
+			"nombre": "Seniority ≥ 1,5",
+			"puntos": 10,
+			"estado": "se_define_al_cierre",
+			"squad": null
+		}
+	],
+	"eventos": []
+}
