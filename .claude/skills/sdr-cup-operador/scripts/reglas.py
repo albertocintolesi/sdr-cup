@@ -156,6 +156,8 @@ def empresa_mencionada(texto, empresas):
 		if len(propias) == 1 and len(propias[0]) >= 3:
 			# "Banco BCI" o "Grupo CAP": la sigla es lo único que identifica a la empresa.
 			distintivas = propias
+		# Una sigla escrita en mayúsculas ("SMU Retail") identifica a la empresa aunque sea corta.
+		distintivas += [sin_tildes(p) for p in re.findall(r"[^\W\d_]{3,}", empresa) if p.isupper() and sin_tildes(p) in propias]
 		if any(palabra in palabras_texto for palabra in distintivas):
 			return empresa
 	return None
