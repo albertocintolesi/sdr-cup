@@ -1,0 +1,24 @@
+# Datos privados: exports del chat, capturas y configuración con datos personales
+.private/
+*.zip
+_chat.txt
+
+# Secretos
+.env
+.env.*
+!.env.example
+
+# Claude Code: estado local de sesiones
+.claude/worktrees/
+.claude/settings.local.json
+
+# Dependencias y cachés
+node_modules/
+__pycache__/
+.venv/
+*.pyc
+
+# Sistema operativo y editor
+Thumbs.db
+.DS_Store
+.vscode/
