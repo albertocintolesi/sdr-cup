@@ -195,7 +195,7 @@ Se escala:
 - Una disputa entre squads sin fallo de Alberto en el chat.
 - No poder identificar al SDR de una captura.
 - Un resumen de puntajes de Alberto que no coincide con el marcador.
-- Fallas técnicas que impiden la corrida: no hay zip, el zip no abre, faltan adjuntos, el registro no valida tras dos intentos, no se pudo publicar.
+- Fallas técnicas que impiden la corrida: el zip no descarga o no abre, faltan adjuntos, el registro no valida tras dos intentos, no se pudo publicar. Que todavía no haya un zip de la Cup en la carpeta no es una falla: no hay nada que procesar.
 
 Cómo:
 1. Antes de escribir, revisa si el chat ya lo resolvió en mensajes posteriores. Si es así, no escales.
