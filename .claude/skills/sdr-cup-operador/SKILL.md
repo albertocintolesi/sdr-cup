@@ -48,7 +48,7 @@ python3 -I $S/abrir_export.py "<ruta del archivo guardado>" $T/export
 python3 -I $S/leer_chat.py $T/export --vistos $R --contexto 30 --salida $T/mensajes.json
 ```
 
-`mensajes` trae los mensajes aún no procesados. `contexto` trae los 30 anteriores, solo para entender la conversación: no generan eventos. Si `nuevos` es 0, salta al paso 7. Si `adjuntos_faltantes` no está vacío, no inventes el contenido de esas fotos: déjalas como pendiente.
+`mensajes` trae los mensajes aún no procesados. `contexto` trae los 30 anteriores, solo para entender la conversación: no generan eventos. Si `nuevos` es 0 (export nuevo pero sin mensajes nuevos), escribe `{}` en `$T/nuevos.json` y sigue igual con los pasos 6 a 8: así queda anotado el export y no se vuelve a descargar. Si `adjuntos_faltantes` no está vacío, no inventes el contenido de esas fotos: déjalas como pendiente.
 
 **5. Interpretar.** Lee `mensajes.json` completo y abre con Read cada foto (`.jpg`, `.png`) adjunta a un mensaje nuevo. Ignora stickers y mensajes con `"sistema": true`. Lee también de `registro.json` los `eventos`, `desafios`, `pendientes` y `alias` para tener el contexto de lo ya registrado. Aplica las reglas de la sección siguiente y escribe `$T/nuevos.json`.
 
