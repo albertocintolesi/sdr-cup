@@ -170,9 +170,14 @@ def main():
 		registro = json.loads(Path(args.vistos).read_text(encoding="utf-8"))
 		vistos = registro.get("mensajes_vistos", [])
 		apodos.update(registro.get("alias") or {})
-	if args.apodos and Path(args.apodos).exists():
+	if args.apodos:
 		# El mapa confirmado por Alberto manda sobre lo aprendido en corridas anteriores.
-		apodos.update(json.loads(Path(args.apodos).read_text(encoding="utf-8")).get("apodos") or {})
+		if not Path(args.apodos).exists():
+			sys.exit(f"No existe el mapa de apodos {args.apodos}. Revisa la ruta.")
+		try:
+			apodos.update(json.loads(Path(args.apodos).read_text(encoding="utf-8")).get("apodos") or {})
+		except (json.JSONDecodeError, AttributeError):
+			sys.exit(f"El mapa de apodos {args.apodos} no es un JSON válido con la clave 'apodos'.")
 	nuevos = filtrar_nuevos(mensajes, vistos, args.desde)
 	desconocidos = resolver_autores(nuevos, apodos) if args.apodos else []
 

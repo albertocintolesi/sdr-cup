@@ -140,7 +140,8 @@ def empresa_mencionada(texto, empresas):
 	Sirve para que ningún texto público (detalle de un ajuste, descripción de un desafío)
 	publique por accidente el nombre de un prospecto. Es deliberadamente estricto: basta
 	el nombre completo o una sola palabra distintiva del nombre (4 letras o más y que no sea
-	genérica), sin importar mayúsculas, tildes, espacios ni sufijos como "S.A.".
+	genérica, o una sigla si es su única palabra propia), sin importar mayúsculas, tildes,
+	espacios ni sufijos como "S.A.".
 	"""
 	palabras_texto = set(sin_tildes(texto).split())
 	limpio = f" {normalizar(texto)} "
@@ -150,7 +151,11 @@ def empresa_mencionada(texto, empresas):
 			continue
 		if len(nombre) >= 3 and f" {nombre} " in limpio:
 			return empresa
-		distintivas = [p for p in nombre.split() if len(p) >= 4 and p not in GENERICAS]
+		propias = [p for p in nombre.split() if p not in GENERICAS]
+		distintivas = [p for p in propias if len(p) >= 4]
+		if len(propias) == 1 and len(propias[0]) >= 3:
+			# "Banco BCI" o "Grupo CAP": la sigla es lo único que identifica a la empresa.
+			distintivas = propias
 		if any(palabra in palabras_texto for palabra in distintivas):
 			return empresa
 	return None
