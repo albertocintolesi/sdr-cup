@@ -4,93 +4,233 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<title>SDR Cup New Generation</title>
-	<meta name="description" content="Cuenta regresiva para la SDR Cup New Generation de Brolly.">
+	<meta name="description" content="Marcador en vivo de la SDR Cup New Generation de Brolly.">
 	<meta name="robots" content="noindex">
 	<meta name="theme-color" content="#070620">
 	<meta property="og:title" content="SDR Cup New Generation">
-	<meta property="og:description" content="Parte el martes 13 de octubre a las 10:00. Mira la cuenta regresiva.">
+	<meta property="og:description" content="Puntajes, actividad y misiones de la SDR Cup de Brolly.">
 	<meta property="og:type" content="website">
 	<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23070620'/%3E%3Crect x='7' y='5' width='18' height='22' rx='5' fill='none' stroke='%238B85F0' stroke-width='2'/%3E%3Crect x='12' y='11' width='8' height='10' rx='2.5' fill='none' stroke='%23F4F3FF' stroke-width='2'/%3E%3C/svg%3E">
 
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Unbounded:wght@300;800&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@500;700&family=Unbounded:wght@300;800&display=swap" rel="stylesheet">
 
-	<link rel="stylesheet" href="css/estilos.css">
+	<!-- Al publicar un cambio, sube el número de ?v= en estilos y scripts:
+	     así nadie queda con una versión vieja guardada por el navegador -->
+	<link rel="stylesheet" href="css/estilos.css?v=3">
 </head>
 <body>
-	<main class="escena">
-		<header class="cabecera aparece" style="--i:0">
-			<span>Brolly</span>
-			<span class="tenue">SDR Cup #3</span>
-		</header>
+	<!-- Solo se ve cuando la página se abre con un estado de ejemplo (?estado=...) -->
+	<p class="aviso-ejemplo" id="aviso-ejemplo" hidden>Datos de ejemplo. No es el marcador real.</p>
 
-		<!-- Centro: el túnel de marcos y, encima, la cuenta regresiva -->
-		<section class="centro" aria-label="Cuenta regresiva">
-			<div class="tunel" aria-hidden="true">
-				<span class="rayo" style="--giro:0deg"></span>
-				<span class="rayo" style="--giro:90deg"></span>
-				<span class="rayo rayo-diagonal" style="--lado:1"></span>
-				<span class="rayo rayo-diagonal" style="--lado:-1"></span>
-				<span class="marco" style="--n:0; --tinta:var(--lila)"></span>
-				<span class="marco" style="--n:1; --tinta:var(--azul)"></span>
-				<span class="marco" style="--n:2; --tinta:var(--texto)"></span>
-				<span class="marco" style="--n:3; --tinta:var(--lila)"></span>
-				<span class="marco" style="--n:4; --tinta:var(--azul)"></span>
-				<span class="marco" style="--n:5; --tinta:var(--lila-claro)"></span>
-				<span class="marco" style="--n:6; --tinta:var(--azul)"></span>
-				<span class="velo"></span>
+	<!-- Barra de accesos: aparece al hacer scroll y se esconde al quedarse quieto -->
+	<nav class="barra" id="barra" aria-label="Secciones">
+		<a class="barra-marca" href="#inicio">SDR Cup</a>
+		<div class="barra-enlaces">
+			<a href="#actividad">Actividad</a>
+			<a href="#puntajes">Puntajes</a>
+			<a href="#dias">Días</a>
+			<a href="#misiones">Misiones</a>
+			<a href="#bases">Bases</a>
+		</div>
+	</nav>
+
+	<main>
+		<!-- ============ Inicio: túnel y cuenta regresiva ============ -->
+		<section class="escena" id="inicio">
+			<header class="cabecera aparece" style="--i:0">
+				<span>Brolly</span>
+				<span class="tenue">SDR Cup #3</span>
+			</header>
+
+			<div class="centro">
+				<div class="tunel" aria-hidden="true">
+					<span class="rayo" style="--giro:0deg"></span>
+					<span class="rayo" style="--giro:90deg"></span>
+					<span class="rayo rayo-diagonal" style="--lado:1"></span>
+					<span class="rayo rayo-diagonal" style="--lado:-1"></span>
+					<span class="marco" style="--n:0; --tinta:var(--lila)"></span>
+					<span class="marco" style="--n:1; --tinta:var(--azul)"></span>
+					<span class="marco" style="--n:2; --tinta:var(--texto)"></span>
+					<span class="marco" style="--n:3; --tinta:var(--lila)"></span>
+					<span class="marco" style="--n:4; --tinta:var(--azul)"></span>
+					<span class="marco" style="--n:5; --tinta:var(--lila-claro)"></span>
+					<span class="marco" style="--n:6; --tinta:var(--azul)"></span>
+					<span class="velo"></span>
+				</div>
+
+				<div class="cuenta aparece" id="cuenta-activa" style="--i:1">
+					<p class="rotulo" id="prefijo">T −</p>
+					<p class="reloj" role="timer" aria-live="off"><span data-unidad="horas">--</span>:<span data-unidad="minutos">--</span>:<span data-unidad="segundos">--</span></p>
+					<p class="rotulo" id="destino">para el inicio</p>
+				</div>
+
+				<!-- Se muestra cuando la Cup ya cerró -->
+				<div class="cuenta" id="cuenta-terminada" hidden>
+					<p class="rotulo">La Cup</p>
+					<p class="partio">Terminó</p>
+					<p class="rotulo" id="resultado">Resultado en revisión</p>
+				</div>
 			</div>
 
-			<div class="cuenta aparece" id="cuenta-activa" style="--i:1">
-				<p class="rotulo" id="prefijo">T −</p>
-				<p class="reloj" role="timer" aria-live="off"><span data-unidad="horas">--</span>:<span data-unidad="minutos">--</span>:<span data-unidad="segundos">--</span></p>
-				<p class="rotulo">para el inicio</p>
+			<div class="pie">
+				<div class="titulo aparece" style="--i:2">
+					<h1>SDR Cup</h1>
+					<p class="edicion">New Generation</p>
+				</div>
+
+				<div class="datos aparece" style="--i:3">
+					<!-- Marcador resumido: lo llena js/pagina.js con el estado -->
+					<div class="mini" id="mini" hidden></div>
+
+					<!-- Barra de avance de la Cup. Parte oculta: js/cuenta-regresiva.js
+					     la muestra y crea sus marcas cuando la Cup ya está en marcha -->
+					<div class="avance" id="avance" hidden>
+						<div class="avance-cabeza">
+							<span id="avance-rotulo">Avance de la Cup</span>
+							<span id="porcentaje"></span>
+						</div>
+						<div class="marcas" id="marcas" aria-hidden="true"></div>
+					</div>
+
+					<p class="frescura" id="frescura-inicio"></p>
+				</div>
 			</div>
 
-			<!-- Se muestra cuando la cuenta llega a cero -->
-			<div class="cuenta" id="cuenta-terminada" hidden>
-				<p class="rotulo">La Cup</p>
-				<p class="partio">Ya partió</p>
-				<p class="rotulo">a agendar</p>
+			<!-- Fechas por defecto de la Cup. Si el estado trae otras, mandan las del estado. -->
+			<time id="inicio-cup" datetime="2026-10-13T10:00:00-03:00" hidden></time>
+			<time id="cierre-cup" datetime="2026-10-16T17:00:00-03:00" hidden></time>
+		</section>
+
+		<!-- ============ Actividad reciente ============ -->
+		<section class="seccion" id="actividad">
+			<div class="contenedor">
+				<div class="encabezado revelar">
+					<h2>Actividad</h2>
+					<p class="bajada">Lo último que sumaron los SDRs, del más reciente al más antiguo.</p>
+				</div>
+				<ol class="actividad" id="lista-actividad"></ol>
+				<p class="vacio" id="actividad-vacia" hidden>Todavía no hay actividad. Aparecerá aquí cuando se agende la primera reunión.</p>
+				<button class="boton" id="ver-mas" type="button" hidden>Ver más</button>
 			</div>
 		</section>
 
-		<section class="pie">
-			<div class="titulo aparece" style="--i:2">
-				<h1>SDR Cup</h1>
-				<p class="edicion">New Generation</p>
-			</div>
-
-			<div class="datos aparece" style="--i:3">
-				<!-- Barra que se llena durante las últimas 24 horas. Las marcas las crea el script. -->
-				<div class="avance" id="avance">
-					<div class="avance-cabeza">
-						<span>Últimas 24 horas</span>
-						<span id="porcentaje"></span>
-					</div>
-					<div class="marcas" id="marcas" aria-hidden="true"></div>
+		<!-- ============ Puntajes ============ -->
+		<section class="seccion" id="puntajes">
+			<div class="contenedor">
+				<div class="encabezado revelar">
+					<h2>Puntajes</h2>
+					<p class="bajada" id="frase-lider"></p>
 				</div>
+				<div class="tablero revelar" id="tablero"></div>
+				<div class="detalle-puntajes">
+					<div class="bloque revelar">
+						<h3>De dónde vienen los puntos</h3>
+						<div class="desglose" id="desglose"></div>
+					</div>
+					<div class="bloque revelar">
+						<h3>Por integrante</h3>
+						<div class="integrantes" id="integrantes"></div>
+					</div>
+					<div class="bloque revelar">
+						<h3>Legendarios</h3>
+						<div class="legendarios" id="legendarios"></div>
+					</div>
+				</div>
+			</div>
+		</section>
 
-				<!-- La fecha de inicio se cambia solo aquí: el script lee el atributo datetime -->
-				<dl class="ficha">
-					<div>
-						<dt>Inicio</dt>
-						<dd><time id="inicio" datetime="2026-10-13T10:00:00-03:00">Mar 13 oct · 10:00</time></dd>
-					</div>
-					<div>
-						<dt>Cierre</dt>
-						<dd><time datetime="2026-10-16T17:00:00-03:00">Vie 16 oct · 17:00</time></dd>
-					</div>
-					<div>
-						<dt>Formato</dt>
-						<dd>Squad 1 vs Squad 2</dd>
-					</div>
-				</dl>
+		<!-- ============ Resumen por día ============ -->
+		<section class="seccion" id="dias">
+			<div class="contenedor">
+				<div class="encabezado revelar">
+					<h2>Día a día</h2>
+					<p class="bajada">Los puntos que sumó cada squad en cada jornada.</p>
+				</div>
+				<div class="dias" id="lista-dias"></div>
+			</div>
+		</section>
+
+		<!-- ============ Misiones ============ -->
+		<section class="seccion" id="misiones">
+			<div class="contenedor">
+				<div class="encabezado revelar">
+					<h2>Misiones</h2>
+					<p class="bajada">Misiones diarias y Flash Challenges. Toca una para ver el detalle.</p>
+				</div>
+				<div class="filtros revelar" role="group" aria-label="Filtrar misiones">
+					<button class="filtro activo" type="button" data-filtro="activas" aria-pressed="true">Activas</button>
+					<button class="filtro" type="button" data-filtro="inactivas" aria-pressed="false">Inactivas</button>
+					<button class="filtro" type="button" data-filtro="todas" aria-pressed="false">Todas</button>
+				</div>
+			</div>
+			<div class="carrusel" id="lista-misiones"></div>
+			<div class="contenedor">
+				<p class="vacio" id="misiones-vacias" hidden></p>
+			</div>
+		</section>
+
+		<!-- ============ Bases ============ -->
+		<section class="seccion" id="bases">
+			<div class="contenedor">
+				<div class="encabezado revelar">
+					<h2>Bases</h2>
+					<p class="bajada">Las reglas de la SDR Cup #3. No cambian durante la Cup.</p>
+				</div>
+				<!-- Texto de las bases. Es el único lugar del sitio donde están: para cambiarlas
+				     se reemplaza este bloque. Copiado tal cual de "La Cup #3: lo esencial de las
+				     bases" (CLAUDE.md), sin la línea de lo que está por confirmar. -->
+				<div class="bases revelar" id="texto-bases">
+					<p><strong>Formato.</strong> Squad 1 vs Squad 2, una semana hábil, cierre el viernes a las 17:00. Gana el squad con más puntos, con un mínimo de 20.</p>
+					<p><strong>Fechas.</strong> Parte el martes 13 de octubre de 2026 y cierra el viernes 16 a las 17:00.</p>
+					<p><strong>Squad 1.</strong> Matías Palma, Matías Hernández, Matías Rauque, Benjamín Allel.</p>
+					<p><strong>Squad 2.</strong> Isidora Bravo, Alberto Muñoz, Pedro Pablo Mardones, Alberto Cintolesi.</p>
+
+					<table class="capas">
+						<thead>
+							<tr><th scope="col">Capa</th><th scope="col">Puntos</th><th scope="col">Regla</th></tr>
+						</thead>
+						<tbody>
+							<tr><th scope="row">Reunión agendada</th><td>+1</td><td>Invitación de calendar creada con el lead</td></tr>
+							<tr><th scope="row">Reunión agendada y realizada</th><td>+2</td><td>Agendada y realizada dentro de la semana de la Cup</td></tr>
+							<tr><th scope="row">Combo diario</th><td>+2 al squad</td><td>2 o más integrantes agendan al menos una reunión el mismo día</td></tr>
+							<tr><th scope="row">Misión diaria</th><td>Variable</td><td>Una por día, se revela en la mañana, dura hasta el fin del día. No exclusiva</td></tr>
+							<tr><th scope="row">Flash Challenge</th><td>Variable</td><td>Sin aviso, con ventana de tiempo. Solo el primer squad que la cumple suma</td></tr>
+							<tr><th scope="row">Legendario: +5.000 colaboradores</th><td>+10</td><td>Suma de colaboradores de las empresas con reuniones agendadas y realizadas en la Cup</td></tr>
+							<tr><th scope="row">Legendario: seniority ≥ 1,5</th><td>+10</td><td>Seniority promedio del squad en esas mismas reuniones</td></tr>
+						</tbody>
+					</table>
+
+					<p><strong>Filtros de calidad.</strong> Solo cuentan empresas de más de 100 colaboradores y leads no junior. Si una reunión realizada resulta no calificada, cuenta solo +1. Las reuniones que llegan por mailing no suman. Escala de seniority del CRM: 2 = gerencia o superior, 1 = jefatura o encargado, junior = no suma.</p>
+					<p><strong>Validación.</strong> Un punto existe solo si el SDR envía al grupo una captura de la invitación de calendar dentro de los 30 minutos siguientes al agendamiento. Si cumple una misión, el mensaje lleva "Misión completada: [detalle]". Si cumple un Flash, lleva "Flash Challenge: [nombre]". Las bases no cambian durante la Cup.</p>
+				</div>
 			</div>
 		</section>
 	</main>
 
-	<script src="js/cuenta-regresiva.js" defer></script>
+	<footer class="cierre">
+		<div class="contenedor">
+			<p class="frescura" id="frescura-pie"></p>
+		</div>
+	</footer>
+
+	<!-- Detalle de una misión -->
+	<dialog class="ficha-mision" id="ficha-mision" aria-labelledby="ficha-nombre">
+		<form method="dialog">
+			<button class="cerrar" type="submit" aria-label="Cerrar">
+				<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15"></path></svg>
+			</button>
+		</form>
+		<p class="ficha-tipo" id="ficha-tipo"></p>
+		<h3 id="ficha-nombre"></h3>
+		<p class="ficha-descripcion" id="ficha-descripcion"></p>
+		<dl class="ficha-datos" id="ficha-datos"></dl>
+	</dialog>
+
+	<script src="js/cuenta-regresiva.js?v=2" defer></script>
+	<script src="js/estado.js?v=1" defer></script>
+	<script src="js/efectos.js?v=2" defer></script>
+	<script src="js/pagina.js?v=2" defer></script>
 </body>
 </html>
