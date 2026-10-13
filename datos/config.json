@@ -25,9 +25,9 @@
 			"id": "squad-2",
 			"nombre": "Squad 2",
 			"integrantes": [
-				{"id": "isidora-b", "nombre": "Isidora B."},
-				{"id": "alberto-m", "nombre": "Alberto M."},
-				{"id": "pedro-pablo-m", "nombre": "Pedro Pablo M."},
+				{"id": "isidora-b", "nombre": "Isidora Bravo"},
+				{"id": "alberto-m", "nombre": "Alberto Muñoz"},
+				{"id": "pedro-pablo-m", "nombre": "Pedro Pablo Mardones"},
 				{"id": "alberto-cintolesi", "nombre": "Alberto Cintolesi"}
 			]
 		}

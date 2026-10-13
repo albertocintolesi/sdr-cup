@@ -21,7 +21,7 @@ Landing page liviana que muestra en vivo el estado de la SDR Cup de Brolly. La p
 - **Formato.** Squad 1 vs Squad 2, una semana hábil, cierre el viernes a las 17:00. Gana el squad con más puntos, con un mínimo de 20.
 - **Fechas.** Parte el martes 13 de octubre de 2026 y cierra el viernes 16 a las 17:00.
 - **Squad 1.** Matías Palma, Matías Hernández, Matías Rauque, Benjamín Allel.
-- **Squad 2.** Isidora B., Alberto M., Pedro Pablo M., Alberto Cintolesi.
+- **Squad 2.** Isidora Bravo, Alberto Muñoz, Pedro Pablo Mardones, Alberto Cintolesi.
 - **Por confirmar.** Premio y nombres de los squads.
 
 | Capa | Puntos | Regla |
