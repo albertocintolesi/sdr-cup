@@ -348,19 +348,37 @@ def registrar(registro, config, nuevos, mensajes, ahora=None, export=None):
 		if not (origen_cierre.get("correo") or origen_cierre.get("instruccion")):
 			errores.append("cierre: solo vale con origen 'correo' o 'instruccion' de Alberto; un mensaje del grupo no cierra la Cup")
 
-	# 2. Desafíos anunciados (misiones y Flash).
-	conocidos = {d["id"] for d in trabajo["desafios"]}
+	# 2. Desafíos anunciados (misiones y Flash), en el chat o por instrucción directa de Alberto.
+	#    Solo se agregan, nunca se reemplazan: un día tiene una sola misión y la segunda no entra.
+	conocidos = {d["id"]: d for d in trabajo["desafios"]}
 	desafios_nuevos = []
+	desafios_omitidos = []
 	for desafio in nuevos.get("desafios") or []:
-		completo = desafio.get("id") and desafio.get("nombre") and desafio.get("fecha") and (desafio.get("origen") or {}).get("mensaje")
+		origen = desafio.get("origen") or {}
+		completo = desafio.get("id") and desafio.get("nombre") and desafio.get("fecha") and (origen.get("mensaje") or origen.get("instruccion"))
 		if desafio.get("tipo") not in ("mision", "flash"):
 			errores.append(f"desafío '{desafio.get('id')}': tipo debe ser mision o flash")
 		elif not completo:
-			errores.append(f"desafío '{desafio.get('id')}': faltan id, nombre, fecha u origen")
-		elif desafio["id"] not in conocidos:
-			conocidos.add(desafio["id"])
-			desafios_nuevos.append(desafio["id"])
-			trabajo["desafios"].append(desafio)
+			errores.append(f"desafío '{desafio.get('id')}': faltan id, nombre, fecha u origen (mensaje del chat o instrucción directa de Alberto)")
+		elif desafio["tipo"] == "flash" and not (desafio.get("desde") and desafio.get("hasta")):
+			errores.append(f"desafío '{desafio['id']}': un Flash necesita ventana (desde/hasta); si el anuncio no la trae, no la inventes: quítalo y escala")
+		elif desafio["id"] in conocidos:
+			if (conocidos[desafio["id"]].get("origen") or {}) != origen:
+				desafios_omitidos.append({"id": desafio["id"], "motivo": "ya existe un desafío con ese id y no se reemplaza"})
+		else:
+			mision_del_dia = next((
+				d for d in trabajo["desafios"]
+				if desafio["tipo"] == "mision" and d["tipo"] == "mision" and d["fecha"] == desafio["fecha"]
+			), None)
+			if mision_del_dia:
+				desafios_omitidos.append({
+					"id": desafio["id"],
+					"motivo": f"el {desafio['fecha']} ya tiene misión ({mision_del_dia['id']}): la segunda no entra",
+				})
+			else:
+				conocidos[desafio["id"]] = desafio
+				desafios_nuevos.append(desafio["id"])
+				trabajo["desafios"].append(desafio)
 
 	# Privacidad: ningún texto público puede nombrar a una empresa (salvo que config lo permita).
 	if not config.get("publicar_empresa"):
@@ -467,6 +485,7 @@ def registrar(registro, config, nuevos, mensajes, ahora=None, export=None):
 		"eventos_repetidos": repetidos,
 		"eventos_descartados": descartados,
 		"desafios_nuevos": desafios_nuevos,
+		"desafios_omitidos": desafios_omitidos,
 	}
 	trabajo["corridas"].append(resumen)
 	registro.clear()

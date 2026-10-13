@@ -45,6 +45,8 @@ Escríbelo en el grupo, claro y con el nombre o la empresa. Se aplica con el sig
 
 También puedes hacerlo sin pasar por el grupo: en **Run now** hay un cuadro de texto; lo que escribas ahí llega al Operador como instrucción tuya. Escríbela una sola vez: si la repites en otra corrida, se podría aplicar dos veces ("Suma 1 punto al Squad 2 por la reunión de Isidora del martes").
 
+**Misión del día y Flash Challenge.** No hace falta anunciarlos en el grupo: ese mismo cuadro de **Run now** sirve para publicarlos en la página ("Misión de hoy: Primer saque. La primera reunión que agende cada integrante suma 1 punto adicional"). Un Flash necesita su ventana ("de 15:00 a 16:00"); sin ella no se publica y el Operador te pregunta. Hay una sola misión por día: si mandas otra, no entra. El SDR igual tiene que escribir "Misión completada: …" en el grupo para sumar. Si prefieres anunciarlos en el grupo, sigue funcionando como siempre.
+
 Tus resúmenes de puntaje en el grupo no cambian el marcador. Si tu cuenta no coincide con la página, el Operador te escribe para aclararlo. Nada se borra: toda corrección queda como un movimiento nuevo y visible.
 
 ## 6. Cerrar la Cup
@@ -57,7 +59,7 @@ El viernes a las 17:00 el marcador deja de sumar solo. Lo que llegue después qu
 
 ## Datos de la rutina
 
-- **Nombre:** SDR Cup #3 · Operador. Se ve y se edita en https://claude.ai/code/routines/trig_01GsAJj1qLi1Cquy91ZLh49v (con tu cuenta de Claude).
+- **Nombre:** SDR Cup #3 · Operador. Se ve y se edita en claude.ai/code/routines → SDR Cup #3 · Operador (con tu cuenta de Claude).
 - **Horario:** minuto 7 de cada hora, de 10:07 a 19:07, del martes 13 al viernes 16 de octubre, hora de Chile. Primera corrida: martes 13 a las 10:07.
 - **Accesos:** Google Drive (leer los exports) y Gmail (escribirte y leer tu respuesta). Ningún otro conector.
 - **Dónde escribe:** solo en la rama `estado` del repo de la página y en la rama `registro` del repo privado. Nunca en `main`.
