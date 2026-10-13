@@ -8,23 +8,23 @@
 		"minimo_para_ganar": 20,
 		"premio": null,
 		"mensaje": null,
-		"fase": "por_iniciar",
+		"fase": "en_curso",
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-13T09:05:28-03:00",
-	"chat_hasta": "2026-10-13T00:08:58-03:00",
-	"lider": null,
-	"diferencia": 0,
+	"actualizado": "2026-10-13T12:28:11-03:00",
+	"chat_hasta": "2026-10-13T12:01:57-03:00",
+	"lider": "squad-1",
+	"diferencia": 1,
 	"squads": [
 		{
 			"id": "squad-1",
 			"nombre": "Squad 1",
 			"posicion": 1,
-			"puntos": 0,
+			"puntos": 1,
 			"puntos_en_revision": 0,
 			"desglose": {
-				"agendadas": 0,
+				"agendadas": 1,
 				"realizadas": 0,
 				"combos": 0,
 				"misiones": 0,
@@ -32,16 +32,16 @@
 				"legendarios": 0,
 				"ajustes": 0
 			},
-			"reuniones_agendadas": 0,
+			"reuniones_agendadas": 1,
 			"reuniones_realizadas": 0,
 			"integrantes": [
 				{
 					"id": "matias-palma",
 					"nombre": "Matías Palma",
-					"puntos": 0,
-					"reuniones_agendadas": 0,
+					"puntos": 1,
+					"reuniones_agendadas": 1,
 					"reuniones_realizadas": 0,
-					"ultima_actividad": null
+					"ultima_actividad": "2026-10-13T11:54:24-03:00"
 				},
 				{
 					"id": "matias-hernandez",
@@ -72,7 +72,7 @@
 		{
 			"id": "squad-2",
 			"nombre": "Squad 2",
-			"posicion": 1,
+			"posicion": 2,
 			"puntos": 0,
 			"puntos_en_revision": 0,
 			"desglose": {
@@ -126,11 +126,11 @@
 		{
 			"fecha": "2026-10-13",
 			"puntos": {
-				"squad-1": 0,
+				"squad-1": 1,
 				"squad-2": 0
 			},
 			"acumulado": {
-				"squad-1": 0,
+				"squad-1": 1,
 				"squad-2": 0
 			},
 			"combo": {
@@ -167,7 +167,7 @@
 			"puntos_texto": "+1 adicional por cada reunión con una empresa repescable",
 			"desde": "2026-10-13T10:00:00-03:00",
 			"hasta": "2026-10-13T23:59:59-03:00",
-			"vigente": false,
+			"vigente": true,
 			"ganador": null
 		}
 	],
@@ -187,5 +187,26 @@
 			"squad": null
 		}
 	],
-	"eventos": []
+	"eventos": [
+		{
+			"id": "ev-0001",
+			"tipo": "reunion_agendada",
+			"fecha_hora": "2026-10-13T11:54:24-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-palma",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Matías Palma agendó una reunión",
+			"detalle": null,
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261013T115424-0",
+				"hora": "11:54",
+				"fuente": "chat"
+			}
+		}
+	]
 }
