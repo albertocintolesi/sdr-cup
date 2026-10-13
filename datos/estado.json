@@ -12,7 +12,7 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-13T00:54:41-03:00",
+	"actualizado": "2026-10-13T09:05:28-03:00",
 	"chat_hasta": "2026-10-13T00:08:58-03:00",
 	"lider": null,
 	"diferencia": 0,
@@ -157,7 +157,20 @@
 			"combo": null
 		}
 	],
-	"desafios": [],
+	"desafios": [
+		{
+			"id": "mision-2026-10-13",
+			"tipo": "mision",
+			"fecha": "2026-10-13",
+			"nombre": "Pesca azul",
+			"descripcion": "Las reuniones agendadas hoy con empresas repescables del CRM (filas azules) suman x2.",
+			"puntos_texto": "+1 adicional por cada reunión con una empresa repescable",
+			"desde": "2026-10-13T10:00:00-03:00",
+			"hasta": "2026-10-13T23:59:59-03:00",
+			"vigente": false,
+			"ganador": null
+		}
+	],
 	"legendarios": [
 		{
 			"id": "colaboradores",
