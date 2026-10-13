@@ -12,19 +12,19 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-13T12:28:11-03:00",
-	"chat_hasta": "2026-10-13T12:01:57-03:00",
+	"actualizado": "2026-10-13T13:16:33-03:00",
+	"chat_hasta": "2026-10-13T13:15:32-03:00",
 	"lider": "squad-1",
-	"diferencia": 1,
+	"diferencia": 2,
 	"squads": [
 		{
 			"id": "squad-1",
 			"nombre": "Squad 1",
 			"posicion": 1,
-			"puntos": 1,
+			"puntos": 2,
 			"puntos_en_revision": 0,
 			"desglose": {
-				"agendadas": 1,
+				"agendadas": 2,
 				"realizadas": 0,
 				"combos": 0,
 				"misiones": 0,
@@ -32,16 +32,16 @@
 				"legendarios": 0,
 				"ajustes": 0
 			},
-			"reuniones_agendadas": 1,
+			"reuniones_agendadas": 2,
 			"reuniones_realizadas": 0,
 			"integrantes": [
 				{
 					"id": "matias-palma",
 					"nombre": "Matías Palma",
-					"puntos": 1,
-					"reuniones_agendadas": 1,
+					"puntos": 2,
+					"reuniones_agendadas": 2,
 					"reuniones_realizadas": 0,
-					"ultima_actividad": "2026-10-13T11:54:24-03:00"
+					"ultima_actividad": "2026-10-13T12:50:04-03:00"
 				},
 				{
 					"id": "matias-hernandez",
@@ -126,11 +126,11 @@
 		{
 			"fecha": "2026-10-13",
 			"puntos": {
-				"squad-1": 1,
+				"squad-1": 2,
 				"squad-2": 0
 			},
 			"acumulado": {
-				"squad-1": 1,
+				"squad-1": 2,
 				"squad-2": 0
 			},
 			"combo": {
@@ -188,6 +188,26 @@
 		}
 	],
 	"eventos": [
+		{
+			"id": "ev-0002",
+			"tipo": "reunion_agendada",
+			"fecha_hora": "2026-10-13T12:50:04-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-palma",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Matías Palma agendó una reunión",
+			"detalle": null,
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261013T125004-0",
+				"hora": "12:50",
+				"fuente": "chat"
+			}
+		},
 		{
 			"id": "ev-0001",
 			"tipo": "reunion_agendada",
