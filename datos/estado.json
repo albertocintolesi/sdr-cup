@@ -12,7 +12,7 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-14T11:10:00-03:00",
+	"actualizado": "2026-10-15T09:30:00-03:00",
 	"chat_hasta": "2026-10-14T11:00:00-03:00",
 	"lider": "squad-1",
 	"diferencia": 1,
@@ -89,7 +89,7 @@
 			"integrantes": [
 				{
 					"id": "alberto-m",
-					"nombre": "Alberto M.",
+					"nombre": "Alberto Muñoz",
 					"puntos": 4,
 					"reuniones_agendadas": 1,
 					"reuniones_realizadas": 0,
@@ -97,7 +97,7 @@
 				},
 				{
 					"id": "isidora-b",
-					"nombre": "Isidora B.",
+					"nombre": "Isidora Bravo",
 					"puntos": 3,
 					"reuniones_agendadas": 1,
 					"reuniones_realizadas": 1,
@@ -113,7 +113,7 @@
 				},
 				{
 					"id": "pedro-pablo-m",
-					"nombre": "Pedro Pablo M.",
+					"nombre": "Pedro Pablo Mardones",
 					"puntos": 0,
 					"reuniones_agendadas": 0,
 					"reuniones_realizadas": 0,
@@ -155,9 +155,18 @@
 		},
 		{
 			"fecha": "2026-10-15",
-			"puntos": null,
-			"acumulado": null,
-			"combo": null
+			"puntos": {
+				"squad-1": 0,
+				"squad-2": 0
+			},
+			"acumulado": {
+				"squad-1": 11,
+				"squad-2": 10
+			},
+			"combo": {
+				"squad-1": false,
+				"squad-2": false
+			}
 		},
 		{
 			"fecha": "2026-10-16",
@@ -174,7 +183,7 @@
 			"nombre": "Primer golpe",
 			"descripcion": "La primera reunión que agende cada integrante hoy suma un punto adicional. Vale una sola vez por persona y hay que avisar que se cumplió.",
 			"puntos_texto": "+1 adicional por la primera reunión del día",
-			"desde": "2026-10-13T09:00:00-03:00",
+			"desde": "2026-10-13T10:00:00-03:00",
 			"hasta": "2026-10-13T23:59:59-03:00",
 			"vigente": false,
 			"ganador": null
@@ -200,6 +209,18 @@
 			"puntos_texto": "+2 adicionales por reunión con empresa de +1.000 colaboradores",
 			"desde": "2026-10-14T08:30:00-03:00",
 			"hasta": "2026-10-14T23:59:59-03:00",
+			"vigente": false,
+			"ganador": null
+		},
+		{
+			"id": "mision-2026-10-15",
+			"tipo": "mision",
+			"fecha": "2026-10-15",
+			"nombre": "Primer saque",
+			"descripcion": "La primera reunión que agende cada integrante hoy suma un punto adicional.",
+			"puntos_texto": "+1 adicional por la primera reunión del día",
+			"desde": "2026-10-15T09:30:00-03:00",
+			"hasta": "2026-10-15T23:59:59-03:00",
 			"vigente": true,
 			"ganador": null
 		}
@@ -229,7 +250,7 @@
 			"sdr": "pedro-pablo-m",
 			"puntos": 0,
 			"puntos_en_revision": 1,
-			"titulo": "Pedro Pablo M. informó una reunión",
+			"titulo": "Pedro Pablo Mardones informó una reunión",
 			"detalle": null,
 			"empresa": null,
 			"ref": null,
@@ -309,7 +330,7 @@
 			"sdr": "isidora-b",
 			"puntos": 1,
 			"puntos_en_revision": 0,
-			"titulo": "Se realizó una reunión de Isidora B.",
+			"titulo": "Se realizó una reunión de Isidora Bravo",
 			"detalle": null,
 			"empresa": null,
 			"ref": "ev-0003",
@@ -349,7 +370,7 @@
 			"sdr": "alberto-m",
 			"puntos": 3,
 			"puntos_en_revision": 0,
-			"titulo": "Alberto M. ganó el Flash Challenge: Doble o nada",
+			"titulo": "Alberto Muñoz ganó el Flash Challenge: Doble o nada",
 			"detalle": null,
 			"empresa": null,
 			"ref": "ev-0010",
@@ -369,7 +390,7 @@
 			"sdr": "alberto-m",
 			"puntos": 1,
 			"puntos_en_revision": 0,
-			"titulo": "Alberto M. agendó una reunión",
+			"titulo": "Alberto Muñoz agendó una reunión",
 			"detalle": null,
 			"empresa": null,
 			"ref": null,
@@ -489,7 +510,7 @@
 			"sdr": "isidora-b",
 			"puntos": 1,
 			"puntos_en_revision": 0,
-			"titulo": "Isidora B. cumplió la misión: Primer golpe",
+			"titulo": "Isidora Bravo cumplió la misión: Primer golpe",
 			"detalle": null,
 			"empresa": null,
 			"ref": "ev-0003",
@@ -509,7 +530,7 @@
 			"sdr": "isidora-b",
 			"puntos": 1,
 			"puntos_en_revision": 0,
-			"titulo": "Isidora B. agendó una reunión",
+			"titulo": "Isidora Bravo agendó una reunión",
 			"detalle": null,
 			"empresa": null,
 			"ref": null,
