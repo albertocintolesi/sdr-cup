@@ -157,9 +157,14 @@ def validar(evento, registro, config, squads):
 		elif tipo == "flash" and not marcado_por_operador:
 			del_desafio = [e for e in eventos if e["tipo"] == "flash" and e.get("desafio") == desafio["id"] and e["id"] not in anulados]
 			ganado = [e for e in del_desafio if e["id"] not in pendientes]
-			if not (desafio.get("desde") and desafio.get("hasta")):
+			# Un Flash sorteado no tiene hora de término: vale hasta el cierre de la Cup.
+			sorteado = bool((desafio.get("origen") or {}).get("sorteo"))
+			fin = desafio.get("hasta") or (cierre if sorteado else None)
+			if not (desafio.get("desde") and fin):
 				problemas.append(f"el Flash '{desafio['id']}' no tiene ventana (desde/hasta)")
-			elif not desafio["desde"] <= evento["fecha_hora"] <= desafio["hasta"]:
+			elif sorteado and evento.get("puntos") != desafio.get("puntos"):
+				problemas.append(f"el Flash '{desafio['id']}' vale {desafio.get('puntos')} puntos")
+			elif not desafio["desde"] <= evento["fecha_hora"] <= fin:
 				descarte = "está fuera de la ventana del Flash: no suma el Flash (la reunión sí)"
 			elif ganado:
 				descarte = f"el Flash ya lo ganó {ganado[0]['squad']} ({ganado[0]['id']}): el segundo no suma"

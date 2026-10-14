@@ -47,6 +47,8 @@ También puedes hacerlo sin pasar por el grupo: en **Run now** hay un cuadro de 
 
 **Misión del día y Flash Challenge.** No hace falta anunciarlos en el grupo: ese mismo cuadro de **Run now** sirve para publicarlos en la página ("Misión de hoy: Primer saque. La primera reunión que agende cada integrante suma 1 punto adicional"). Un Flash necesita su ventana ("de 15:00 a 16:00"); sin ella no se publica y el Operador te pregunta. Hay una sola misión por día: si mandas otra, no entra. El SDR igual tiene que escribir "Misión completada: …" en el grupo para sumar. Si prefieres anunciarlos en el grupo, sigue funcionando como siempre.
 
+**Flash Challenge sorteados.** Además, el Operador lanza solo los Flash que dejaste definidos, a una hora al azar. Ni tú sabes cuándo ni cuál: no abras `flash.json` en el repo privado. Cuando cae uno te llega un correo **[SDR Cup #3] Se lanzó un Flash Challenge**, sin el contenido: avisa al grupo que revise la landing. Queda abierto hasta que un squad lo cumpla y lo declare en el grupo ("Flash Challenge: …"), o hasta el cierre.
+
 Tus resúmenes de puntaje en el grupo no cambian el marcador. Si tu cuenta no coincide con la página, el Operador te escribe para aclararlo. Nada se borra: toda corrección queda como un movimiento nuevo y visible.
 
 ## 6. Cerrar la Cup
