@@ -64,22 +64,42 @@ def completo(programa):
 	return bool(flash and programa.get("dias") and programa.get("turnos")) and bien_escritos and sin_plantilla
 
 
-def por_decidir(registro, ahora):
-	"""Flash "mejor del día" con la ventana cerrada, candidatos, sin ganador y sin correo a Alberto."""
+def rondas_pendientes(registro, ahora):
+	"""Flash "mejor del día" con la ventana cerrada y sin ganador vigente que esperan a Alberto.
+
+	Devuelve (por_decidir, sin_candidatos). Hay una consulta por ronda: la primera al cerrar la
+	ventana y otra cada vez que se anula la reunión ganadora. Cada ronda deja un pendiente
+	(`p-<id>`, luego `p-<id>-2`, `p-<id>-3`…); la ronda está hecha cuando su pendiente existe.
+	Si al anularse el ganador ya no quedan candidatos, va en `sin_candidatos`.
+	"""
 	anulados = {e["ref"] for e in registro["eventos"] if e["tipo"] == "anulacion"}
-	return [
-		d["id"] for d in registro["desafios"]
-		if d.get("modo") == "mejor_del_dia" and d.get("hasta") and d["hasta"] < ahora
-		and any(c["desafio"] == d["id"] for c in registro.get("candidatos") or [])
-		and not any(e["tipo"] == "flash" and e.get("desafio") == d["id"] and e["id"] not in anulados for e in registro["eventos"])
-		and not any(p["id"] == f"p-{d['id']}" for p in registro.get("pendientes") or [])
-	]
+	pedir, sin_candidatos = [], []
+	for d in registro["desafios"]:
+		if d.get("modo") != "mejor_del_dia" or not d.get("hasta") or d["hasta"] >= ahora:
+			continue
+		ganadores = [e for e in registro["eventos"] if e["tipo"] == "flash" and e.get("desafio") == d["id"]]
+		if any(e["id"] not in anulados for e in ganadores):
+			continue
+		hechas = sum(1 for p in registro.get("pendientes") or [] if p["id"] == f"p-{d['id']}" or p["id"].startswith(f"p-{d['id']}-"))
+		if hechas >= 1 + len(ganadores):
+			continue
+		quedan = [c for c in registro.get("candidatos") or [] if c["desafio"] == d["id"] and c["ref"] not in anulados]
+		if quedan:
+			pedir.append(d["id"])
+		elif ganadores:
+			sin_candidatos.append(d["id"])
+	return pedir, sin_candidatos
+
+
+def por_decidir(registro, ahora):
+	return rondas_pendientes(registro, ahora)[0]
 
 
 def sortear(registro, programa, cup, ahora, azar=None):
 	"""Devuelve el resultado de la corrida y deja `registro` actualizado. `azar` es solo para pruebas."""
 	azar = azar or secrets.SystemRandom()
-	resultado = {"turno": None, "nuevo": False, "cayeron": 0, "por_decidir": por_decidir(registro, ahora)}
+	pedir, sin_candidatos = rondas_pendientes(registro, ahora)
+	resultado = {"turno": None, "nuevo": False, "cayeron": 0, "por_decidir": pedir, "sin_candidatos": sin_candidatos}
 	if registro.get("cierre"):
 		return resultado
 	if not completo(programa):
