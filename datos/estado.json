@@ -12,7 +12,7 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-14T14:28:40-03:00",
+	"actualizado": "2026-10-14T15:08:14-03:00",
 	"chat_hasta": "2026-10-14T12:48:05-03:00",
 	"lider": "squad-2",
 	"diferencia": 1,
@@ -199,6 +199,18 @@
 			"descripcion": "Agenda una reunión con una cadena de farmacias que no sea cliente de Brolly. Revisa los blacklisteados y pregunta si tienes dudas. Avísalo en el grupo con \"Flash Challenge: El antídoto\".",
 			"puntos_texto": "+3 para el primer squad",
 			"desde": "2026-10-14T14:28:40-03:00",
+			"hasta": null,
+			"vigente": true,
+			"ganador": null
+		},
+		{
+			"id": "flash-2026-10-14-s2",
+			"tipo": "flash",
+			"fecha": "2026-10-14",
+			"nombre": "Closer",
+			"descripcion": "Agenda una reunión para el próximo día hábil. Avísalo en el grupo con \"Flash Challenge: Closer\".",
+			"puntos_texto": "+3 para el primer squad",
+			"desde": "2026-10-14T15:08:14-03:00",
 			"hasta": null,
 			"vigente": true,
 			"ganador": null
