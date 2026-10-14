@@ -12,10 +12,10 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-14T10:26:08-03:00",
-	"chat_hasta": "2026-10-13T17:00:31-03:00",
+	"actualizado": "2026-10-14T14:28:40-03:00",
+	"chat_hasta": "2026-10-14T12:48:05-03:00",
 	"lider": "squad-2",
-	"diferencia": 2,
+	"diferencia": 1,
 	"squads": [
 		{
 			"id": "squad-2",
@@ -73,10 +73,10 @@
 			"id": "squad-1",
 			"nombre": "Squad 1",
 			"posicion": 2,
-			"puntos": 2,
+			"puntos": 3,
 			"puntos_en_revision": 0,
 			"desglose": {
-				"agendadas": 2,
+				"agendadas": 3,
 				"realizadas": 0,
 				"combos": 0,
 				"misiones": 0,
@@ -84,7 +84,7 @@
 				"legendarios": 0,
 				"ajustes": 0
 			},
-			"reuniones_agendadas": 2,
+			"reuniones_agendadas": 3,
 			"reuniones_realizadas": 0,
 			"integrantes": [
 				{
@@ -98,10 +98,10 @@
 				{
 					"id": "matias-hernandez",
 					"nombre": "Matías Hernández",
-					"puntos": 0,
-					"reuniones_agendadas": 0,
+					"puntos": 1,
+					"reuniones_agendadas": 1,
 					"reuniones_realizadas": 0,
-					"ultima_actividad": null
+					"ultima_actividad": "2026-10-14T10:28:14-03:00"
 				},
 				{
 					"id": "matias-rauque",
@@ -141,11 +141,11 @@
 		{
 			"fecha": "2026-10-14",
 			"puntos": {
-				"squad-1": 0,
+				"squad-1": 1,
 				"squad-2": 0
 			},
 			"acumulado": {
-				"squad-1": 2,
+				"squad-1": 3,
 				"squad-2": 4
 			},
 			"combo": {
@@ -190,6 +190,18 @@
 			"hasta": "2026-10-14T23:59:59-03:00",
 			"vigente": true,
 			"ganador": null
+		},
+		{
+			"id": "flash-2026-10-14-s1",
+			"tipo": "flash",
+			"fecha": "2026-10-14",
+			"nombre": "El antídoto",
+			"descripcion": "Agenda una reunión con una cadena de farmacias que no sea cliente de Brolly. Revisa los blacklisteados y pregunta si tienes dudas. Avísalo en el grupo con \"Flash Challenge: El antídoto\".",
+			"puntos_texto": "+3 para el primer squad",
+			"desde": "2026-10-14T14:28:40-03:00",
+			"hasta": null,
+			"vigente": true,
+			"ganador": null
 		}
 	],
 	"legendarios": [
@@ -209,6 +221,26 @@
 		}
 	],
 	"eventos": [
+		{
+			"id": "ev-0006",
+			"tipo": "reunion_agendada",
+			"fecha_hora": "2026-10-14T10:28:14-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-hernandez",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Matías Hernández agendó una reunión",
+			"detalle": null,
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261014T102814-0",
+				"hora": "10:28",
+				"fuente": "chat"
+			}
+		},
 		{
 			"id": "ev-0005",
 			"tipo": "combo_diario",
