@@ -240,6 +240,8 @@ def calcular_estado(registro, config, ahora):
 			"nombre": texto_publico(d["nombre"], empresas, d["id"]) or "Desafío",
 			"descripcion": texto_publico(d.get("descripcion"), empresas, d["id"]),
 			"puntos_texto": d.get("puntos_texto"),
+			# Un Flash que decide Alberto explica en `regla` cómo se gana.
+			**({"regla": texto_publico(d["regla"], empresas, d["id"])} if d.get("regla") else {}),
 			"desde": con_offset(desde, offset),
 			"hasta": con_offset(hasta, offset),
 			"vigente": vigente and not ganado,

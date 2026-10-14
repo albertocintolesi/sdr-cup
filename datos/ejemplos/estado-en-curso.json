@@ -226,6 +226,19 @@
 			"hasta": null,
 			"vigente": true,
 			"ganador": null
+		},
+		{
+			"id": "flash-2026-10-14-s3",
+			"tipo": "flash",
+			"fecha": "2026-10-14",
+			"nombre": "Heavyweight",
+			"descripcion": "El squad que agende reunión con la empresa más grande se lleva 3 puntos adicionales.",
+			"puntos_texto": "+3 para el squad con la empresa más grande",
+			"regla": "Gana el squad que agende con la empresa más grande antes del fin del día. Lo define Alberto al terminar el día.",
+			"desde": "2026-10-14T15:07:10-03:00",
+			"hasta": "2026-10-14T23:59:59-03:00",
+			"vigente": true,
+			"ganador": null
 		}
 	],
 	"legendarios": [

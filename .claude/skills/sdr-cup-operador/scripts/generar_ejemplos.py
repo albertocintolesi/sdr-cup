@@ -87,7 +87,8 @@ LOTE_DIA_1_Y_2 = {
 }
 
 # Flash que entran por sorteo (sortear_flash.py los escribe directo en el registro): sin `hasta`,
-# abiertos hasta que un squad los gane o cierre la Cup. Uno ya ganado y otro abierto.
+# abiertos hasta que un squad los gane o cierre la Cup. Uno ya ganado y otro abierto. El tercero
+# lo decide Alberto: tiene ventana hasta el fin del día y una `regla` que se publica.
 FLASH_SORTEADOS = [
 	{
 		"id": "flash-2026-10-14-s1", "tipo": "flash", "fecha": "2026-10-14", "nombre": "Gerencia express",
@@ -100,6 +101,14 @@ FLASH_SORTEADOS = [
 		"descripcion": "El primer squad en el que dos integrantes agenden después del anuncio suma 4 puntos adicionales.",
 		"puntos_texto": "+4 para el primer squad", "puntos": 4,
 		"desde": "2026-10-14T14:07:15", "hasta": None, "origen": {"sorteo": "2026-10-14T14"}, "flash": "f2",
+	},
+	{
+		"id": "flash-2026-10-14-s3", "tipo": "flash", "fecha": "2026-10-14", "nombre": "Heavyweight",
+		"descripcion": "El squad que agende reunión con la empresa más grande se lleva 3 puntos adicionales.",
+		"puntos_texto": "+3 para el squad con la empresa más grande", "puntos": 3,
+		"desde": "2026-10-14T15:07:10", "hasta": "2026-10-14T23:59:59", "origen": {"sorteo": "2026-10-14T15"}, "flash": "f3",
+		"modo": "mejor_del_dia",
+		"regla": "Gana el squad que agende con la empresa más grande antes del fin del día. Lo define Alberto al terminar el día.",
 	},
 ]
 

@@ -17,6 +17,11 @@ Flash, caen varios en el mismo turno.
 El Flash que cae se agrega a registro.json como desafío `flash` abierto: `desde` es ahora y no
 tiene `hasta` (dura hasta que un squad lo gane o cierre la Cup).
 
+Un Flash puede traer `"modo": "mejor_del_dia"`: no lo gana el primero sino el squad que Alberto
+elija al terminar el día entre los candidatos. Al caer tiene ventana hasta las 23:59:59 de ese
+día (recortada al cierre de la Cup) y un texto `regla` que se publica. La salida trae en
+`por_decidir` los de ventana ya cerrada, con candidatos, sin ganador y sin correo a Alberto.
+
 Secreto: la salida dice solo cuántos Flash cayeron en esta corrida, sin cuáles: el resumen de
 la corrida le llega a Alberto, que compite. El nombre queda solo en el registro y en el estado.
 """
@@ -33,6 +38,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 from reglas import guardar_json, leer_json, leer_registro  # noqa: E402
 
 MINUTO_DE_INICIO = 7
+MODOS = ("mejor_del_dia",)
+REGLA_MEJOR_DEL_DIA = "Gana el squad que agende con la empresa más grande antes del fin del día. Lo define Alberto al terminar el día."
 
 
 def turnos_del_dia(fecha, horas, cierre):
@@ -50,16 +57,29 @@ def completo(programa):
 	flash = programa.get("flash") or []
 	bien_escritos = all(
 		f.get("id") and f.get("nombre") and isinstance(f.get("puntos"), int) and not isinstance(f.get("puntos"), bool)
+		and f.get("modo") in (None, *MODOS)
 		for f in flash
 	)
 	sin_plantilla = "<<" not in json.dumps(programa, ensure_ascii=False)
 	return bool(flash and programa.get("dias") and programa.get("turnos")) and bien_escritos and sin_plantilla
 
 
+def por_decidir(registro, ahora):
+	"""Flash "mejor del día" con la ventana cerrada, candidatos, sin ganador y sin correo a Alberto."""
+	anulados = {e["ref"] for e in registro["eventos"] if e["tipo"] == "anulacion"}
+	return [
+		d["id"] for d in registro["desafios"]
+		if d.get("modo") == "mejor_del_dia" and d.get("hasta") and d["hasta"] < ahora
+		and any(c["desafio"] == d["id"] for c in registro.get("candidatos") or [])
+		and not any(e["tipo"] == "flash" and e.get("desafio") == d["id"] and e["id"] not in anulados for e in registro["eventos"])
+		and not any(p["id"] == f"p-{d['id']}" for p in registro.get("pendientes") or [])
+	]
+
+
 def sortear(registro, programa, cup, ahora, azar=None):
 	"""Devuelve el resultado de la corrida y deja `registro` actualizado. `azar` es solo para pruebas."""
 	azar = azar or secrets.SystemRandom()
-	resultado = {"turno": None, "nuevo": False, "cayeron": 0}
+	resultado = {"turno": None, "nuevo": False, "cayeron": 0, "por_decidir": por_decidir(registro, ahora)}
 	if registro.get("cierre"):
 		return resultado
 	if not completo(programa):
@@ -109,6 +129,11 @@ def sortear(registro, programa, cup, ahora, azar=None):
 			"puntos": flash["puntos"], "desde": ahora, "hasta": None,
 			"origen": {"sorteo": clave}, "flash": flash["id"],
 		}
+		if flash.get("modo") == "mejor_del_dia":
+			desafio.update(
+				modo="mejor_del_dia", regla=flash.get("regla") or REGLA_MEJOR_DEL_DIA,
+				hasta=min(f"{fecha}T23:59:59", cup["cierre"]),
+			)
 		registro["desafios"].append(desafio)
 		nuevos.append(desafio)
 	sorteo["turnos"].append({"turno": clave, "corrida": ahora, "cayeron": [d["id"] for d in nuevos]})

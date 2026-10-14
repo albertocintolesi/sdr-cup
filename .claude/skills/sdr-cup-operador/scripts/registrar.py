@@ -154,6 +154,24 @@ def validar(evento, registro, config, squads):
 			problemas.append(f"el desafío '{evento.get('desafio')}' no está registrado")
 		elif desafio["tipo"] != tipo:
 			problemas.append(f"'{desafio['id']}' es de tipo {desafio['tipo']}, no {tipo}")
+		elif tipo == "flash" and desafio.get("modo") == "mejor_del_dia":
+			# Lo decide Alberto (correo o instrucción directa) entre los candidatos, al terminar el día.
+			ganado = [e for e in eventos if e["tipo"] == "flash" and e.get("desafio") == desafio["id"] and e["id"] not in anulados]
+			if not (origen.get("correo") or origen.get("instruccion")):
+				problemas.append(f"'{desafio['id']}' lo decide Alberto: un reclamo del chat va en 'candidatos', no como evento")
+			elif evento.get("puntos") != desafio.get("puntos"):
+				problemas.append(f"el Flash '{desafio['id']}' vale {desafio.get('puntos')} puntos")
+			elif not evento.get("ref"):
+				problemas.append("el ganador va con 'ref' a la reunión del candidato elegido")
+			elif not any(
+				c["desafio"] == desafio["id"] and c["ref"] == evento["ref"] and c["sdr"] == evento.get("sdr")
+				for c in registro.get("candidatos") or []
+			):
+				problemas.append("el ganador debe ser un candidato registrado de este Flash: su 'sdr' y 'ref' a su reunión")
+			elif not desafio["desde"] <= evento["fecha_hora"] <= desafio["hasta"]:
+				problemas.append("usa la fecha_hora del candidato elegido, que está dentro de la ventana")
+			elif ganado:
+				descarte = f"el Flash ya tiene ganador ({ganado[0]['id']}): no se reemplaza"
 		elif tipo == "flash" and not marcado_por_operador:
 			del_desafio = [e for e in eventos if e["tipo"] == "flash" and e.get("desafio") == desafio["id"] and e["id"] not in anulados]
 			ganado = [e for e in del_desafio if e["id"] not in pendientes]
@@ -459,6 +477,36 @@ def registrar(registro, config, nuevos, mensajes, ahora=None, export=None):
 		resolver_flash(trabajo, evento)
 		ajustar_combos(trabajo, evento)
 
+	# Candidatos de un Flash "mejor del día": privados y sin puntos; Alberto elige al terminar el día.
+	trabajo.setdefault("candidatos", [])
+	candidatos_nuevos = 0
+	for posicion, candidato in enumerate(nuevos.get("candidatos") or [], start=1):
+		donde = f"candidato {posicion}"
+		desafio = next((d for d in trabajo["desafios"] if d["id"] == candidato.get("desafio")), None)
+		ref = candidato.get("ref")
+		if isinstance(ref, str) and ref.startswith("tmp:"):
+			if ref[4:] in etiquetas_descartadas:
+				descartados.append(f"{donde}: su reunión fue descartada")
+				continue
+			ref = temporales.get(ref[4:])
+		reunion = next((e for e in trabajo["eventos"] if e["id"] == ref and e["tipo"] == "reunion_agendada"), None)
+		if not desafio or desafio.get("modo") != "mejor_del_dia":
+			errores.append(f"{donde}: '{candidato.get('desafio')}' no es un Flash que decide Alberto")
+		elif candidato.get("sdr") not in squads:
+			errores.append(f"{donde}: el SDR '{candidato.get('sdr')}' no está en config.json")
+		elif not reunion:
+			errores.append(f"{donde}: 'ref' debe apuntar a la reunión agendada del candidato")
+		elif not (candidato.get("fecha_hora") and (candidato.get("origen") or {}).get("mensaje")):
+			errores.append(f"{donde}: faltan fecha_hora u origen (mensaje del chat)")
+		elif not desafio["desde"] <= candidato["fecha_hora"] <= desafio["hasta"]:
+			descartados.append(f"{donde}: está fuera de la ventana de '{desafio['id']}': no es candidato")
+		elif not any(c["desafio"] == desafio["id"] and c["ref"] == reunion["id"] for c in trabajo["candidatos"]):
+			trabajo["candidatos"].append({
+				**candidato, "ref": reunion["id"], "squad": squads[candidato["sdr"]],
+				"empresa": candidato.get("empresa") or reunion.get("empresa"),
+			})
+			candidatos_nuevos += 1
+
 	if errores:
 		return errores, None
 
@@ -491,6 +539,7 @@ def registrar(registro, config, nuevos, mensajes, ahora=None, export=None):
 		"eventos_descartados": descartados,
 		"desafios_nuevos": desafios_nuevos,
 		"desafios_omitidos": desafios_omitidos,
+		"candidatos_nuevos": candidatos_nuevos,
 	}
 	trabajo["corridas"].append(resumen)
 	registro.clear()
