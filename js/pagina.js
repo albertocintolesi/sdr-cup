@@ -322,17 +322,33 @@
 	}
 
 	// ---------- Misiones ----------
+	// Flash sin ventana: queda abierto desde que cae hasta que un squad lo cumple o cierra la Cup
+	function flashAbierto(desafio) {
+		return desafio.tipo === 'flash' && desafio.desde && !desafio.hasta;
+	}
+
+	// Hasta cuándo puede estar vigente. Un Flash abierto, a más tardar hasta el cierre.
+	function finDe(desafio) {
+		if (desafio.hasta) return desafio.hasta;
+		return flashAbierto(desafio) ? estado.cup.cierre : null;
+	}
+
 	// La vigencia sale del reloj contra "desde" y "hasta". Un Flash con ganador ya terminó.
 	function situacionDe(desafio) {
 		const t = ahora();
+		const fin = finDe(desafio);
 		if (desafio.tipo === 'flash' && desafio.ganador) return 'terminada';
 		if (desafio.desde && t < new Date(desafio.desde).getTime()) return 'proxima';
-		if (desafio.hasta && t > new Date(desafio.hasta).getTime()) return 'terminada';
+		if (fin && t > new Date(fin).getTime()) return 'terminada';
 		if (!desafio.desde && !desafio.hasta) return esHoy(desafio.fecha + 'T12:00:00-03:00') ? 'activa' : 'terminada';
 		return 'activa';
 	}
 
 	function ventanaDe(desafio) {
+		if (flashAbierto(desafio)) {
+			const desde = 'Desde ' + cuando(desafio.desde);
+			return situacionDe(desafio) === 'terminada' ? desde : desde + ' · hasta que un squad lo cumpla';
+		}
 		if (!desafio.desde || !desafio.hasta) return mayuscula(diaLargo.format(new Date(desafio.fecha + 'T12:00:00-03:00')));
 		const desde = new Date(desafio.desde);
 		const hasta = new Date(desafio.hasta);
@@ -364,8 +380,8 @@
 		}).sort(function (a, b) {
 			if (orden[a.situacion] !== orden[b.situacion]) return orden[a.situacion] - orden[b.situacion];
 			// Activas: primero la que vence antes. El resto: primero la más reciente.
-			const ta = new Date(a.desafio.hasta || a.desafio.fecha).getTime();
-			const tb = new Date(b.desafio.hasta || b.desafio.fecha).getTime();
+			const ta = new Date(finDe(a.desafio) || a.desafio.fecha).getTime();
+			const tb = new Date(finDe(b.desafio) || b.desafio.fecha).getTime();
 			return a.situacion === 'activa' ? ta - tb : tb - ta;
 		});
 
