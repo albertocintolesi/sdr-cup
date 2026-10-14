@@ -163,6 +163,11 @@ def validar(evento, registro, config, squads):
 				problemas.append(f"el Flash '{desafio['id']}' vale {desafio.get('puntos')} puntos")
 			elif not evento.get("ref"):
 				problemas.append("el ganador va con 'ref' a la reunión del candidato elegido")
+			elif not any(
+				c["desafio"] == desafio["id"] and c["ref"] == evento["ref"] and c["sdr"] == evento.get("sdr")
+				for c in registro.get("candidatos") or []
+			):
+				problemas.append("el ganador debe ser un candidato registrado de este Flash: su 'sdr' y 'ref' a su reunión")
 			elif not desafio["desde"] <= evento["fecha_hora"] <= desafio["hasta"]:
 				problemas.append("usa la fecha_hora del candidato elegido, que está dentro de la ventana")
 			elif ganado:
