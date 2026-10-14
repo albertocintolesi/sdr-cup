@@ -250,5 +250,6 @@ Si la Cup parte sin mapa confirmado, usa el organizador de las capturas y lo que
 
 - **Cup sin iniciar o sin zip de la Cup en la carpeta.** No hay nada que procesar: termina sin publicar. El estado inicial en cero ya está en la rama `estado`.
 - **Export más antiguo que el ya procesado.** `leer_chat.py` devuelve 0 nuevos: no pasa nada.
+- **Export con las horas corridas (±1 o 2 s).** `leer_chat.py` reconoce los mensajes ya vistos por su huella (autor, texto y correlativo del adjunto) y los deja en `desplazados`, no en `mensajes`; `registrar.py` anota sus ids nuevos. Una reunión del mismo SDR a ±2 s de otra ya registrada (sin otra empresa ni otra referencia) cuenta como repetida. No hagas nada a mano.
 - **Corrida interrumpida.** Nada queda marcado como visto hasta que `registrar.py` termina bien; la corrida siguiente retoma sola.
 - **Corrección directa de Alberto fuera del chat.** Igual que un fallo: `ajuste`, `anulacion` o `confirmacion` con el origen que corresponda (`correo`).
