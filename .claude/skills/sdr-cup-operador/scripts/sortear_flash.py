@@ -79,10 +79,10 @@ def sortear(registro, programa, cup, ahora, azar=None):
 	turnos = turnos_del_dia(fecha, horas, cierre) if fecha in dias else []
 	turno = next((t for t in turnos if t[1] <= momento < t[2]), None)
 	if turno is None:
-		# Pasado el último turno del último día se informa, una sola vez, lo que no alcanzó a caer.
+		# Pasado el último turno del último día se informa, una sola vez, lo que no alcanzó a caer (si algo quedó).
 		ultimos = turnos_del_dia(dias[-1], horas, cierre)
 		fin = ultimos[-1][2] if ultimos else cierre
-		if momento >= fin and not sorteo.get("cerrado"):
+		if momento >= fin and pendientes and not sorteo.get("cerrado"):
 			sorteo["cerrado"] = True
 			resultado.update(nuevo=True, sobrante=len(pendientes))
 		return resultado
