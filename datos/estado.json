@@ -12,22 +12,74 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-14T17:11:36-03:00",
-	"chat_hasta": "2026-10-14T17:08:21-03:00",
-	"lider": "squad-2",
-	"diferencia": 2,
+	"actualizado": "2026-10-14T17:23:43-03:00",
+	"chat_hasta": "2026-10-14T17:20:33-03:00",
+	"lider": "squad-1",
+	"diferencia": 1,
 	"squads": [
+		{
+			"id": "squad-1",
+			"nombre": "Squad 1",
+			"posicion": 1,
+			"puntos": 10,
+			"puntos_en_revision": 0,
+			"desglose": {
+				"agendadas": 5,
+				"realizadas": 0,
+				"combos": 2,
+				"misiones": 3,
+				"flash": 0,
+				"legendarios": 0,
+				"ajustes": 0
+			},
+			"reuniones_agendadas": 5,
+			"reuniones_realizadas": 0,
+			"integrantes": [
+				{
+					"id": "matias-palma",
+					"nombre": "Matías Palma",
+					"puntos": 4,
+					"reuniones_agendadas": 3,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": "2026-10-14T17:20:01-03:00"
+				},
+				{
+					"id": "matias-hernandez",
+					"nombre": "Matías Hernández",
+					"puntos": 2,
+					"reuniones_agendadas": 1,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": "2026-10-14T17:20:01-03:00"
+				},
+				{
+					"id": "benjamin-allel",
+					"nombre": "Benjamín Allel",
+					"puntos": 2,
+					"reuniones_agendadas": 1,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": "2026-10-14T17:20:01-03:00"
+				},
+				{
+					"id": "matias-rauque",
+					"nombre": "Matías Rauque",
+					"puntos": 0,
+					"reuniones_agendadas": 0,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": null
+				}
+			]
+		},
 		{
 			"id": "squad-2",
 			"nombre": "Squad 2",
-			"posicion": 1,
-			"puntos": 8,
+			"posicion": 2,
+			"puntos": 9,
 			"puntos_en_revision": 0,
 			"desglose": {
 				"agendadas": 3,
 				"realizadas": 0,
 				"combos": 2,
-				"misiones": 0,
+				"misiones": 1,
 				"flash": 3,
 				"legendarios": 0,
 				"ajustes": 0
@@ -38,10 +90,10 @@
 				{
 					"id": "alberto-cintolesi",
 					"nombre": "Alberto Cintolesi",
-					"puntos": 5,
+					"puntos": 6,
 					"reuniones_agendadas": 2,
 					"reuniones_realizadas": 0,
-					"ultima_actividad": "2026-10-14T16:49:50-03:00"
+					"ultima_actividad": "2026-10-14T17:15:31-03:00"
 				},
 				{
 					"id": "pedro-pablo-m",
@@ -62,58 +114,6 @@
 				{
 					"id": "alberto-m",
 					"nombre": "Alberto Muñoz",
-					"puntos": 0,
-					"reuniones_agendadas": 0,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": null
-				}
-			]
-		},
-		{
-			"id": "squad-1",
-			"nombre": "Squad 1",
-			"posicion": 2,
-			"puntos": 6,
-			"puntos_en_revision": 0,
-			"desglose": {
-				"agendadas": 4,
-				"realizadas": 0,
-				"combos": 2,
-				"misiones": 0,
-				"flash": 0,
-				"legendarios": 0,
-				"ajustes": 0
-			},
-			"reuniones_agendadas": 4,
-			"reuniones_realizadas": 0,
-			"integrantes": [
-				{
-					"id": "matias-palma",
-					"nombre": "Matías Palma",
-					"puntos": 3,
-					"reuniones_agendadas": 3,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": "2026-10-14T17:05:13-03:00"
-				},
-				{
-					"id": "matias-hernandez",
-					"nombre": "Matías Hernández",
-					"puntos": 1,
-					"reuniones_agendadas": 1,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": "2026-10-14T10:28:14-03:00"
-				},
-				{
-					"id": "matias-rauque",
-					"nombre": "Matías Rauque",
-					"puntos": 0,
-					"reuniones_agendadas": 0,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": null
-				},
-				{
-					"id": "benjamin-allel",
-					"nombre": "Benjamín Allel",
 					"puntos": 0,
 					"reuniones_agendadas": 0,
 					"reuniones_realizadas": 0,
@@ -141,12 +141,12 @@
 		{
 			"fecha": "2026-10-14",
 			"puntos": {
-				"squad-1": 4,
-				"squad-2": 4
+				"squad-1": 8,
+				"squad-2": 5
 			},
 			"acumulado": {
-				"squad-1": 6,
-				"squad-2": 8
+				"squad-1": 10,
+				"squad-2": 9
 			},
 			"combo": {
 				"squad-1": true,
@@ -233,6 +233,106 @@
 		}
 	],
 	"eventos": [
+		{
+			"id": "ev-0015",
+			"tipo": "mision",
+			"fecha_hora": "2026-10-14T17:20:01-03:00",
+			"squad": "squad-1",
+			"sdr": "benjamin-allel",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Benjamín Allel cumplió la misión: Genkidama",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0012",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261014T172001-0",
+				"hora": "17:20",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0014",
+			"tipo": "mision",
+			"fecha_hora": "2026-10-14T17:20:01-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-palma",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Matías Palma cumplió la misión: Genkidama",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0009",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261014T172001-0",
+				"hora": "17:20",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0013",
+			"tipo": "mision",
+			"fecha_hora": "2026-10-14T17:20:01-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-hernandez",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Matías Hernández cumplió la misión: Genkidama",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0006",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261014T172001-0",
+				"hora": "17:20",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0012",
+			"tipo": "reunion_agendada",
+			"fecha_hora": "2026-10-14T17:17:23-03:00",
+			"squad": "squad-1",
+			"sdr": "benjamin-allel",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Benjamín Allel agendó una reunión",
+			"detalle": null,
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261014T171723-0",
+				"hora": "17:17",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0011",
+			"tipo": "mision",
+			"fecha_hora": "2026-10-14T17:15:31-03:00",
+			"squad": "squad-2",
+			"sdr": "alberto-cintolesi",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Alberto Cintolesi cumplió la misión: Genkidama",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0007",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261014T171531-0",
+				"hora": "17:15",
+				"fuente": "chat"
+			}
+		},
 		{
 			"id": "ev-0010",
 			"tipo": "combo_diario",
