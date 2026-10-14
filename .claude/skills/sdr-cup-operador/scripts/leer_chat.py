@@ -167,21 +167,18 @@ def resolver_autores(mensajes, apodos):
 def filtrar_nuevos(mensajes, vistos=(), desde=None, huellas=None):
 	"""Deja solo los mensajes que no están en `vistos` y, si se pide, posteriores a `desde`.
 
-	Devuelve (nuevos, desplazados). Un id visto solo vale si su huella coincide: con la hora
-	corrida, otro mensaje puede caer en el id de uno visto. Un mensaje no visto es "desplazado"
-	(el mismo de antes, con la hora corrida) si hay un id visto a ±2 s que ya no aparece en este
-	export con su huella y la huella coincide. Los vistos antes de que existieran las huellas no
-	la tienen y calzan solo por id y hora. Cada id visto calza con un único mensaje, el más cercano.
+	Devuelve (nuevos, desplazados). Un id visto vale siempre, aunque cambie su huella (contacto
+	renombrado, mensaje editado). Un mensaje no visto es "desplazado" (el mismo de antes, con la
+	hora corrida) si hay un id visto a ±2 s cuyo mensaje original ya no está en ese id (el id no
+	aparece en este export, o aparece con otra huella) y la huella coincide. Los vistos antes de
+	que existieran las huellas no la tienen y calzan solo por la hora, si su id no aparece. Cada
+	id visto calza con un único mensaje, el más cercano.
 	"""
 	vistos = set(vistos)
 	huellas = huellas or {}
-
-	def ya_visto(mensaje):
-		return mensaje["id"] in vistos and huellas.get(mensaje["id"], mensaje["huella"]) == mensaje["huella"]
-
-	nuevos = [m for m in mensajes if not ya_visto(m)]
-	presentes = {m["id"] for m in mensajes if ya_visto(m)}
-	ausentes = [(momento(v), v) for v in vistos - presentes]
+	nuevos = [m for m in mensajes if m["id"] not in vistos]
+	en_su_lugar = {m["id"] for m in mensajes if huellas.get(m["id"], m["huella"]) == m["huella"]}
+	ausentes = [(momento(v), v) for v in vistos - en_su_lugar]
 	desplazados = []
 	if ausentes:
 		quedan = []

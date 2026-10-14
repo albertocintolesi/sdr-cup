@@ -571,7 +571,7 @@ def registrar(registro, config, nuevos, mensajes, ahora=None, export=None, despl
 	huellas = trabajo.setdefault("huellas", {})
 	for mensaje in list(mensajes) + list(desplazados):
 		if mensaje.get("huella"):
-			huellas[mensaje["id"]] = mensaje["huella"]
+			huellas.setdefault(mensaje["id"], mensaje["huella"])
 	agregados = trabajo["eventos"][antes:]
 	resumen = {
 		"fecha_hora": ahora,
