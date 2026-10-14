@@ -12,7 +12,7 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-15T09:30:00-03:00",
+	"actualizado": "2026-10-15T16:10:00-03:00",
 	"chat_hasta": "2026-10-14T11:00:00-03:00",
 	"lider": "squad-1",
 	"diferencia": 1,
@@ -221,6 +221,18 @@
 			"puntos_texto": "+1 adicional por la primera reunión del día",
 			"desde": "2026-10-15T09:30:00-03:00",
 			"hasta": "2026-10-15T23:59:59-03:00",
+			"vigente": true,
+			"ganador": null
+		},
+		{
+			"id": "flash-2026-10-15-s1",
+			"tipo": "flash",
+			"fecha": "2026-10-15",
+			"nombre": "Ensayo Alfa",
+			"descripcion": "El primer squad que agende una reunión después del anuncio suma 2 puntos adicionales.",
+			"puntos_texto": "+2 para el primer squad",
+			"desde": "2026-10-15T16:10:00-03:00",
+			"hasta": null,
 			"vigente": true,
 			"ganador": null
 		}
