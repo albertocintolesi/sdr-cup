@@ -327,10 +327,11 @@
 		return desafio.tipo === 'flash' && desafio.desde && !desafio.hasta;
 	}
 
-	// Hasta cuándo puede estar vigente. Un Flash abierto, a más tardar hasta el cierre.
+	// Hasta cuándo puede estar vigente. Un Flash abierto, a más tardar hasta el cierre;
+	// si ya tiene ganador no hay fin y se ordena por su fecha.
 	function finDe(desafio) {
 		if (desafio.hasta) return desafio.hasta;
-		return flashAbierto(desafio) ? estado.cup.cierre : null;
+		return flashAbierto(desafio) && !desafio.ganador ? estado.cup.cierre : null;
 	}
 
 	// La vigencia sale del reloj contra "desde" y "hasta". Un Flash con ganador ya terminó.
@@ -380,8 +381,9 @@
 		}).sort(function (a, b) {
 			if (orden[a.situacion] !== orden[b.situacion]) return orden[a.situacion] - orden[b.situacion];
 			// Activas: primero la que vence antes. El resto: primero la más reciente.
-			const ta = new Date(finDe(a.desafio) || a.desafio.fecha).getTime();
-			const tb = new Date(finDe(b.desafio) || b.desafio.fecha).getTime();
+			// Sin fin, cuenta el mediodía de su fecha en Chile (la fecha sola se leería en UTC)
+			const ta = new Date(finDe(a.desafio) || a.desafio.fecha + 'T12:00:00-03:00').getTime();
+			const tb = new Date(finDe(b.desafio) || b.desafio.fecha + 'T12:00:00-03:00').getTime();
 			return a.situacion === 'activa' ? ta - tb : tb - ta;
 		});
 
@@ -431,7 +433,8 @@
 			['Cuándo', ventanaDe(desafio)],
 			['Estado', TEXTO_SITUACION[situacion]],
 			['Ganador', desafio.ganador ? nombreDe(desafio.ganador) : null],
-			['Regla', desafio.tipo === 'flash' ? 'Solo suma el primer squad que la cumple.' : 'No es exclusiva: pueden cumplirla ambos squads.']
+			// El estado puede traer una regla propia del desafío; si no, la de las bases
+			['Regla', desafio.regla || (desafio.tipo === 'flash' ? 'Solo suma el primer squad que la cumple.' : 'No es exclusiva: pueden cumplirla ambos squads.')]
 		];
 		filas.forEach(function (fila) {
 			if (!fila[1]) return;
