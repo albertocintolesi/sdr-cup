@@ -49,6 +49,8 @@ También puedes hacerlo sin pasar por el grupo: en **Run now** hay un cuadro de 
 
 **Flash Challenge sorteados.** Además, el Operador lanza solo los Flash que dejaste definidos, a una hora al azar. Ni tú sabes cuándo ni cuál: no abras `flash.json` en el repo privado. Cuando cae uno te llega un correo **[SDR Cup #3] Se lanzó un Flash Challenge**, sin el contenido: avisa al grupo que revise la landing. Queda abierto hasta que un squad lo cumpla y lo declare en el grupo ("Flash Challenge: …"), o hasta el cierre.
 
+Un Flash marcado como "mejor del día" (por ejemplo, Heavyweight) dura hasta el fin de ese día y lo decides tú: al terminar la ventana te llega un correo **[SDR Cup #3] Flash "…": elige al ganador** con los candidatos (squad, SDR, empresa y colaboradores declarados). Responde en ese correo qué squad gana, o "no gana nadie". También puede decidirlo el Orquestador al lanzar la rutina ("Heavyweight: gana Squad 2").
+
 Tus resúmenes de puntaje en el grupo no cambian el marcador. Si tu cuenta no coincide con la página, el Operador te escribe para aclararlo. Nada se borra: toda corrección queda como un movimiento nuevo y visible.
 
 ## 6. Cerrar la Cup
