@@ -230,7 +230,9 @@ def calcular_estado(registro, config, ahora):
 		# La ventana de todo desafío se recorta al tramo entre el inicio y el cierre de la Cup.
 		desde = max(d["desde"], cup["inicio"]) if d.get("desde") else None
 		hasta = min(d["hasta"], cup["cierre"]) if d.get("hasta") else None
-		vigente = bool(desde and hasta and desde <= ahora <= hasta)
+		# Un Flash sorteado no tiene `hasta`: queda abierto hasta que alguien lo gane o cierre la Cup.
+		abierto = not hasta and bool((d.get("origen") or {}).get("sorteo"))
+		vigente = bool(desde and (hasta or abierto) and desde <= ahora <= (hasta or cup["cierre"]))
 		lista_desafios.append({
 			"id": d["id"],
 			"tipo": d["tipo"],

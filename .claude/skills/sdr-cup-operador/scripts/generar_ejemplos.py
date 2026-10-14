@@ -77,12 +77,31 @@ LOTE_DIA_1_Y_2 = {
 		agendada("2026-10-14T10:15:00", "isidora-b", "Empresa Ficticia Ocho"),
 		mision("2026-10-14T10:15:00", "isidora-b", "mision-2026-10-14", 2),
 		{"tipo": "ajuste", "fecha_hora": "2026-10-14T11:00:00", "squad": "squad-1", "puntos": 1, "motivo": "Fallo del árbitro por una reunión reagendada", "detalle_publico": "Reunión reagendada a partir de un lead de otro integrante", "origen": origen("2026-10-14T11:00:00")},
+		agendada("2026-10-14T11:50:00", "matias-hernandez", "Empresa Ficticia Diecisiete", tmp="hernandez_flash"),
+		{"tipo": "flash", "fecha_hora": "2026-10-14T11:50:00", "squad": "squad-1", "desafio": "flash-2026-10-14-s1", "puntos": 3, "ref": "tmp:hernandez_flash", "origen": origen("2026-10-14T11:50:00")},
 		agendada("2026-10-14T12:30:00", "matias-palma", "Empresa Ficticia Nueve"),
 	],
 	"pendientes": [
 		{"id": "p-001", "estado": "abierto", "mensaje": "20261013T163000-0", "motivo": "Fecha de la reunión ilegible en la captura."},
 	],
 }
+
+# Flash que entran por sorteo (sortear_flash.py los escribe directo en el registro): sin `hasta`,
+# abiertos hasta que un squad los gane o cierre la Cup. Uno ya ganado y otro abierto.
+FLASH_SORTEADOS = [
+	{
+		"id": "flash-2026-10-14-s1", "tipo": "flash", "fecha": "2026-10-14", "nombre": "Gerencia express",
+		"descripcion": "El primer squad que agende una reunión con una gerencia suma 3 puntos adicionales.",
+		"puntos_texto": "+3 para el primer squad", "puntos": 3,
+		"desde": "2026-10-14T11:07:20", "hasta": None, "origen": {"sorteo": "2026-10-14T11"}, "flash": "f1",
+	},
+	{
+		"id": "flash-2026-10-14-s2", "tipo": "flash", "fecha": "2026-10-14", "nombre": "Doblete",
+		"descripcion": "El primer squad en el que dos integrantes agenden después del anuncio suma 4 puntos adicionales.",
+		"puntos_texto": "+4 para el primer squad", "puntos": 4,
+		"desde": "2026-10-14T14:07:15", "hasta": None, "origen": {"sorteo": "2026-10-14T14"}, "flash": "f2",
+	},
+]
 
 LOTE_DIA_3_Y_4 = {
 	"eventos": [
@@ -129,6 +148,7 @@ def main():
 	registro = json.loads(json.dumps(REGISTRO_VACIO))
 	guardar_json(SALIDA / "estado-por-iniciar.json", calcular_estado(registro, config, "2026-10-12T18:00:00"))
 
+	registro["desafios"].extend(json.loads(json.dumps(FLASH_SORTEADOS)))
 	aplicar(registro, config, LOTE_DIA_1_Y_2, "2026-10-14T15:30:00")
 	guardar_json(SALIDA / "estado-en-curso.json", calcular_estado(registro, config, "2026-10-14T15:30:00"))
 

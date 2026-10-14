@@ -14,13 +14,65 @@
 	},
 	"actualizado": "2026-10-14T15:30:00-03:00",
 	"chat_hasta": "2026-10-14T12:30:00-03:00",
-	"lider": "squad-2",
-	"diferencia": 5,
+	"lider": "squad-1",
+	"diferencia": 1,
 	"squads": [
+		{
+			"id": "squad-1",
+			"nombre": "Squad 1",
+			"posicion": 1,
+			"puntos": 15,
+			"puntos_en_revision": 1,
+			"desglose": {
+				"agendadas": 4,
+				"realizadas": 1,
+				"combos": 4,
+				"misiones": 2,
+				"flash": 3,
+				"legendarios": 0,
+				"ajustes": 1
+			},
+			"reuniones_agendadas": 4,
+			"reuniones_realizadas": 1,
+			"integrantes": [
+				{
+					"id": "matias-palma",
+					"nombre": "Matías Palma",
+					"puntos": 4,
+					"reuniones_agendadas": 2,
+					"reuniones_realizadas": 1,
+					"ultima_actividad": "2026-10-14T12:30:00-03:00"
+				},
+				{
+					"id": "benjamin-allel",
+					"nombre": "Benjamín Allel",
+					"puntos": 2,
+					"reuniones_agendadas": 1,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": "2026-10-13T12:05:00-03:00"
+				},
+				{
+					"id": "matias-hernandez",
+					"nombre": "Matías Hernández",
+					"puntos": 1,
+					"reuniones_agendadas": 1,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": "2026-10-14T11:50:00-03:00"
+				},
+				{
+					"id": "matias-rauque",
+					"nombre": "Matías Rauque",
+					"puntos": 0,
+					"reuniones_agendadas": 0,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": null
+				}
+			]
+		},
 		{
 			"id": "squad-2",
 			"nombre": "Squad 2",
-			"posicion": 1,
+			"posicion": 2,
 			"puntos": 14,
 			"puntos_en_revision": 0,
 			"desglose": {
@@ -68,58 +120,6 @@
 					"ultima_actividad": null
 				}
 			]
-		},
-		{
-			"id": "squad-1",
-			"nombre": "Squad 1",
-			"posicion": 2,
-			"puntos": 9,
-			"puntos_en_revision": 1,
-			"desglose": {
-				"agendadas": 3,
-				"realizadas": 1,
-				"combos": 2,
-				"misiones": 2,
-				"flash": 0,
-				"legendarios": 0,
-				"ajustes": 1
-			},
-			"reuniones_agendadas": 3,
-			"reuniones_realizadas": 1,
-			"integrantes": [
-				{
-					"id": "matias-palma",
-					"nombre": "Matías Palma",
-					"puntos": 4,
-					"reuniones_agendadas": 2,
-					"reuniones_realizadas": 1,
-					"ultima_actividad": "2026-10-14T12:30:00-03:00"
-				},
-				{
-					"id": "benjamin-allel",
-					"nombre": "Benjamín Allel",
-					"puntos": 2,
-					"reuniones_agendadas": 1,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": "2026-10-13T12:05:00-03:00"
-				},
-				{
-					"id": "matias-hernandez",
-					"nombre": "Matías Hernández",
-					"puntos": 0,
-					"reuniones_agendadas": 0,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": null
-				},
-				{
-					"id": "matias-rauque",
-					"nombre": "Matías Rauque",
-					"puntos": 0,
-					"reuniones_agendadas": 0,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": null
-				}
-			]
 		}
 	],
 	"dias": [
@@ -141,15 +141,15 @@
 		{
 			"fecha": "2026-10-14",
 			"puntos": {
-				"squad-1": 2,
+				"squad-1": 8,
 				"squad-2": 3
 			},
 			"acumulado": {
-				"squad-1": 9,
+				"squad-1": 15,
 				"squad-2": 14
 			},
 			"combo": {
-				"squad-1": false,
+				"squad-1": true,
 				"squad-2": false
 			}
 		},
@@ -202,6 +202,30 @@
 			"hasta": "2026-10-14T23:59:59-03:00",
 			"vigente": true,
 			"ganador": null
+		},
+		{
+			"id": "flash-2026-10-14-s1",
+			"tipo": "flash",
+			"fecha": "2026-10-14",
+			"nombre": "Gerencia express",
+			"descripcion": "El primer squad que agende una reunión con una gerencia suma 3 puntos adicionales.",
+			"puntos_texto": "+3 para el primer squad",
+			"desde": "2026-10-14T11:07:20-03:00",
+			"hasta": null,
+			"vigente": false,
+			"ganador": "squad-1"
+		},
+		{
+			"id": "flash-2026-10-14-s2",
+			"tipo": "flash",
+			"fecha": "2026-10-14",
+			"nombre": "Doblete",
+			"descripcion": "El primer squad en el que dos integrantes agenden después del anuncio suma 4 puntos adicionales.",
+			"puntos_texto": "+4 para el primer squad",
+			"desde": "2026-10-14T14:07:15-03:00",
+			"hasta": null,
+			"vigente": true,
+			"ganador": null
 		}
 	],
 	"legendarios": [
@@ -222,7 +246,27 @@
 	],
 	"eventos": [
 		{
-			"id": "ev-0021",
+			"id": "ev-0024",
+			"tipo": "combo_diario",
+			"fecha_hora": "2026-10-14T12:30:00-03:00",
+			"squad": "squad-1",
+			"sdr": null,
+			"puntos": 2,
+			"puntos_en_revision": 0,
+			"titulo": "Combo diario de Squad 1",
+			"detalle": "Dos o más integrantes agendaron el mismo día",
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261014T123000-0",
+				"hora": "12:30",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0023",
 			"tipo": "reunion_agendada",
 			"fecha_hora": "2026-10-14T12:30:00-03:00",
 			"squad": "squad-1",
@@ -238,6 +282,46 @@
 			"origen": {
 				"mensaje": "20261014T123000-0",
 				"hora": "12:30",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0022",
+			"tipo": "flash",
+			"fecha_hora": "2026-10-14T11:50:00-03:00",
+			"squad": "squad-1",
+			"sdr": null,
+			"puntos": 3,
+			"puntos_en_revision": 0,
+			"titulo": "Squad 1 ganó el Flash Challenge: Gerencia express",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0021",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261014T115000-0",
+				"hora": "11:50",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0021",
+			"tipo": "reunion_agendada",
+			"fecha_hora": "2026-10-14T11:50:00-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-hernandez",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Matías Hernández agendó una reunión",
+			"detalle": null,
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261014T115000-0",
+				"hora": "11:50",
 				"fuente": "chat"
 			}
 		},
