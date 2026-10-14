@@ -13,7 +13,7 @@
 	"squads": [
 		{
 			"id": "squad-1",
-			"nombre": "Squad 1",
+			"nombre": "Escuadrón de súbditos #1 de Alberto Mussolini",
 			"integrantes": [
 				{"id": "matias-palma", "nombre": "Matías Palma"},
 				{"id": "matias-hernandez", "nombre": "Matías Hernández"},
@@ -23,7 +23,7 @@
 		},
 		{
 			"id": "squad-2",
-			"nombre": "Squad 2",
+			"nombre": "Azul Audaz",
 			"integrantes": [
 				{"id": "isidora-b", "nombre": "Isidora Bravo"},
 				{"id": "alberto-m", "nombre": "Alberto Muñoz"},

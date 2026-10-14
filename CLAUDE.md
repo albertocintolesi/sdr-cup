@@ -22,7 +22,8 @@ Landing page liviana que muestra en vivo el estado de la SDR Cup de Brolly. La p
 - **Fechas.** Parte el martes 13 de octubre de 2026 y cierra el viernes 16 a las 17:00.
 - **Squad 1.** Matías Palma, Matías Hernández, Matías Rauque, Benjamín Allel.
 - **Squad 2.** Isidora Bravo, Alberto Muñoz, Pedro Pablo Mardones, Alberto Cintolesi.
-- **Por confirmar.** Premio y nombres de los squads.
+- **Nombres.** Squad 1: "Escuadrón de súbditos #1 de Alberto Mussolini". Squad 2: "Azul Audaz".
+- **Por confirmar.** Premio.
 
 | Capa | Puntos | Regla |
 |---|---|---|
