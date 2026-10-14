@@ -12,7 +12,7 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-13T17:25:17-03:00",
+	"actualizado": "2026-10-14T10:26:08-03:00",
 	"chat_hasta": "2026-10-13T17:00:31-03:00",
 	"lider": "squad-2",
 	"diferencia": 2,
@@ -140,9 +140,18 @@
 		},
 		{
 			"fecha": "2026-10-14",
-			"puntos": null,
-			"acumulado": null,
-			"combo": null
+			"puntos": {
+				"squad-1": 0,
+				"squad-2": 0
+			},
+			"acumulado": {
+				"squad-1": 2,
+				"squad-2": 4
+			},
+			"combo": {
+				"squad-1": false,
+				"squad-2": false
+			}
 		},
 		{
 			"fecha": "2026-10-15",
@@ -167,6 +176,18 @@
 			"puntos_texto": "+1 adicional por cada reunión con una empresa repescable",
 			"desde": "2026-10-13T10:00:00-03:00",
 			"hasta": "2026-10-13T23:59:59-03:00",
+			"vigente": false,
+			"ganador": null
+		},
+		{
+			"id": "mision-2026-10-14",
+			"tipo": "mision",
+			"fecha": "2026-10-14",
+			"nombre": "Genkidama",
+			"descripcion": "El poder se logra en conjunto: si cada integrante del squad hace al menos 10 llamadas hoy y lo avisa en el grupo (por ejemplo, 'Genkidama: 10 llamadas'), las reuniones agendadas hoy por ese squad valen x2, de forma retroactiva sobre todas las del día. Se cumple cuando los cuatro integrantes lo han avisado. Pueden cumplirla ambos squads.",
+			"puntos_texto": "+1 adicional por cada reunión agendada hoy por el squad que la cumpla",
+			"desde": "2026-10-14T10:26:08-03:00",
+			"hasta": "2026-10-14T23:59:59-03:00",
 			"vigente": true,
 			"ganador": null
 		}
