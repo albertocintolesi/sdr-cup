@@ -13,6 +13,7 @@ Cada mensaje queda así:
 		"adjuntos": ["00000011-PHOTO-2026-10-13-10-05-00.jpg"],
 		"sistema": false,
 		"editado": false,
+		"huella": "3f1c0a9b2e7d",       # resumen de autor + texto, para reconocerlo si cambia la hora
 		"sdr": "matias-palma"           # solo con --apodos: id del SDR, null si no juega
 	}
 
@@ -20,13 +21,18 @@ Con --apodos cada mensaje trae además "autor_conocido" (false si el apodo no es
 y el resultado lista los "autores_desconocidos".
 
 El id no depende del apodo ni del texto, así que se puede publicar sin exponer nada privado
-y es estable entre exports (cada export trae el historial completo).
+y es estable entre exports (cada export trae el historial completo). Excepción conocida: un
+export puede traer todas las horas corridas en un segundo. Por eso un mensaje cuyo id no está
+visto, pero que calza con uno visto que ya no aparece en el export (misma huella, a ±2 s), se
+da por visto y sale en "desplazados" para que registrar.py anote su id nuevo.
 """
 
 import argparse
+import hashlib
 import json
 import re
 import sys
+from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -52,6 +58,8 @@ CABECERA = re.compile(
 AVISO_SISTEMA = re.compile(r"^[^\[]?\[[^\]]+\] [^:]+: " + chr(0x200E))
 ADJUNTO = re.compile(r"<adjunto: ([^>]+)>")
 EDITADO = "<Se editó este mensaje.>"
+# Diferencia de hora máxima para reconocer un mensaje ya visto con la hora corrida.
+TOLERANCIA_SEGUNDOS = 2
 
 
 def limpiar(texto):
@@ -119,7 +127,24 @@ def leer_chat(ruta_chat):
 		texto = ADJUNTO.sub("", texto).replace(EDITADO, "").strip()
 		mensaje["texto"] = texto
 		mensaje["sistema"] = mensaje["autor"] == "Tú" or (mensaje["sistema"] and not mensaje["adjuntos"])
+		mensaje["huella"] = huella(mensaje)
 	return mensajes
+
+
+def huella(mensaje):
+	"""Resumen corto de autor, texto y adjuntos.
+
+	Del adjunto ("00000013-PHOTO-2026-02-09-10-34-00.jpg") usa solo el correlativo y el tipo,
+	que distinguen dos fotos seguidas del mismo autor; la fecha del nombre se deja fuera.
+	"""
+	adjuntos = ["-".join(nombre.split("-")[:2]) for nombre in mensaje["adjuntos"]]
+	base = LF.join([mensaje["autor"], mensaje["texto"], *adjuntos]).encode("utf-8")
+	return hashlib.sha1(base).hexdigest()[:12]
+
+
+def momento(id_mensaje):
+	"""Fecha y hora de un id de mensaje ("20261013T100500-0")."""
+	return datetime.strptime(id_mensaje.split("-")[0], "%Y%m%dT%H%M%S")
 
 
 def resolver_autores(mensajes, apodos):
@@ -139,13 +164,42 @@ def resolver_autores(mensajes, apodos):
 	return desconocidos
 
 
-def filtrar_nuevos(mensajes, vistos=(), desde=None):
-	"""Deja solo los mensajes que no están en `vistos` y, si se pide, posteriores a `desde`."""
+def filtrar_nuevos(mensajes, vistos=(), desde=None, huellas=None):
+	"""Deja solo los mensajes que no están en `vistos` y, si se pide, posteriores a `desde`.
+
+	Devuelve (nuevos, desplazados). Un id visto vale siempre, aunque cambie su huella (contacto
+	renombrado, mensaje editado). Un mensaje no visto es "desplazado" (el mismo de antes, con la
+	hora corrida) si hay un id visto a ±2 s cuyo mensaje original ya no está en ese id (el id no
+	aparece en este export, o aparece con otra huella) y la huella coincide. Los vistos antes de
+	que existieran las huellas no la tienen y calzan solo por la hora, si su id no aparece. Cada
+	id visto calza con un único mensaje, el más cercano.
+	"""
 	vistos = set(vistos)
+	huellas = huellas or {}
 	nuevos = [m for m in mensajes if m["id"] not in vistos]
+	en_su_lugar = {m["id"] for m in mensajes if huellas.get(m["id"], m["huella"]) == m["huella"]}
+	ausentes = [(momento(v), v) for v in vistos - en_su_lugar]
+	desplazados = []
+	if ausentes:
+		quedan = []
+		for mensaje in nuevos:
+			hora = momento(mensaje["id"])
+			cerca = sorted(
+				(abs((hora - visto_hora).total_seconds()), visto)
+				for visto_hora, visto in ausentes
+				if abs((hora - visto_hora).total_seconds()) <= TOLERANCIA_SEGUNDOS
+				and huellas.get(visto, mensaje["huella"]) == mensaje["huella"]
+			)
+			if cerca:
+				visto = cerca[0][1]
+				ausentes = [a for a in ausentes if a[1] != visto]
+				desplazados.append({"id": mensaje["id"], "huella": mensaje["huella"], "visto_como": visto})
+			else:
+				quedan.append(mensaje)
+		nuevos = quedan
 	if desde:
 		nuevos = [m for m in nuevos if m["id"] > desde]
-	return nuevos
+	return nuevos, desplazados
 
 
 def main():
@@ -165,10 +219,11 @@ def main():
 	mensajes = leer_chat(chat)
 	if not mensajes and chat.stat().st_size > 0:
 		sys.exit(f"{chat} tiene contenido pero ningún mensaje calza con el formato esperado. Revisa el formato del export.")
-	vistos, apodos = [], {}
+	vistos, huellas, apodos = [], {}, {}
 	if args.vistos and Path(args.vistos).exists():
 		registro = json.loads(Path(args.vistos).read_text(encoding="utf-8"))
 		vistos = registro.get("mensajes_vistos", [])
+		huellas = registro.get("huellas") or {}
 		apodos.update(registro.get("alias") or {})
 	if args.apodos:
 		# El mapa confirmado por Alberto manda sobre lo aprendido en corridas anteriores.
@@ -178,7 +233,7 @@ def main():
 			apodos.update(json.loads(Path(args.apodos).read_text(encoding="utf-8")).get("apodos") or {})
 		except (json.JSONDecodeError, AttributeError):
 			sys.exit(f"El mapa de apodos {args.apodos} no es un JSON válido con la clave 'apodos'.")
-	nuevos = filtrar_nuevos(mensajes, vistos, args.desde)
+	nuevos, desplazados = filtrar_nuevos(mensajes, vistos, args.desde, huellas)
 	desconocidos = resolver_autores(nuevos, apodos) if args.apodos else []
 
 	# Avisa si el chat menciona un adjunto que no vino en el zip.
@@ -194,6 +249,7 @@ def main():
 		"carpeta": str(chat.parent),
 		"total_en_export": len(mensajes),
 		"nuevos": len(nuevos),
+		"desplazados": desplazados,
 		"adjuntos_faltantes": faltantes,
 		"autores_desconocidos": desconocidos,
 		"contexto": contexto,
@@ -202,7 +258,8 @@ def main():
 	texto = json.dumps(resultado, ensure_ascii=False, indent="\t")
 	if args.salida:
 		Path(args.salida).write_text(texto, encoding="utf-8")
-		print(f"{len(nuevos)} mensajes nuevos de {len(mensajes)} -> {args.salida}")
+		aviso = f" ({len(desplazados)} ya vistos con la hora corrida)" if desplazados else ""
+		print(f"{len(nuevos)} mensajes nuevos de {len(mensajes)}{aviso} -> {args.salida}")
 	else:
 		sys.stdout.reconfigure(encoding="utf-8")
 		print(texto)

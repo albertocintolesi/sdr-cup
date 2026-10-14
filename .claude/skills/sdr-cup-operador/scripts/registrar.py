@@ -11,7 +11,9 @@ Uso:
 
 Lo que este script garantiza:
 - Los eventos solo se agregan. Nunca se edita ni se borra uno existente.
-- Un mismo hecho no entra dos veces (mismo tipo, origen, SDR o squad y referencia).
+- Un mismo hecho no entra dos veces (mismo tipo, origen, SDR o squad y referencia). Una
+  reunión del mismo SDR a ±2 s de otra ya registrada (misma empresa o referencia) también se
+  da por repetida: es el mismo mensaje en un export con la hora corrida.
 - Los puntos de cada evento se fijan aquí, según las bases, y no cambian después.
 - Los combos diarios se deducen solos, y se revierten solos con un evento compensatorio.
 - Si algo no valida, no se escribe nada y se listan todos los errores.
@@ -21,6 +23,7 @@ import argparse
 import json
 import re
 import sys
+from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -33,6 +36,8 @@ from reglas import (  # noqa: E402
 FORMATO_FECHA = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$")
 # Tope de cordura para puntos escritos a mano (misiones, Flash y ajustes).
 MAXIMO_PUNTOS = 20
+# Diferencia de hora máxima para reconocer una reunión ya registrada con la hora corrida.
+TOLERANCIA_SEGUNDOS = 2
 
 
 def clave(evento):
@@ -47,6 +52,32 @@ def clave(evento):
 		evento.get("puntos") if evento.get("tipo") == "ajuste" else None,
 		evento.get("n"),
 	)
+
+
+def repetido_cercano(evento, eventos):
+	"""Id de una reunión ya registrada que es el mismo hecho con la hora corrida, o None.
+
+	Mismo tipo y SDR, otro mensaje de origen, a ±2 s, y sin contradecirse en empresa ni en
+	referencia (dos capturas de empresas distintas enviadas juntas son dos reuniones).
+	"""
+	if evento.get("tipo") not in ("reunion_agendada", "reunion_realizada") or not evento.get("sdr"):
+		return None
+	hora = datetime.fromisoformat(evento["fecha_hora"])
+	mensaje = (evento.get("origen") or {}).get("mensaje")
+	for previo in eventos:
+		if previo["tipo"] != evento["tipo"] or previo.get("sdr") != evento["sdr"]:
+			continue
+		if (previo.get("origen") or {}).get("mensaje") == mensaje:
+			continue
+		if abs((hora - datetime.fromisoformat(previo["fecha_hora"])).total_seconds()) > TOLERANCIA_SEGUNDOS:
+			continue
+		empresas = normalizar(previo.get("empresa")), normalizar(evento.get("empresa"))
+		if all(empresas) and empresas[0] != empresas[1]:
+			continue
+		if previo.get("ref") and evento.get("ref") and previo["ref"] != evento["ref"]:
+			continue
+		return previo["id"]
+	return None
 
 
 def agregar(registro, evento):
@@ -351,8 +382,12 @@ def ajustar_combos(registro, disparador):
 			})
 
 
-def registrar(registro, config, nuevos, mensajes, ahora=None, export=None):
-	"""Devuelve (errores, resumen). Si no hay errores, `registro` queda actualizado."""
+def registrar(registro, config, nuevos, mensajes, ahora=None, export=None, desplazados=()):
+	"""Devuelve (errores, resumen). Si no hay errores, `registro` queda actualizado.
+
+	`desplazados` son mensajes ya vistos que volvieron con la hora corrida (salida de
+	leer_chat.py): su id nuevo también queda como visto.
+	"""
 	errores = []
 	squads = squad_de_cada_sdr(config)
 	# Se trabaja sobre una copia: si algo falla, el registro original queda intacto.
@@ -451,11 +486,14 @@ def registrar(registro, config, nuevos, mensajes, ahora=None, export=None):
 			ajustes_del_lote[base] = ajustes_del_lote.get(base, 0) + 1
 			if ajustes_del_lote[base] > 1:
 				evento["n"] = ajustes_del_lote[base]
-		if clave(evento) in claves:
+		ya_registrado = claves.get(clave(evento))
+		if not ya_registrado and FORMATO_FECHA.match(evento.get("fecha_hora") or ""):
+			ya_registrado = repetido_cercano(evento, trabajo["eventos"])
+		if ya_registrado:
 			# Ya estaba registrado en una corrida anterior: no es un error, solo se ignora.
 			repetidos += 1
 			if etiqueta:
-				temporales[etiqueta] = claves[clave(evento)]
+				temporales[etiqueta] = ya_registrado
 			continue
 		if problemas:
 			errores.extend(f"{donde}: {problema}" for problema in problemas)
@@ -528,11 +566,18 @@ def registrar(registro, config, nuevos, mensajes, ahora=None, export=None):
 	vistos = set(trabajo["mensajes_vistos"])
 	ids_nuevos = [m["id"] for m in mensajes if m["id"] not in vistos]
 	trabajo["mensajes_vistos"].extend(ids_nuevos)
+	ids_desplazados = [d["id"] for d in desplazados if d["id"] not in vistos and d["id"] not in ids_nuevos]
+	trabajo["mensajes_vistos"].extend(ids_desplazados)
+	huellas = trabajo.setdefault("huellas", {})
+	for mensaje in list(mensajes) + list(desplazados):
+		if mensaje.get("huella"):
+			huellas.setdefault(mensaje["id"], mensaje["huella"])
 	agregados = trabajo["eventos"][antes:]
 	resumen = {
 		"fecha_hora": ahora,
 		"export": export,
 		"mensajes_nuevos": len(ids_nuevos),
+		"mensajes_desplazados": len(ids_desplazados),
 		"eventos_nuevos": [e["id"] for e in agregados],
 		"eventos_automaticos": [e["id"] for e in agregados if e.get("auto")],
 		"eventos_repetidos": repetidos,
@@ -558,9 +603,10 @@ def main():
 	args = parser.parse_args()
 
 	registro = leer_registro(args.registro)
+	lectura = leer_json(args.mensajes)
 	errores, resumen = registrar(
-		registro, leer_json(args.config), leer_json(args.nuevos), leer_json(args.mensajes)["mensajes"],
-		args.ahora, args.export,
+		registro, leer_json(args.config), leer_json(args.nuevos), lectura["mensajes"],
+		args.ahora, args.export, lectura.get("desplazados") or [],
 	)
 	sys.stdout.reconfigure(encoding="utf-8")
 	if errores:
