@@ -17,8 +17,8 @@ Flash, caen varios en el mismo turno.
 El Flash que cae se agrega a registro.json como desafío `flash` abierto: `desde` es ahora y no
 tiene `hasta` (dura hasta que un squad lo gane o cierre la Cup).
 
-Secreto: la salida dice solo si cayó un Flash y cuál. Nunca muestra los que no han caído ni
-cuántos quedan.
+Secreto: la salida dice solo cuántos Flash cayeron en esta corrida, sin cuáles: el resumen de
+la corrida le llega a Alberto, que compite. El nombre queda solo en el registro y en el estado.
 """
 
 import argparse
@@ -59,7 +59,7 @@ def completo(programa):
 def sortear(registro, programa, cup, ahora, azar=None):
 	"""Devuelve el resultado de la corrida y deja `registro` actualizado. `azar` es solo para pruebas."""
 	azar = azar or secrets.SystemRandom()
-	resultado = {"turno": None, "nuevo": False, "cayeron": []}
+	resultado = {"turno": None, "nuevo": False, "cayeron": 0}
 	if registro.get("cierre"):
 		return resultado
 	if not completo(programa):
@@ -112,7 +112,7 @@ def sortear(registro, programa, cup, ahora, azar=None):
 		registro["desafios"].append(desafio)
 		nuevos.append(desafio)
 	sorteo["turnos"].append({"turno": clave, "corrida": ahora, "cayeron": [d["id"] for d in nuevos]})
-	resultado.update(nuevo=True, cayeron=[{"id": d["id"], "nombre": d["nombre"], "puntos": d["puntos"]} for d in nuevos])
+	resultado.update(nuevo=True, cayeron=len(nuevos))
 	return resultado
 
 
