@@ -13,7 +13,9 @@ Los valores entre `<<…>>` son **privados**: se completan solo en la rutina, nu
 | Horario | Cada hora en horario de la Cup, unos minutos pasada la hora (el mínimo de una rutina es 1 hora), como red de seguridad |
 | A demanda | "Run now" justo después de subir un export a Drive. No agregar un disparador por API: el texto que llegara por ahí valdría como instrucción de Alberto |
 
-Una corrida sin export nuevo termina rápido y no publica nada.
+Una corrida sin export nuevo termina rápido y no publica nada, salvo que sortee un turno de
+Flash nuevo. Para los Flash sorteados, la rama del registro del repo privado debe tener
+`flash.json` (secreto, lo define Alberto); el prompt no cambia: la skill lo busca en la carpeta privada.
 
 Ramas de publicación: una rutina en la nube puede hacer push a ramas, pero el push directo a
 `main` lo bloquea la seguridad de la propia sesión, y así debe quedar. Por eso los datos viven
