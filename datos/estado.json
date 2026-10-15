@@ -12,20 +12,20 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-15T15:08:34-03:00",
-	"chat_hasta": "2026-10-14T17:20:33-03:00",
+	"actualizado": "2026-10-15T15:11:31-03:00",
+	"chat_hasta": "2026-10-15T14:17:35-03:00",
 	"lider": "squad-1",
-	"diferencia": 1,
+	"diferencia": 3,
 	"squads": [
 		{
 			"id": "squad-1",
 			"nombre": "Escuadrón de súbditos #1 de Alberto Mussolini",
 			"posicion": 1,
-			"puntos": 10,
+			"puntos": 12,
 			"puntos_en_revision": 0,
 			"desglose": {
 				"agendadas": 5,
-				"realizadas": 0,
+				"realizadas": 2,
 				"combos": 2,
 				"misiones": 3,
 				"flash": 0,
@@ -33,15 +33,15 @@
 				"ajustes": 0
 			},
 			"reuniones_agendadas": 5,
-			"reuniones_realizadas": 0,
+			"reuniones_realizadas": 2,
 			"integrantes": [
 				{
 					"id": "matias-palma",
 					"nombre": "Matías Palma",
-					"puntos": 4,
+					"puntos": 6,
 					"reuniones_agendadas": 3,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": "2026-10-14T17:20:01-03:00"
+					"reuniones_realizadas": 2,
+					"ultima_actividad": "2026-10-15T14:17:35-03:00"
 				},
 				{
 					"id": "matias-hernandez",
@@ -156,11 +156,11 @@
 		{
 			"fecha": "2026-10-15",
 			"puntos": {
-				"squad-1": 0,
+				"squad-1": 2,
 				"squad-2": 0
 			},
 			"acumulado": {
-				"squad-1": 10,
+				"squad-1": 12,
 				"squad-2": 9
 			},
 			"combo": {
@@ -278,6 +278,46 @@
 		}
 	],
 	"eventos": [
+		{
+			"id": "ev-0017",
+			"tipo": "reunion_realizada",
+			"fecha_hora": "2026-10-15T14:17:35-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-palma",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Se realizó una reunión de Matías Palma",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0001",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261015T141735-0",
+				"hora": "14:17",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0016",
+			"tipo": "reunion_realizada",
+			"fecha_hora": "2026-10-15T13:14:34-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-palma",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Se realizó una reunión de Matías Palma",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0002",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261015T131434-0",
+				"hora": "13:14",
+				"fuente": "chat"
+			}
+		},
 		{
 			"id": "ev-0015",
 			"tipo": "mision",
