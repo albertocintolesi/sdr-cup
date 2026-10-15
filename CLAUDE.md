@@ -23,7 +23,7 @@ Landing page liviana que muestra en vivo el estado de la SDR Cup de Brolly. La p
 - **Squad 1.** Matías Palma, Matías Hernández, Matías Rauque, Benjamín Allel.
 - **Squad 2.** Isidora Bravo, Alberto Muñoz, Pedro Pablo Mardones, Alberto Cintolesi.
 - **Nombres.** Squad 1: "Escuadrón de súbditos #1 de Alberto Mussolini". Squad 2: "Azul Audaz".
-- **Premio.** Pozo de $160.000 para el squad ganador + premio sorpresa. $40.000 para el MVP: quien sume más puntos individualmente.
+- **Premio.** Pozo de $160.000 para el squad ganador + premio sorpresa. $40.000 para el MVP: quien sume más puntos individualmente; si hay empate, se reparte.
 
 | Capa | Puntos | Regla |
 |---|---|---|
