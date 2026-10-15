@@ -12,7 +12,7 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-15T12:08:21-03:00",
+	"actualizado": "2026-10-15T13:08:40-03:00",
 	"chat_hasta": "2026-10-14T17:20:33-03:00",
 	"lider": "squad-1",
 	"diferencia": 1,
@@ -244,6 +244,18 @@
 			"descripcion": "Agenda una reunión con una empresa de retail competidora de las que Brolly tiene en convenio. Avísalo en el grupo con \"Flash Challenge: Abran los malls\".",
 			"puntos_texto": "+3 para el primer squad",
 			"desde": "2026-10-15T11:08:26-03:00",
+			"hasta": null,
+			"vigente": true,
+			"ganador": null
+		},
+		{
+			"id": "flash-2026-10-15-s2",
+			"tipo": "flash",
+			"fecha": "2026-10-15",
+			"nombre": "Siempre vuelven",
+			"descripcion": "Recupera una empresa repescable del CRM (fila azul) de más de 1.000 colaboradores: agenda una reunión con ella. Avísalo en el grupo con \"Flash Challenge: Siempre vuelven\".",
+			"puntos_texto": "+3 para el primer squad",
+			"desde": "2026-10-15T13:08:40-03:00",
 			"hasta": null,
 			"vigente": true,
 			"ganador": null
