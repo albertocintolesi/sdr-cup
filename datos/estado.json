@@ -12,7 +12,7 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-15T10:08:51-03:00",
+	"actualizado": "2026-10-15T10:15:39-03:00",
 	"chat_hasta": "2026-10-14T17:20:33-03:00",
 	"lider": "squad-1",
 	"diferencia": 1,
@@ -223,6 +223,18 @@
 			"hasta": null,
 			"vigente": false,
 			"ganador": "squad-2"
+		},
+		{
+			"id": "mision-2026-10-15",
+			"tipo": "mision",
+			"fecha": "2026-10-15",
+			"nombre": "Headshot",
+			"descripcion": "Apunta arriba: las reuniones agendadas hoy con gerencia o superior (gerente, director, VP, C-level) valen x2. Para validarla, junto con la captura de la invitación escribe en el grupo 'Misión completada: Headshot – [cargo de la contraparte]'. El cargo se acepta por declaración y lo verifica Alberto en el CRM. Solo cuentan reuniones agendadas hoy.",
+			"puntos_texto": "+1 adicional por cada reunión agendada hoy con gerencia o superior",
+			"desde": "2026-10-15T10:15:39-03:00",
+			"hasta": "2026-10-15T23:59:59-03:00",
+			"vigente": true,
+			"ganador": null
 		}
 	],
 	"legendarios": [
