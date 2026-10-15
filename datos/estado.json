@@ -12,14 +12,14 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-14T17:23:43-03:00",
+	"actualizado": "2026-10-15T10:08:51-03:00",
 	"chat_hasta": "2026-10-14T17:20:33-03:00",
 	"lider": "squad-1",
 	"diferencia": 1,
 	"squads": [
 		{
 			"id": "squad-1",
-			"nombre": "Squad 1",
+			"nombre": "Escuadrón de súbditos #1 de Alberto Mussolini",
 			"posicion": 1,
 			"puntos": 10,
 			"puntos_en_revision": 0,
@@ -71,7 +71,7 @@
 		},
 		{
 			"id": "squad-2",
-			"nombre": "Squad 2",
+			"nombre": "Azul Audaz",
 			"posicion": 2,
 			"puntos": 9,
 			"puntos_en_revision": 0,
@@ -155,9 +155,18 @@
 		},
 		{
 			"fecha": "2026-10-15",
-			"puntos": null,
-			"acumulado": null,
-			"combo": null
+			"puntos": {
+				"squad-1": 0,
+				"squad-2": 0
+			},
+			"acumulado": {
+				"squad-1": 10,
+				"squad-2": 9
+			},
+			"combo": {
+				"squad-1": false,
+				"squad-2": false
+			}
 		},
 		{
 			"fecha": "2026-10-16",
@@ -188,7 +197,7 @@
 			"puntos_texto": "+1 adicional por cada reunión agendada hoy por el squad que la cumpla",
 			"desde": "2026-10-14T10:26:08-03:00",
 			"hasta": "2026-10-14T23:59:59-03:00",
-			"vigente": true,
+			"vigente": false,
 			"ganador": null
 		},
 		{
@@ -341,7 +350,7 @@
 			"sdr": null,
 			"puntos": 2,
 			"puntos_en_revision": 0,
-			"titulo": "Combo diario de Squad 1",
+			"titulo": "Combo diario de Escuadrón de súbditos #1 de Alberto Mussolini",
 			"detalle": "Dos o más integrantes agendaron el mismo día",
 			"empresa": null,
 			"ref": null,
@@ -441,7 +450,7 @@
 			"sdr": null,
 			"puntos": 2,
 			"puntos_en_revision": 0,
-			"titulo": "Combo diario de Squad 2",
+			"titulo": "Combo diario de Azul Audaz",
 			"detalle": "Dos o más integrantes agendaron el mismo día",
 			"empresa": null,
 			"ref": null,
