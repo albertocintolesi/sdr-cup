@@ -4,7 +4,8 @@
 		"numero": 3,
 		"nombre": "SDR Cup #3",
 		"inicio": "2026-10-13T10:00:00-03:00",
-		"cierre": "2026-10-16T17:00:00-03:00",
+		"cierre": "2026-10-20T17:00:00-03:00",
+		"cierre_final": "2026-10-23T17:00:00-03:00",
 		"minimo_para_ganar": 20,
 		"premio": "Pozo de $160.000 para el squad ganador, más un premio sorpresa. Además, $40.000 para el MVP de la Cup: quien haya sumado más puntos individualmente. Si hay empate, se reparte.",
 		"mensaje": null,
@@ -12,7 +13,7 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-16T14:08:16-03:00",
+	"actualizado": "2026-10-16T15:08:23-03:00",
 	"chat_hasta": "2026-10-15T17:47:50-03:00",
 	"lider": "squad-1",
 	"diferencia": 4,
@@ -182,6 +183,18 @@
 				"squad-1": false,
 				"squad-2": false
 			}
+		},
+		{
+			"fecha": "2026-10-19",
+			"puntos": null,
+			"acumulado": null,
+			"combo": null
+		},
+		{
+			"fecha": "2026-10-20",
+			"puntos": null,
+			"acumulado": null,
+			"combo": null
 		}
 	],
 	"desafios": [
@@ -278,6 +291,19 @@
 			"puntos_texto": "Momentum +1 adicional; ICP +2 adicionales; acumulables (hasta 4 por reunión)",
 			"desde": "2026-10-16T10:16:35-03:00",
 			"hasta": "2026-10-16T17:00:00-03:00",
+			"vigente": true,
+			"ganador": null
+		},
+		{
+			"id": "flash-2026-10-16-s1",
+			"tipo": "flash",
+			"fecha": "2026-10-16",
+			"nombre": "Heavyweight",
+			"descripcion": "El squad que agende reunión con la empresa más grande se lleva +3. Dura desde que se lanza hasta el final del día y no es retroactiva. Avísalo en el grupo con \"Flash Challenge: Heavyweight\" y el número de colaboradores de la empresa.",
+			"puntos_texto": "+3 para el squad con la empresa más grande",
+			"regla": "Gana el squad que agende con la empresa más grande antes del fin del día. Lo define Alberto al terminar el día.",
+			"desde": "2026-10-16T15:08:23-03:00",
+			"hasta": "2026-10-16T23:59:59-03:00",
 			"vigente": true,
 			"ganador": null
 		}
