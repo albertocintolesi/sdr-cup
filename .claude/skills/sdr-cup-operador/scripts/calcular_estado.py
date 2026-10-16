@@ -121,8 +121,9 @@ def calcular_estado(registro, config, ahora):
 			squads[squad]["desglose"][CASILLA[raiz["tipo"]]] += puntos
 			if pendiente:
 				squads[squad]["en_revision"] += evento.get("puntos_en_revision", 0)
-			# Un día fuera de la semana (p. ej. un ajuste posterior al cierre) se carga al día más cercano.
-			dia_grafico = min(max(dia, dias_cup[0]), dias_cup[-1])
+			# Un día fuera de la Cup (p. ej. un ajuste posterior al cierre o de un fin de semana) se
+			# carga al último día hábil anterior, o al primero si es anterior al inicio.
+			dia_grafico = max((d for d in dias_cup if d <= dia), default=dias_cup[0])
 			por_dia[dia_grafico][squad] += puntos
 			if tipo == "combo_diario" and vigente and evento["dia"] in combo_dia:
 				combo_dia[evento["dia"]][squad] = True
@@ -272,6 +273,7 @@ def calcular_estado(registro, config, ahora):
 			"nombre": cup["nombre"],
 			"inicio": con_offset(cup["inicio"], offset),
 			"cierre": con_offset(cup["cierre"], offset),
+			"cierre_final": con_offset(cup.get("cierre_final"), offset),
 			"minimo_para_ganar": cup["minimo_para_ganar"],
 			"premio": cup.get("premio"),
 			"mensaje": cup.get("mensaje"),
