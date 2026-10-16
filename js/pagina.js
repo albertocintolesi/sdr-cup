@@ -379,12 +379,13 @@
 			if (filtro === 'inactivas') return m.situacion !== 'activa';
 			return true;
 		}).sort(function (a, b) {
+			// Primero las vigentes, después las por comenzar y al final las terminadas.
+			// Dentro de cada grupo, por inicio, la más reciente primero.
 			if (orden[a.situacion] !== orden[b.situacion]) return orden[a.situacion] - orden[b.situacion];
-			// Activas: primero la que vence antes. El resto: primero la más reciente.
-			// Sin fin, cuenta el mediodía de su fecha en Chile (la fecha sola se leería en UTC)
-			const ta = new Date(finDe(a.desafio) || a.desafio.fecha + 'T12:00:00-03:00').getTime();
-			const tb = new Date(finDe(b.desafio) || b.desafio.fecha + 'T12:00:00-03:00').getTime();
-			return a.situacion === 'activa' ? ta - tb : tb - ta;
+			// Sin inicio, cuenta el mediodía de su fecha en Chile (la fecha sola se leería en UTC)
+			const ta = new Date(a.desafio.desde || a.desafio.fecha + 'T12:00:00-03:00').getTime();
+			const tb = new Date(b.desafio.desde || b.desafio.fecha + 'T12:00:00-03:00').getTime();
+			return tb - ta;
 		});
 
 		vaciar(caja);

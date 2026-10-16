@@ -1101,20 +1101,36 @@ h3 {
 	color: var(--fondo);
 }
 
-/* Fila de tarjetas que se recorre de lado. Se sale del margen para llegar al borde. */
+/* Fila de tarjetas que se recorre de lado, dentro del mismo ancho que el resto.
+   El scroll queda adentro: la página nunca se desplaza de lado. */
 .carrusel {
 	display: flex;
 	gap: 14px;
-	margin: 0 calc(var(--borde-pagina) * -1);
-	padding: 6px max(var(--borde-pagina), calc((100vw - var(--ancho)) / 2)) 22px;
+	width: 100%;
+	max-width: var(--ancho);
+	margin: 0 auto;
+	padding: 6px 0 18px;
 	overflow-x: auto;
+	overscroll-behavior-x: contain;
+	-webkit-overflow-scrolling: touch;
+	touch-action: pan-x pan-y;
 	scroll-snap-type: x mandatory;
-	scroll-padding-left: max(var(--borde-pagina), calc((100vw - var(--ancho)) / 2));
-	scrollbar-width: none;
+	scrollbar-width: thin;
+	scrollbar-color: var(--lila) transparent;
 }
 
 .carrusel::-webkit-scrollbar {
-	display: none;
+	height: 6px;
+}
+
+.carrusel::-webkit-scrollbar-track {
+	background: var(--linea);
+	border-radius: 999px;
+}
+
+.carrusel::-webkit-scrollbar-thumb {
+	background: var(--lila);
+	border-radius: 999px;
 }
 
 .mision {
