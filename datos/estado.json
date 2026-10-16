@@ -12,7 +12,7 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-16T10:08:45-03:00",
+	"actualizado": "2026-10-16T10:16:35-03:00",
 	"chat_hasta": "2026-10-15T17:47:50-03:00",
 	"lider": "squad-1",
 	"diferencia": 4,
@@ -266,6 +266,18 @@
 			"puntos_texto": "+3 para el primer squad",
 			"desde": "2026-10-15T13:08:40-03:00",
 			"hasta": null,
+			"vigente": true,
+			"ganador": null
+		},
+		{
+			"id": "mision-2026-10-16",
+			"tipo": "mision",
+			"fecha": "2026-10-16",
+			"nombre": "Momentum + ICP",
+			"descripcion": "Dos partes en una sola misión, acumulables. (1) Momentum: cada reunión agendada hoy para una fecha dentro de los próximos 5 días hábiles (a más tardar el viernes 23 de octubre) vale x2; la fecha se ve en la captura de la invitación y, si no se ve, el SDR la indica en el mensaje. (2) ICP: cada reunión agendada hoy con una empresa de más de 500 empleados y con contraparte de gerencia o superior vale 3 puntos; el tamaño y el cargo se validan con LinkedIn, se aceptan por declaración y los verifica Alberto. Para ICP escribe en el grupo, junto a la captura, 'Misión completada: ICP – [cargo], [número de empleados según LinkedIn]'. Una reunión que cumple ambas vale 4 puntos en total. Vigente hasta el cierre de la Cup, hoy a las 17:00.",
+			"puntos_texto": "Momentum +1 adicional; ICP +2 adicionales; acumulables (hasta 4 por reunión)",
+			"desde": "2026-10-16T10:16:35-03:00",
+			"hasta": "2026-10-16T17:00:00-03:00",
 			"vigente": true,
 			"ganador": null
 		}
