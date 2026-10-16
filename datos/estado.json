@@ -13,7 +13,7 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-16T15:08:23-03:00",
+	"actualizado": "2026-10-16T16:08:46-03:00",
 	"chat_hasta": "2026-10-15T17:47:50-03:00",
 	"lider": "squad-1",
 	"diferencia": 4,
@@ -304,6 +304,18 @@
 			"regla": "Gana el squad que agende con la empresa más grande antes del fin del día. Lo define Alberto al terminar el día.",
 			"desde": "2026-10-16T15:08:23-03:00",
 			"hasta": "2026-10-16T23:59:59-03:00",
+			"vigente": true,
+			"ganador": null
+		},
+		{
+			"id": "flash-2026-10-16-s2",
+			"tipo": "flash",
+			"fecha": "2026-10-16",
+			"nombre": "De atrás pica el indio",
+			"descripcion": "Agenda una reunión siendo uno de los dos integrantes de tu squad con menos puntos individuales (sección Puntajes) al momento en que cae este Flash. Si hay empate en el corte, entran todos los empatados. Avísalo en el grupo con \"Flash Challenge: De atrás pica el indio\".",
+			"puntos_texto": "+3 para el primer SDR que lo cumpla",
+			"desde": "2026-10-16T16:08:46-03:00",
+			"hasta": null,
 			"vigente": true,
 			"ganador": null
 		}
