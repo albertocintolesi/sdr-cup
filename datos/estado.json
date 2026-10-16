@@ -12,22 +12,22 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-16T09:07:15-03:00",
+	"actualizado": "2026-10-16T09:10:38-03:00",
 	"chat_hasta": "2026-10-15T17:47:50-03:00",
 	"lider": "squad-1",
-	"diferencia": 3,
+	"diferencia": 4,
 	"squads": [
 		{
 			"id": "squad-1",
 			"nombre": "Escuadrón de súbditos #1 de Alberto Mussolini",
 			"posicion": 1,
-			"puntos": 13,
-			"puntos_en_revision": 1,
+			"puntos": 14,
+			"puntos_en_revision": 0,
 			"desglose": {
 				"agendadas": 6,
 				"realizadas": 2,
 				"combos": 2,
-				"misiones": 3,
+				"misiones": 4,
 				"flash": 0,
 				"legendarios": 0,
 				"ajustes": 0
@@ -46,10 +46,10 @@
 				{
 					"id": "benjamin-allel",
 					"nombre": "Benjamín Allel",
-					"puntos": 3,
+					"puntos": 4,
 					"reuniones_agendadas": 2,
 					"reuniones_realizadas": 0,
-					"ultima_actividad": "2026-10-15T17:41:38-03:00"
+					"ultima_actividad": "2026-10-15T17:47:50-03:00"
 				},
 				{
 					"id": "matias-hernandez",
@@ -171,11 +171,11 @@
 		{
 			"fecha": "2026-10-16",
 			"puntos": {
-				"squad-1": 0,
+				"squad-1": 1,
 				"squad-2": 0
 			},
 			"acumulado": {
-				"squad-1": 13,
+				"squad-1": 14,
 				"squad-2": 10
 			},
 			"combo": {
@@ -288,19 +288,39 @@
 	],
 	"eventos": [
 		{
+			"id": "ev-0021",
+			"tipo": "confirmacion",
+			"fecha_hora": "2026-10-16T09:10:38-03:00",
+			"squad": "squad-1",
+			"sdr": "benjamin-allel",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Se confirmó un puntaje de Benjamín Allel",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0020",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": null,
+				"hora": "09:10",
+				"fuente": "instruccion"
+			}
+		},
+		{
 			"id": "ev-0020",
 			"tipo": "mision",
 			"fecha_hora": "2026-10-15T17:47:50-03:00",
 			"squad": "squad-1",
 			"sdr": "benjamin-allel",
 			"puntos": 0,
-			"puntos_en_revision": 1,
+			"puntos_en_revision": 0,
 			"titulo": "Benjamín Allel podría sumar la misión: Headshot",
 			"detalle": null,
 			"empresa": null,
 			"ref": "ev-0019",
 			"anulado": false,
-			"en_revision": true,
+			"en_revision": false,
 			"origen": {
 				"mensaje": "20261015T174750-0",
 				"hora": "17:47",
