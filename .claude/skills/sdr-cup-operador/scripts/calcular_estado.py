@@ -98,7 +98,9 @@ def calcular_estado(registro, config, ahora):
 	dias_cup = []
 	dia = date.fromisoformat(cup["inicio"][:10])
 	while dia <= date.fromisoformat(cup["cierre"][:10]):
-		dias_cup.append(dia.isoformat())
+		# Sábado y domingo no son días de la Cup (importa si el cierre se extiende a la semana siguiente).
+		if dia.weekday() < 5:
+			dias_cup.append(dia.isoformat())
 		dia += timedelta(days=1)
 	por_dia = {d: {s: 0 for s in squads} for d in dias_cup}
 	combo_dia = {d: {s: False for s in squads} for d in dias_cup}

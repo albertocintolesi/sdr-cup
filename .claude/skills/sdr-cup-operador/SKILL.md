@@ -174,7 +174,7 @@ Todas las claves son opcionales. Las horas son de Chile, sin offset.
 - Si el propio chat dice que llegó por mailing, no se registra.
 - Mensaje anterior al inicio de la Cup (`cup.inicio` en `datos/config.json`): no cuenta. No lo incluyas en `nuevos.json` ni dejes observación. (Si se te pasa, el script lo descarta con su motivo y el resto del lote sigue.)
 - Una reunión que no cuenta (anterior al inicio, llegada por mailing, anulada) tampoco existe para las condiciones de una misión: si la misión premia "la primera reunión del día", la primera es la primera que sí cuenta.
-- Mensaje posterior al cierre (viernes 17:00:00; las 17:00:00 exactas sí cuentan): se registra con `"en_revision": true`, sin escalar. No suma; se ve con Alberto en el conteo final.
+- Mensaje posterior al cierre (`cup.cierre` de `datos/config.json`; la hora exacta sí cuenta): se registra con `"en_revision": true`, sin escalar. No suma; se ve con Alberto en el conteo final. Si existe `cup.cierre_final`, los avisos de reunión realizada hasta esa hora se registran igual, en revisión: Alberto los confirma en el conteo final.
 - La regla de los 30 minutos y los filtros de calidad (colaboradores, seniority) no se verifican: toda reunión con captura se considera calificada salvo que el chat diga lo contrario.
 
 **Reunión realizada (+1 adicional).** Solo si alguien avisa en el chat que la reunión se hizo (el propio SDR o un compañero). Identifica a cuál `reunion_agendada` se refiere por empresa, SDR y fecha, y cítala en `ref`. Si no puedes saber cuál es, pendiente `"tipo": "menor"` y ningún evento. Un "no show" no suma ni resta. Aviso posterior al cierre: `"en_revision": true`.
@@ -232,7 +232,7 @@ Por cada id en `por_decidir` del paso 1c, envía a Alberto un correo aparte (no 
 
 ## Correo de cierre (una sola vez, pasado el cierre de la Cup)
 
-En la primera corrida posterior al cierre (`cup.cierre`), si `registro.json` no tiene todavía un pendiente `p-cierre`, envía a Alberto un correo con asunto `[SDR Cup #3] Cierre: resultado por confirmar` que traiga: el marcador, lo que sigue en revisión (una línea por caso), las observaciones guardadas (misiones no declaradas) y estas preguntas: qué casos en revisión suman, si algún squad logra cada legendario, y si con eso declara el resultado definitivo. Crea el pendiente `{"id": "p-cierre", "estado": "abierto", "tipo": "escalar", ...}` con el `hilo`. Cuando responda, registra lo que decida (`confirmacion`, `anulacion`, `legendario`) y, solo si lo dice expresamente, el `cierre` definitivo con `"origen": {"correo": "<id del hilo>"}`.
+En la primera corrida posterior al cierre final (`cup.cierre_final` si existe; si no, `cup.cierre`), si `registro.json` no tiene todavía un pendiente `p-cierre`, envía a Alberto un correo con asunto `[SDR Cup #3] Cierre: resultado por confirmar` que traiga: el marcador, lo que sigue en revisión (una línea por caso), las observaciones guardadas (misiones no declaradas) y estas preguntas: qué casos en revisión suman, si algún squad logra cada legendario, y si con eso declara el resultado definitivo. Crea el pendiente `{"id": "p-cierre", "estado": "abierto", "tipo": "escalar", ...}` con el `hilo`. Cuando responda, registra lo que decida (`confirmacion`, `anulacion`, `legendario`) y, solo si lo dice expresamente, el `cierre` definitivo con `"origen": {"correo": "<id del hilo>"}`.
 
 ## Mapa de apodos (una sola vez, antes de la Cup)
 

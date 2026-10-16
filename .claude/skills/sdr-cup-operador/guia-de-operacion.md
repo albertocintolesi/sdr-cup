@@ -55,16 +55,16 @@ Tus resúmenes de puntaje en el grupo no cambian el marcador. Si tu cuenta no co
 
 ## 6. Cerrar la Cup
 
-El viernes a las 17:00 el marcador deja de sumar solo. Lo que llegue después queda en revisión.
+El martes 20 de octubre a las 17:00 el marcador deja de sumar solo (`cup.cierre`). Lo que llegue después queda en revisión; las reuniones realizadas avisadas hasta el viernes 23 a las 17:00 (`cup.cierre_final`) se confirman en el conteo final.
 
-1. Tras el cierre recibirás un correo **[SDR Cup #3] Cierre: resultado por confirmar** con el marcador, lo que quedó en revisión y las misiones que alguien cumplió sin declararlas.
-2. Responde ese correo con: qué casos suman, qué squad logra cada legendario (+5.000 colaboradores y seniority ≥ 1,5, 10 puntos cada uno) y la frase **"el resultado es definitivo"**. Después toca **Run now**: la rutina deja de correr sola el viernes a las 19:07.
+1. Tras el cierre final (viernes 23, 17:00) recibirás un correo **[SDR Cup #3] Cierre: resultado por confirmar** con el marcador, lo que quedó en revisión y las misiones que alguien cumplió sin declararlas.
+2. Responde ese correo con: qué casos suman, qué squad logra cada legendario (+5.000 colaboradores y seniority ≥ 1,5, 10 puntos cada uno) y la frase **"el resultado es definitivo"**. Después toca **Run now**: la rutina deja de correr sola el viernes 23 a las 19:07.
 3. Recién ahí la página muestra al ganador. Antes dice "resultado en revisión", aunque hayas publicado puntajes finales en el grupo.
 
 ## Datos de la rutina
 
 - **Nombre:** SDR Cup #3 · Operador. Se ve y se edita en claude.ai/code/routines → SDR Cup #3 · Operador (con tu cuenta de Claude).
-- **Horario:** minuto 7 de cada hora, de 10:07 a 19:07, del martes 13 al viernes 16 de octubre, hora de Chile. Primera corrida: martes 13 a las 10:07.
+- **Horario:** minuto 7 de cada hora, de 10:07 a 19:07, del martes 13 al viernes 16 y del lunes 19 al viernes 23 de octubre, hora de Chile (extensión). Primera corrida: martes 13 a las 10:07.
 - **Accesos:** Google Drive (leer los exports) y Gmail (escribirte y leer tu respuesta). Ningún otro conector.
 - **Dónde escribe:** solo en la rama `estado` del repo de la página y en la rama `registro` del repo privado. Nunca en `main`.
 - **Para pausarla:** en esa misma página, el interruptor de encendido. Para borrarla al terminar la Cup: menú → Delete.
