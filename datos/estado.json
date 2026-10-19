@@ -13,7 +13,7 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-19T09:36:42-03:00",
+	"actualizado": "2026-10-19T09:55:11-03:00",
 	"chat_hasta": "2026-10-16T17:40:52-03:00",
 	"lider": "squad-1",
 	"diferencia": 2,
@@ -75,7 +75,7 @@
 			"nombre": "Azul Audaz",
 			"posicion": 2,
 			"puntos": 12,
-			"puntos_en_revision": 1,
+			"puntos_en_revision": 0,
 			"desglose": {
 				"agendadas": 3,
 				"realizadas": 3,
@@ -327,6 +327,18 @@
 			"hasta": null,
 			"vigente": true,
 			"ganador": null
+		},
+		{
+			"id": "mision-2026-10-19",
+			"tipo": "mision",
+			"fecha": "2026-10-19",
+			"nombre": "Momentum + ICP",
+			"descripcion": "Se repite la misión del viernes, con las mismas reglas. Dos partes acumulables. (1) Momentum: cada reunión agendada hoy para una fecha a más tardar el viernes 23 de octubre vale x2; la fecha se ve en la captura de la invitación y, si no se ve, el SDR la indica en el mensaje. (2) ICP: cada reunión agendada hoy con una empresa de más de 500 empleados y con contraparte de gerencia o superior vale 3 puntos; el tamaño y el cargo se validan con LinkedIn, se aceptan por declaración y los verifica Alberto. Para ICP escribe en el grupo, junto a la captura, 'Misión completada: ICP – [cargo], [número de empleados según LinkedIn]'. Una reunión que cumple ambas vale 4 puntos en total.",
+			"puntos_texto": "Momentum +1 adicional; ICP +2 adicionales; acumulables (hasta 4 por reunión)",
+			"desde": "2026-10-19T10:00:00-03:00",
+			"hasta": "2026-10-19T23:59:59-03:00",
+			"vigente": false,
+			"ganador": null
 		}
 	],
 	"legendarios": [
@@ -346,6 +358,26 @@
 		}
 	],
 	"eventos": [
+		{
+			"id": "ev-0025",
+			"tipo": "anulacion",
+			"fecha_hora": "2026-10-19T09:40:00-03:00",
+			"squad": "squad-2",
+			"sdr": "pedro-pablo-m",
+			"puntos": 0,
+			"puntos_en_revision": 0,
+			"titulo": "Se anuló un puntaje de Pedro Pablo Mardones",
+			"detalle": "Misión no declarada el día que correspondía",
+			"empresa": null,
+			"ref": "ev-0023",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": null,
+				"hora": "09:40",
+				"fuente": "correo"
+			}
+		},
 		{
 			"id": "ev-0024",
 			"tipo": "reunion_realizada",
@@ -373,13 +405,13 @@
 			"squad": "squad-2",
 			"sdr": "pedro-pablo-m",
 			"puntos": 0,
-			"puntos_en_revision": 1,
+			"puntos_en_revision": 0,
 			"titulo": "Pedro Pablo Mardones podría sumar la misión: Pesca azul",
 			"detalle": null,
 			"empresa": null,
 			"ref": "ev-0004",
-			"anulado": false,
-			"en_revision": true,
+			"anulado": true,
+			"en_revision": false,
 			"origen": {
 				"mensaje": "20261016T162523-0",
 				"hora": "16:25",
