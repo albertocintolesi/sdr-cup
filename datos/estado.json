@@ -13,10 +13,10 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-16T16:08:46-03:00",
-	"chat_hasta": "2026-10-15T17:47:50-03:00",
+	"actualizado": "2026-10-19T09:36:42-03:00",
+	"chat_hasta": "2026-10-16T17:40:52-03:00",
 	"lider": "squad-1",
-	"diferencia": 4,
+	"diferencia": 2,
 	"squads": [
 		{
 			"id": "squad-1",
@@ -74,11 +74,11 @@
 			"id": "squad-2",
 			"nombre": "Azul Audaz",
 			"posicion": 2,
-			"puntos": 10,
-			"puntos_en_revision": 0,
+			"puntos": 12,
+			"puntos_en_revision": 1,
 			"desglose": {
 				"agendadas": 3,
-				"realizadas": 1,
+				"realizadas": 3,
 				"combos": 2,
 				"misiones": 1,
 				"flash": 3,
@@ -86,23 +86,23 @@
 				"ajustes": 0
 			},
 			"reuniones_agendadas": 3,
-			"reuniones_realizadas": 1,
+			"reuniones_realizadas": 3,
 			"integrantes": [
 				{
 					"id": "alberto-cintolesi",
 					"nombre": "Alberto Cintolesi",
-					"puntos": 7,
+					"puntos": 8,
 					"reuniones_agendadas": 2,
-					"reuniones_realizadas": 1,
-					"ultima_actividad": "2026-10-15T15:49:45-03:00"
+					"reuniones_realizadas": 2,
+					"ultima_actividad": "2026-10-16T17:40:52-03:00"
 				},
 				{
 					"id": "pedro-pablo-m",
 					"nombre": "Pedro Pablo Mardones",
-					"puntos": 1,
+					"puntos": 2,
 					"reuniones_agendadas": 1,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": "2026-10-13T16:58:44-03:00"
+					"reuniones_realizadas": 1,
+					"ultima_actividad": "2026-10-16T16:23:27-03:00"
 				},
 				{
 					"id": "isidora-b",
@@ -173,11 +173,11 @@
 			"fecha": "2026-10-16",
 			"puntos": {
 				"squad-1": 1,
-				"squad-2": 0
+				"squad-2": 2
 			},
 			"acumulado": {
 				"squad-1": 14,
-				"squad-2": 10
+				"squad-2": 12
 			},
 			"combo": {
 				"squad-1": false,
@@ -186,9 +186,18 @@
 		},
 		{
 			"fecha": "2026-10-19",
-			"puntos": null,
-			"acumulado": null,
-			"combo": null
+			"puntos": {
+				"squad-1": 0,
+				"squad-2": 0
+			},
+			"acumulado": {
+				"squad-1": 14,
+				"squad-2": 12
+			},
+			"combo": {
+				"squad-1": false,
+				"squad-2": false
+			}
 		},
 		{
 			"fecha": "2026-10-20",
@@ -291,7 +300,7 @@
 			"puntos_texto": "Momentum +1 adicional; ICP +2 adicionales; acumulables (hasta 4 por reunión)",
 			"desde": "2026-10-16T10:16:35-03:00",
 			"hasta": "2026-10-16T17:00:00-03:00",
-			"vigente": true,
+			"vigente": false,
 			"ganador": null
 		},
 		{
@@ -304,7 +313,7 @@
 			"regla": "Gana el squad que agende con la empresa más grande antes del fin del día. Lo define Alberto al terminar el día.",
 			"desde": "2026-10-16T15:08:23-03:00",
 			"hasta": "2026-10-16T23:59:59-03:00",
-			"vigente": true,
+			"vigente": false,
 			"ganador": null
 		},
 		{
@@ -337,6 +346,66 @@
 		}
 	],
 	"eventos": [
+		{
+			"id": "ev-0024",
+			"tipo": "reunion_realizada",
+			"fecha_hora": "2026-10-16T17:40:52-03:00",
+			"squad": "squad-2",
+			"sdr": "alberto-cintolesi",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Se realizó una reunión de Alberto Cintolesi",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0003",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261016T174052-0",
+				"hora": "17:40",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0023",
+			"tipo": "mision",
+			"fecha_hora": "2026-10-16T16:25:23-03:00",
+			"squad": "squad-2",
+			"sdr": "pedro-pablo-m",
+			"puntos": 0,
+			"puntos_en_revision": 1,
+			"titulo": "Pedro Pablo Mardones podría sumar la misión: Pesca azul",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0004",
+			"anulado": false,
+			"en_revision": true,
+			"origen": {
+				"mensaje": "20261016T162523-0",
+				"hora": "16:25",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0022",
+			"tipo": "reunion_realizada",
+			"fecha_hora": "2026-10-16T16:23:27-03:00",
+			"squad": "squad-2",
+			"sdr": "pedro-pablo-m",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Se realizó una reunión de Pedro Pablo Mardones",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0004",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261016T162327-0",
+				"hora": "16:23",
+				"fuente": "chat"
+			}
+		},
 		{
 			"id": "ev-0021",
 			"tipo": "confirmacion",
