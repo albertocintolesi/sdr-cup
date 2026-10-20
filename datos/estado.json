@@ -13,20 +13,20 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-20T10:15:02-03:00",
-	"chat_hasta": "2026-10-16T17:40:52-03:00",
+	"actualizado": "2026-10-20T11:00:32-03:00",
+	"chat_hasta": "2026-10-20T10:13:12-03:00",
 	"lider": "squad-1",
-	"diferencia": 2,
+	"diferencia": 3,
 	"squads": [
 		{
 			"id": "squad-1",
 			"nombre": "Escuadrón de súbditos #1 de Alberto Mussolini",
 			"posicion": 1,
-			"puntos": 14,
+			"puntos": 15,
 			"puntos_en_revision": 0,
 			"desglose": {
 				"agendadas": 6,
-				"realizadas": 2,
+				"realizadas": 3,
 				"combos": 2,
 				"misiones": 4,
 				"flash": 0,
@@ -34,7 +34,7 @@
 				"ajustes": 0
 			},
 			"reuniones_agendadas": 6,
-			"reuniones_realizadas": 2,
+			"reuniones_realizadas": 3,
 			"integrantes": [
 				{
 					"id": "matias-palma",
@@ -55,10 +55,10 @@
 				{
 					"id": "matias-hernandez",
 					"nombre": "Matías Hernández",
-					"puntos": 2,
+					"puntos": 3,
 					"reuniones_agendadas": 1,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": "2026-10-14T17:20:01-03:00"
+					"reuniones_realizadas": 1,
+					"ultima_actividad": "2026-10-19T15:16:57-03:00"
 				},
 				{
 					"id": "matias-rauque",
@@ -187,11 +187,11 @@
 		{
 			"fecha": "2026-10-19",
 			"puntos": {
-				"squad-1": 0,
+				"squad-1": 1,
 				"squad-2": 0
 			},
 			"acumulado": {
-				"squad-1": 14,
+				"squad-1": 15,
 				"squad-2": 12
 			},
 			"combo": {
@@ -206,7 +206,7 @@
 				"squad-2": 0
 			},
 			"acumulado": {
-				"squad-1": 14,
+				"squad-1": 15,
 				"squad-2": 12
 			},
 			"combo": {
@@ -360,6 +360,18 @@
 			"hasta": null,
 			"vigente": true,
 			"ganador": null
+		},
+		{
+			"id": "mision-2026-10-20",
+			"tipo": "mision",
+			"fecha": "2026-10-20",
+			"nombre": "Momentum + ICP",
+			"descripcion": "Se repite la misión de ayer, con las mismas reglas. Dos partes acumulables. (1) Momentum: cada reunión agendada hoy para una fecha a más tardar el viernes 23 de octubre vale x2; la fecha se ve en la captura de la invitación y, si no se ve, el SDR la indica en el mensaje. (2) ICP: cada reunión agendada hoy con una empresa de más de 500 empleados y con contraparte de gerencia o superior vale 3 puntos; el tamaño y el cargo se validan con LinkedIn, se aceptan por declaración y los verifica Alberto. Para ICP escribe en el grupo, junto a la captura, 'Misión completada: ICP – [cargo], [número de empleados según LinkedIn]'. Una reunión que cumple ambas vale 4 puntos en total. Vigente hasta el cierre del puntaje, hoy a las 17:00.",
+			"puntos_texto": "Momentum +1 adicional; ICP +2 adicionales; acumulables (hasta 4 por reunión)",
+			"desde": "2026-10-20T11:00:32-03:00",
+			"hasta": "2026-10-20T17:00:00-03:00",
+			"vigente": true,
+			"ganador": null
 		}
 	],
 	"legendarios": [
@@ -379,6 +391,26 @@
 		}
 	],
 	"eventos": [
+		{
+			"id": "ev-0026",
+			"tipo": "reunion_realizada",
+			"fecha_hora": "2026-10-19T15:16:57-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-hernandez",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Se realizó una reunión de Matías Hernández",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0006",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261019T151657-0",
+				"hora": "15:16",
+				"fuente": "chat"
+			}
+		},
 		{
 			"id": "ev-0025",
 			"tipo": "anulacion",
