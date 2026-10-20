@@ -13,19 +13,19 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-20T12:13:27-03:00",
-	"chat_hasta": "2026-10-20T10:13:12-03:00",
+	"actualizado": "2026-10-20T13:04:48-03:00",
+	"chat_hasta": "2026-10-20T12:18:16-03:00",
 	"lider": "squad-1",
-	"diferencia": 3,
+	"diferencia": 5,
 	"squads": [
 		{
 			"id": "squad-1",
 			"nombre": "Escuadrón de súbditos #1 de Alberto Mussolini",
 			"posicion": 1,
-			"puntos": 15,
+			"puntos": 17,
 			"puntos_en_revision": 0,
 			"desglose": {
-				"agendadas": 6,
+				"agendadas": 8,
 				"realizadas": 3,
 				"combos": 2,
 				"misiones": 4,
@@ -33,7 +33,7 @@
 				"legendarios": 0,
 				"ajustes": 0
 			},
-			"reuniones_agendadas": 6,
+			"reuniones_agendadas": 8,
 			"reuniones_realizadas": 3,
 			"integrantes": [
 				{
@@ -45,20 +45,20 @@
 					"ultima_actividad": "2026-10-15T14:17:35-03:00"
 				},
 				{
+					"id": "matias-hernandez",
+					"nombre": "Matías Hernández",
+					"puntos": 5,
+					"reuniones_agendadas": 3,
+					"reuniones_realizadas": 1,
+					"ultima_actividad": "2026-10-20T12:15:27-03:00"
+				},
+				{
 					"id": "benjamin-allel",
 					"nombre": "Benjamín Allel",
 					"puntos": 4,
 					"reuniones_agendadas": 2,
 					"reuniones_realizadas": 0,
 					"ultima_actividad": "2026-10-15T17:47:50-03:00"
-				},
-				{
-					"id": "matias-hernandez",
-					"nombre": "Matías Hernández",
-					"puntos": 3,
-					"reuniones_agendadas": 1,
-					"reuniones_realizadas": 1,
-					"ultima_actividad": "2026-10-19T15:16:57-03:00"
 				},
 				{
 					"id": "matias-rauque",
@@ -202,11 +202,11 @@
 		{
 			"fecha": "2026-10-20",
 			"puntos": {
-				"squad-1": 0,
+				"squad-1": 2,
 				"squad-2": 0
 			},
 			"acumulado": {
-				"squad-1": 15,
+				"squad-1": 17,
 				"squad-2": 12
 			},
 			"combo": {
@@ -391,6 +391,46 @@
 		}
 	],
 	"eventos": [
+		{
+			"id": "ev-0028",
+			"tipo": "reunion_agendada",
+			"fecha_hora": "2026-10-20T12:15:27-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-hernandez",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Matías Hernández agendó una reunión",
+			"detalle": null,
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261020T121527-0",
+				"hora": "12:15",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0027",
+			"tipo": "reunion_agendada",
+			"fecha_hora": "2026-10-20T11:54:33-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-hernandez",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Matías Hernández agendó una reunión",
+			"detalle": null,
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261020T115433-0",
+				"hora": "11:54",
+				"fuente": "chat"
+			}
+		},
 		{
 			"id": "ev-0026",
 			"tipo": "reunion_realizada",
