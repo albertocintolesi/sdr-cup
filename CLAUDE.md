@@ -19,7 +19,7 @@ Landing page liviana que muestra en vivo el estado de la SDR Cup de Brolly. La p
 ## La Cup #3: lo esencial de las bases
 
 - **Formato.** Squad 1 vs Squad 2, una semana hábil, cierre el viernes a las 17:00. Gana el squad con más puntos, con un mínimo de 20.
-- **Fechas.** Parte el martes 13 de octubre de 2026. Extendida: se suma puntaje (agendadas, misiones, Flash) hasta el martes 20 a las 17:00; el cierre final es el viernes 23 a las 17:00 y cuenta también las reuniones realizadas hasta ese día.
+- **Fechas.** Parte el martes 13 de octubre de 2026. Extendida: se suma puntaje (agendadas, misiones, Flash) hasta el martes 20 a las 23:59; el cierre final es el viernes 23 a las 17:00 y cuenta también las reuniones realizadas hasta ese día.
 - **Squad 1.** Matías Palma, Matías Hernández, Matías Rauque, Benjamín Allel.
 - **Squad 2.** Isidora Bravo, Alberto Muñoz, Pedro Pablo Mardones, Alberto Cintolesi.
 - **Nombres.** Squad 1: "Escuadrón de súbditos #1 de Alberto Mussolini". Squad 2: "Azul Audaz".

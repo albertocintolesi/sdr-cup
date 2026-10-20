@@ -55,7 +55,7 @@ Tus resúmenes de puntaje en el grupo no cambian el marcador. Si tu cuenta no co
 
 ## 6. Cerrar la Cup
 
-El martes 20 de octubre a las 17:00 el marcador deja de sumar solo (`cup.cierre`). Lo que llegue después queda en revisión; las reuniones realizadas avisadas hasta el viernes 23 a las 17:00 (`cup.cierre_final`) se confirman en el conteo final.
+El martes 20 de octubre a las 23:59:59 el marcador deja de sumar solo (`cup.cierre`). Lo que llegue después queda en revisión; las reuniones realizadas avisadas hasta el viernes 23 a las 17:00 (`cup.cierre_final`) se confirman en el conteo final.
 
 1. Tras el cierre final (viernes 23, 17:00) recibirás un correo **[SDR Cup #3] Cierre: resultado por confirmar** con el marcador, lo que quedó en revisión y las misiones que alguien cumplió sin declararlas.
 2. Responde ese correo con: qué casos suman, qué squad logra cada legendario (+5.000 colaboradores y seniority ≥ 1,5, 10 puntos cada uno) y la frase **"el resultado es definitivo"**. Después toca **Run now**: la rutina deja de correr sola el viernes 23 a las 19:07.

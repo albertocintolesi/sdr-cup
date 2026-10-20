@@ -3,7 +3,7 @@
 		"numero": 3,
 		"nombre": "SDR Cup #3",
 		"inicio": "2026-10-13T10:00:00",
-		"cierre": "2026-10-20T17:00:00",
+		"cierre": "2026-10-20T23:59:59",
 		"cierre_final": "2026-10-23T17:00:00",
 		"utc_offset": "-03:00",
 		"minimo_para_ganar": 20,
