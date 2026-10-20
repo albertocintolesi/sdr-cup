@@ -4,7 +4,7 @@
 		"numero": 3,
 		"nombre": "SDR Cup #3",
 		"inicio": "2026-10-13T10:00:00-03:00",
-		"cierre": "2026-10-20T17:00:00-03:00",
+		"cierre": "2026-10-20T23:59:59-03:00",
 		"cierre_final": "2026-10-23T17:00:00-03:00",
 		"minimo_para_ganar": 20,
 		"premio": "Pozo de $160.000 para el squad ganador, más un premio sorpresa. Además, $40.000 para el MVP de la Cup: quien haya sumado más puntos individualmente. Si hay empate, se reparte.",
@@ -13,7 +13,7 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-20T16:09:13-03:00",
+	"actualizado": "2026-10-20T17:00:33-03:00",
 	"chat_hasta": "2026-10-20T12:18:16-03:00",
 	"lider": "squad-1",
 	"diferencia": 5,
@@ -370,7 +370,7 @@
 			"puntos_texto": "Momentum +1 adicional; ICP +2 adicionales; acumulables (hasta 4 por reunión)",
 			"desde": "2026-10-20T11:00:32-03:00",
 			"hasta": "2026-10-20T17:00:00-03:00",
-			"vigente": true,
+			"vigente": false,
 			"ganador": null
 		}
 	],
