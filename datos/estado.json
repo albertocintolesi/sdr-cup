@@ -13,7 +13,7 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-19T16:08:11-03:00",
+	"actualizado": "2026-10-20T10:15:02-03:00",
 	"chat_hasta": "2026-10-16T17:40:52-03:00",
 	"lider": "squad-1",
 	"diferencia": 2,
@@ -201,9 +201,18 @@
 		},
 		{
 			"fecha": "2026-10-20",
-			"puntos": null,
-			"acumulado": null,
-			"combo": null
+			"puntos": {
+				"squad-1": 0,
+				"squad-2": 0
+			},
+			"acumulado": {
+				"squad-1": 14,
+				"squad-2": 12
+			},
+			"combo": {
+				"squad-1": false,
+				"squad-2": false
+			}
 		}
 	],
 	"desafios": [
@@ -337,7 +346,7 @@
 			"puntos_texto": "Momentum +1 adicional; ICP +2 adicionales; acumulables (hasta 4 por reunión)",
 			"desde": "2026-10-19T10:00:00-03:00",
 			"hasta": "2026-10-19T23:59:59-03:00",
-			"vigente": true,
+			"vigente": false,
 			"ganador": null
 		},
 		{
