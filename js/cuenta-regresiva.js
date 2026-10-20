@@ -6,6 +6,8 @@
 
    - Antes del inicio: cuenta hacia el inicio.
    - Durante la Cup: cuenta hacia el cierre.
+   - Si el estado trae cierre final: tras el cierre del puntaje sigue en curso
+     y cuenta hacia el cierre final (las reuniones realizadas aún suman).
    - Después del cierre: "Terminó" y el resultado que indique el estado.
 
    Las fechas parten de los <time> de index.html y se reemplazan con las del
@@ -24,6 +26,9 @@
 
 	let inicio = new Date(elInicio.getAttribute('datetime')).getTime();
 	let cierre = new Date(elCierre.getAttribute('datetime')).getTime();
+	// Cierre final opcional: después del cierre del puntaje, las reuniones realizadas
+	// siguen sumando hasta esta hora. Sin él, la Cup termina en el cierre.
+	let cierreFinal = null;
 	let resultado = 'Resultado en revisión';
 	let desfase = 0;	// solo para probar: adelanta o atrasa el reloj
 	let faseActual = null;
@@ -37,9 +42,19 @@
 		return Date.now() + desfase;
 	}
 
+	function fin() {
+		return cierreFinal && cierreFinal > cierre ? cierreFinal : cierre;
+	}
+
 	function fase() {
 		const t = ahora();
-		return t < inicio ? 'por_iniciar' : t < cierre ? 'en_curso' : 'cerrada';
+		return t < inicio ? 'por_iniciar' : t < fin() ? 'en_curso' : 'cerrada';
+	}
+
+	// Entre el cierre del puntaje y el cierre final
+	function tramoFinal() {
+		const t = ahora();
+		return fin() > cierre && t >= cierre && t < fin();
 	}
 
 	// Lugares donde se escribe
@@ -96,9 +111,12 @@
 		clearTimeout(temporizador);
 		const t = ahora();
 		const actual = fase();
+		const tramo = tramoFinal();
+		// Entrar al tramo final también avisa, aunque la fase siga en curso
+		const clave = actual + (tramo ? '-final' : '');
 
-		if (actual !== faseActual) {
-			faseActual = actual;
+		if (clave !== faseActual) {
+			faseActual = clave;
 			document.documentElement.dataset.fase = actual;
 			oyentes.forEach(function (aviso) { aviso(actual); });
 		}
@@ -117,7 +135,8 @@
 
 		activa.hidden = false;
 		terminada.hidden = true;
-		const meta = actual === 'por_iniciar' ? inicio : cierre;
+		// Hasta el cierre del puntaje se cuenta hacia él; en el tramo final, hacia el cierre final
+		const meta = actual === 'por_iniciar' ? inicio : tramo ? fin() : cierre;
 		const falta = meta - t;
 		const segundos = Math.floor(falta / 1000);
 		const dias = Math.floor(segundos / 86400);
@@ -134,9 +153,9 @@
 			escribir('destino', 'para el inicio');
 		} else {
 			escribir('prefijo', dias > 0 ? 'Quedan ' + dias + plural + ' y' : 'Quedan');
-			escribir('destino', 'para el cierre');
+			escribir('destino', tramo ? 'para el cierre final' : 'para el cierre');
 			escribir('avanceRotulo', 'Avance de la Cup');
-			pintarAvance((t - inicio) / (cierre - inicio));
+			pintarAvance((t - inicio) / (fin() - inicio));
 		}
 
 		// Vuelve a correr justo cuando cambia el segundo
@@ -146,10 +165,12 @@
 	window.RelojCup = {
 		ahora: ahora,
 		fase: fase,
+		tramoFinal: tramoFinal,
 		// El estado entrega las fechas reales y, al cierre, el texto del resultado
 		fijar: function (datos) {
 			if (datos.inicio && !isNaN(new Date(datos.inicio))) inicio = new Date(datos.inicio).getTime();
 			if (datos.cierre && !isNaN(new Date(datos.cierre))) cierre = new Date(datos.cierre).getTime();
+			cierreFinal = datos.cierre_final && !isNaN(new Date(datos.cierre_final)) ? new Date(datos.cierre_final).getTime() : null;
 			if (datos.resultado) resultado = datos.resultado;
 			actualizar();
 		},

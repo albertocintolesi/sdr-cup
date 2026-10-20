@@ -161,6 +161,10 @@
 			return cup.ganador ? 'Resultado definitivo: ganó ' + nombreDe(cup.ganador) + '.' : 'Resultado definitivo: sin ganador.';
 		}
 		if (fase === 'cerrada') return 'La Cup terminó. El resultado está en revisión.';
+		if (window.RelojCup && window.RelojCup.tramoFinal()) {
+			const final = new Date(cup.cierre_final);
+			return 'El puntaje cerró. Las reuniones realizadas suman hasta el ' + diaLargo.format(final) + ' a las ' + hora.format(final) + '.';
+		}
 		if (fase === 'por_iniciar') return 'La Cup todavía no parte. Gana el squad con más puntos, con un mínimo de ' + cup.minimo_para_ganar + '.';
 		if (!estado.lider) return 'Los squads van empatados.';
 		return nombreDe(estado.lider) + ' lidera por ' + estado.diferencia + (estado.diferencia === 1 ? ' punto.' : ' puntos.');
@@ -480,7 +484,7 @@
 			if (info.ejemplo) window.RelojCup.simular(estado.actualizado);
 			let resultado = 'Resultado en revisión';
 			if (estado.cup.resultado_definitivo) resultado = estado.cup.ganador ? 'Ganó ' + nombreDe(estado.cup.ganador) : 'Sin ganador';
-			window.RelojCup.fijar({ inicio: estado.cup.inicio, cierre: estado.cup.cierre, resultado: resultado });
+			window.RelojCup.fijar({ inicio: estado.cup.inicio, cierre: estado.cup.cierre, cierre_final: estado.cup.cierre_final, resultado: resultado });
 		}
 
 		pintarMini();
