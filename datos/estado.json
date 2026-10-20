@@ -13,7 +13,7 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-20T17:00:33-03:00",
+	"actualizado": "2026-10-20T17:03:54-03:00",
 	"chat_hasta": "2026-10-20T12:18:16-03:00",
 	"lider": "squad-1",
 	"diferencia": 5,
@@ -366,11 +366,11 @@
 			"tipo": "mision",
 			"fecha": "2026-10-20",
 			"nombre": "Momentum + ICP",
-			"descripcion": "Se repite la misión de ayer, con las mismas reglas. Dos partes acumulables. (1) Momentum: cada reunión agendada hoy para una fecha a más tardar el viernes 23 de octubre vale x2; la fecha se ve en la captura de la invitación y, si no se ve, el SDR la indica en el mensaje. (2) ICP: cada reunión agendada hoy con una empresa de más de 500 empleados y con contraparte de gerencia o superior vale 3 puntos; el tamaño y el cargo se validan con LinkedIn, se aceptan por declaración y los verifica Alberto. Para ICP escribe en el grupo, junto a la captura, 'Misión completada: ICP – [cargo], [número de empleados según LinkedIn]'. Una reunión que cumple ambas vale 4 puntos en total. Vigente hasta el cierre del puntaje, hoy a las 17:00.",
+			"descripcion": "Se repite la misión de ayer, con las mismas reglas. Dos partes acumulables. (1) Momentum: cada reunión agendada hoy para una fecha a más tardar el viernes 23 de octubre vale x2; la fecha se ve en la captura de la invitación y, si no se ve, el SDR la indica en el mensaje. (2) ICP: cada reunión agendada hoy con una empresa de más de 500 empleados y con contraparte de gerencia o superior vale 3 puntos; el tamaño y el cargo se validan con LinkedIn, se aceptan por declaración y los verifica Alberto. Para ICP escribe en el grupo, junto a la captura, 'Misión completada: ICP – [cargo], [número de empleados según LinkedIn]'. Una reunión que cumple ambas vale 4 puntos en total. Vigente hasta el cierre del puntaje, hoy a las 23:59.",
 			"puntos_texto": "Momentum +1 adicional; ICP +2 adicionales; acumulables (hasta 4 por reunión)",
 			"desde": "2026-10-20T11:00:32-03:00",
-			"hasta": "2026-10-20T17:00:00-03:00",
-			"vigente": false,
+			"hasta": "2026-10-20T23:59:59-03:00",
+			"vigente": true,
 			"ganador": null
 		}
 	],
