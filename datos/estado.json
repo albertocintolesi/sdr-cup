@@ -13,36 +13,36 @@
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-20T17:44:43-03:00",
-	"chat_hasta": "2026-10-20T17:29:52-03:00",
+	"actualizado": "2026-10-20T17:59:30-03:00",
+	"chat_hasta": "2026-10-20T17:52:05-03:00",
 	"lider": "squad-1",
-	"diferencia": 5,
+	"diferencia": 1,
 	"squads": [
 		{
 			"id": "squad-1",
 			"nombre": "Escuadrón de súbditos #1 de Alberto Mussolini",
 			"posicion": 1,
-			"puntos": 21,
+			"puntos": 23,
 			"puntos_en_revision": 0,
 			"desglose": {
-				"agendadas": 8,
+				"agendadas": 9,
 				"realizadas": 3,
 				"combos": 2,
-				"misiones": 5,
+				"misiones": 6,
 				"flash": 3,
 				"legendarios": 0,
 				"ajustes": 0
 			},
-			"reuniones_agendadas": 8,
+			"reuniones_agendadas": 9,
 			"reuniones_realizadas": 3,
 			"integrantes": [
 				{
 					"id": "matias-hernandez",
 					"nombre": "Matías Hernández",
-					"puntos": 9,
-					"reuniones_agendadas": 3,
+					"puntos": 11,
+					"reuniones_agendadas": 4,
 					"reuniones_realizadas": 1,
-					"ultima_actividad": "2026-10-20T17:12:59-03:00"
+					"ultima_actividad": "2026-10-20T17:44:34-03:00"
 				},
 				{
 					"id": "matias-palma",
@@ -74,18 +74,18 @@
 			"id": "squad-2",
 			"nombre": "Azul Audaz",
 			"posicion": 2,
-			"puntos": 16,
+			"puntos": 22,
 			"puntos_en_revision": 0,
 			"desglose": {
-				"agendadas": 4,
+				"agendadas": 5,
 				"realizadas": 3,
-				"combos": 2,
+				"combos": 4,
 				"misiones": 1,
-				"flash": 6,
+				"flash": 9,
 				"legendarios": 0,
 				"ajustes": 0
 			},
-			"reuniones_agendadas": 4,
+			"reuniones_agendadas": 5,
 			"reuniones_realizadas": 3,
 			"integrantes": [
 				{
@@ -95,6 +95,14 @@
 					"reuniones_agendadas": 3,
 					"reuniones_realizadas": 2,
 					"ultima_actividad": "2026-10-20T17:29:52-03:00"
+				},
+				{
+					"id": "alberto-m",
+					"nombre": "Alberto Muñoz",
+					"puntos": 4,
+					"reuniones_agendadas": 1,
+					"reuniones_realizadas": 0,
+					"ultima_actividad": "2026-10-20T17:50:11-03:00"
 				},
 				{
 					"id": "pedro-pablo-m",
@@ -107,14 +115,6 @@
 				{
 					"id": "isidora-b",
 					"nombre": "Isidora Bravo",
-					"puntos": 0,
-					"reuniones_agendadas": 0,
-					"reuniones_realizadas": 0,
-					"ultima_actividad": null
-				},
-				{
-					"id": "alberto-m",
-					"nombre": "Alberto Muñoz",
 					"puntos": 0,
 					"reuniones_agendadas": 0,
 					"reuniones_realizadas": 0,
@@ -202,16 +202,16 @@
 		{
 			"fecha": "2026-10-20",
 			"puntos": {
-				"squad-1": 6,
-				"squad-2": 4
+				"squad-1": 8,
+				"squad-2": 10
 			},
 			"acumulado": {
-				"squad-1": 21,
-				"squad-2": 16
+				"squad-1": 23,
+				"squad-2": 22
 			},
 			"combo": {
 				"squad-1": false,
-				"squad-2": false
+				"squad-2": true
 			}
 		}
 	],
@@ -334,8 +334,8 @@
 			"puntos_texto": "+3 para el primer SDR que lo cumpla",
 			"desde": "2026-10-16T16:08:46-03:00",
 			"hasta": null,
-			"vigente": true,
-			"ganador": null
+			"vigente": false,
+			"ganador": "squad-2"
 		},
 		{
 			"id": "mision-2026-10-19",
@@ -391,6 +391,106 @@
 		}
 	],
 	"eventos": [
+		{
+			"id": "ev-0037",
+			"tipo": "flash",
+			"fecha_hora": "2026-10-20T17:50:11-03:00",
+			"squad": "squad-2",
+			"sdr": "alberto-m",
+			"puntos": 3,
+			"puntos_en_revision": 0,
+			"titulo": "Alberto Muñoz ganó el Flash Challenge: De atrás pica el indio",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0035",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261020T175011-0",
+				"hora": "17:50",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0036",
+			"tipo": "combo_diario",
+			"fecha_hora": "2026-10-20T17:48:59-03:00",
+			"squad": "squad-2",
+			"sdr": null,
+			"puntos": 2,
+			"puntos_en_revision": 0,
+			"titulo": "Combo diario de Azul Audaz",
+			"detalle": "Dos o más integrantes agendaron el mismo día",
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261020T174859-0",
+				"hora": "17:48",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0035",
+			"tipo": "reunion_agendada",
+			"fecha_hora": "2026-10-20T17:48:59-03:00",
+			"squad": "squad-2",
+			"sdr": "alberto-m",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Alberto Muñoz agendó una reunión",
+			"detalle": null,
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261020T174859-0",
+				"hora": "17:48",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0034",
+			"tipo": "mision",
+			"fecha_hora": "2026-10-20T17:44:34-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-hernandez",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Matías Hernández cumplió la misión: Momentum + ICP",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0033",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261020T174434-0",
+				"hora": "17:44",
+				"fuente": "chat"
+			}
+		},
+		{
+			"id": "ev-0033",
+			"tipo": "reunion_agendada",
+			"fecha_hora": "2026-10-20T17:43:59-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-hernandez",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Matías Hernández agendó una reunión",
+			"detalle": null,
+			"empresa": null,
+			"ref": null,
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": "20261020T174359-0",
+				"hora": "17:43",
+				"fuente": "chat"
+			}
+		},
 		{
 			"id": "ev-0032",
 			"tipo": "flash",
