@@ -9,24 +9,24 @@
 		"minimo_para_ganar": 20,
 		"premio": "Pozo de $160.000 para el squad ganador, más un premio sorpresa. Además, $40.000 para el MVP de la Cup: quien haya sumado más puntos individualmente. Si hay empate, se reparte.",
 		"mensaje": null,
-		"fase": "en_curso",
+		"fase": "cerrada",
 		"ganador": null,
 		"resultado_definitivo": false
 	},
-	"actualizado": "2026-10-20T17:59:30-03:00",
+	"actualizado": "2026-10-23T12:56:16-03:00",
 	"chat_hasta": "2026-10-20T17:52:05-03:00",
 	"lider": "squad-1",
-	"diferencia": 1,
+	"diferencia": 3,
 	"squads": [
 		{
 			"id": "squad-1",
 			"nombre": "Escuadrón de súbditos #1 de Alberto Mussolini",
 			"posicion": 1,
-			"puntos": 23,
+			"puntos": 25,
 			"puntos_en_revision": 0,
 			"desglose": {
 				"agendadas": 9,
-				"realizadas": 3,
+				"realizadas": 5,
 				"combos": 2,
 				"misiones": 6,
 				"flash": 3,
@@ -34,15 +34,15 @@
 				"ajustes": 0
 			},
 			"reuniones_agendadas": 9,
-			"reuniones_realizadas": 3,
+			"reuniones_realizadas": 5,
 			"integrantes": [
 				{
 					"id": "matias-hernandez",
 					"nombre": "Matías Hernández",
-					"puntos": 11,
+					"puntos": 13,
 					"reuniones_agendadas": 4,
-					"reuniones_realizadas": 1,
-					"ultima_actividad": "2026-10-20T17:44:34-03:00"
+					"reuniones_realizadas": 3,
+					"ultima_actividad": "2026-10-23T12:56:16-03:00"
 				},
 				{
 					"id": "matias-palma",
@@ -202,11 +202,11 @@
 		{
 			"fecha": "2026-10-20",
 			"puntos": {
-				"squad-1": 8,
+				"squad-1": 10,
 				"squad-2": 10
 			},
 			"acumulado": {
-				"squad-1": 23,
+				"squad-1": 25,
 				"squad-2": 22
 			},
 			"combo": {
@@ -249,7 +249,7 @@
 			"puntos_texto": "+3 para el primer squad",
 			"desde": "2026-10-14T14:28:40-03:00",
 			"hasta": null,
-			"vigente": true,
+			"vigente": false,
 			"ganador": null
 		},
 		{
@@ -285,7 +285,7 @@
 			"puntos_texto": "+3 para el primer squad",
 			"desde": "2026-10-15T11:08:26-03:00",
 			"hasta": null,
-			"vigente": true,
+			"vigente": false,
 			"ganador": null
 		},
 		{
@@ -370,7 +370,7 @@
 			"puntos_texto": "Momentum +1 adicional; ICP +2 adicionales; acumulables (hasta 4 por reunión)",
 			"desde": "2026-10-20T11:00:32-03:00",
 			"hasta": "2026-10-20T23:59:59-03:00",
-			"vigente": true,
+			"vigente": false,
 			"ganador": null
 		}
 	],
@@ -391,6 +391,86 @@
 		}
 	],
 	"eventos": [
+		{
+			"id": "ev-0041",
+			"tipo": "confirmacion",
+			"fecha_hora": "2026-10-23T12:56:16-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-hernandez",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Se confirmó un puntaje de Matías Hernández",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0040",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": null,
+				"hora": "12:56",
+				"fuente": "instruccion"
+			}
+		},
+		{
+			"id": "ev-0040",
+			"tipo": "reunion_realizada",
+			"fecha_hora": "2026-10-23T12:56:16-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-hernandez",
+			"puntos": 0,
+			"puntos_en_revision": 0,
+			"titulo": "Se informó como realizada una reunión de Matías Hernández",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0033",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": null,
+				"hora": "12:56",
+				"fuente": "instruccion"
+			}
+		},
+		{
+			"id": "ev-0039",
+			"tipo": "confirmacion",
+			"fecha_hora": "2026-10-23T12:56:16-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-hernandez",
+			"puntos": 1,
+			"puntos_en_revision": 0,
+			"titulo": "Se confirmó un puntaje de Matías Hernández",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0038",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": null,
+				"hora": "12:56",
+				"fuente": "instruccion"
+			}
+		},
+		{
+			"id": "ev-0038",
+			"tipo": "reunion_realizada",
+			"fecha_hora": "2026-10-23T12:56:16-03:00",
+			"squad": "squad-1",
+			"sdr": "matias-hernandez",
+			"puntos": 0,
+			"puntos_en_revision": 0,
+			"titulo": "Se informó como realizada una reunión de Matías Hernández",
+			"detalle": null,
+			"empresa": null,
+			"ref": "ev-0027",
+			"anulado": false,
+			"en_revision": false,
+			"origen": {
+				"mensaje": null,
+				"hora": "12:56",
+				"fuente": "instruccion"
+			}
+		},
 		{
 			"id": "ev-0037",
 			"tipo": "flash",
